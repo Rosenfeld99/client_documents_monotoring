@@ -1,8 +1,10 @@
 import React from 'react'
+import AppRoutes from './Routes/AppRoutes'
+import "./App.css"
 
 const App = () => {
   return (
-    <div className=' bg-slate-500'>App</div>
+    <AppRoutes />
   )
 }
 
