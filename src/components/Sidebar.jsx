@@ -9,12 +9,12 @@ import { TbHelpSquareFilled } from 'react-icons/tb'
 const Sidebar = () => {
     const [currentRoute, setCurrentRoute] = useState("")
 
-    const styleItem = "flex items-center gap-3 text-[#a4a5ac] hover:opacity-50 px-3 py-2 rounded-lg transition-all"
-    const styleItemActive = "bg-primary text-white" // active item style
+    const styleItem = "flex items-center gap-3 text-[#a4a5ac] hover:opacity-50 px-3 py-2 rounded-lg transition-all cursor-pointer"
+    const styleItemActive = "bg-primary text-background flex items-center gap-3 px-3 py-2 rounded-lg transition-all" // active item style
     const styleIcon = "text-2xl"
 
     return (
-        <div className='w-[20%] max-w-[250px] bg-secondary min-h-screen p-5'>
+        <div className='w-[20%] max-w-[250px] min-w-[210px] bg-secondary min-h-screen p-5'>
             <div className="flex flex-col h-full justify-between">
                 <div className="flex flex-col">
                     {/* TOP */}
@@ -24,28 +24,28 @@ const Sidebar = () => {
                     </div>
 
                     {/* Middle */}
-                    <div className="flex-col flex gap-10 pt-10">
-                        <div onClick={() => setCurrentRoute("לובי")} className={`${styleItem} ${currentRoute === "לובי" ? styleItemActive : ""}`}>
+                    <div className="flex-col flex gap-5 pt-10">
+                        <div onClick={() => setCurrentRoute("לובי")} className={`${currentRoute === "לובי" ? styleItemActive : styleItem}`}>
                             <PiBuildingsBold className={styleIcon} />
                             <span>לובי</span>
                         </div>
-                        <div onClick={() => setCurrentRoute("דשבורד")} className={`${styleItem} ${currentRoute === "דשבורד" ? styleItemActive : ""}`}>
+                        <div onClick={() => setCurrentRoute("דשבורד")} className={`${currentRoute === "דשבורד" ? styleItemActive : styleItem}`}>
                             <FaChartBar className={styleIcon} />
                             <span>דשבורד</span>
                         </div>
-                        <div onClick={() => setCurrentRoute("תקלה חדשה")} className={`${styleItem} ${currentRoute === "תקלה חדשה" ? styleItemActive : ""}`}>
+                        <div onClick={() => setCurrentRoute("תקלה חדשה")} className={`${currentRoute === "תקלה חדשה" ? styleItemActive : styleItem}`}>
                             <CgLoadbarDoc className={styleIcon} />
                             <span>תקלה חדשה</span>
                         </div>
-                        <div onClick={() => setCurrentRoute("ניהול משתמשים")} className={`${styleItem} ${currentRoute === "ניהול משתמשים" ? styleItemActive : ""}`}>
+                        <div onClick={() => setCurrentRoute("ניהול משתמשים")} className={`${currentRoute === "ניהול משתמשים" ? styleItemActive : styleItem}`}>
                             <FaUsers className={styleIcon} />
                             <span>ניהול משתמשים</span>
                         </div>
-                        <div onClick={() => setCurrentRoute("היסטורית תקלות")} className={`${styleItem} ${currentRoute === "היסטורית תקלות" ? styleItemActive : ""}`}>
+                        <div onClick={() => setCurrentRoute("היסטורית תקלות")} className={`${currentRoute === "היסטורית תקלות" ? styleItemActive : styleItem}`}>
                             <MdHistory className={styleIcon} />
                             <span>היסטורית תקלות</span>
                         </div>
-                        <div onClick={() => setCurrentRoute("הגדרות מערכת")} className={`${styleItem} ${currentRoute === "הגדרות מערכת" ? styleItemActive : ""}`}>
+                        <div onClick={() => setCurrentRoute("הגדרות מערכת")} className={`${currentRoute === "הגדרות מערכת" ? styleItemActive : styleItem}`}>
                             <IoMdSettings className={styleIcon} />
                             <span>הגדרות מערכת</span>
                         </div>
@@ -54,7 +54,7 @@ const Sidebar = () => {
 
                 {/* bottom */}
                 <div className="flex flex-col gap-3">
-                    <div onClick={() => setCurrentRoute("עזרה")} className={`${styleItem} ${currentRoute === "עזרה" ? styleItemActive : ""}`}>
+                    <div onClick={() => setCurrentRoute("עזרה")} className={`${currentRoute === "עזרה" ? styleItemActive : styleItem}`}>
                         <TbHelpSquareFilled className='text-2xl mt-auto' />
                         <span>עזרה</span>
                     </div>
