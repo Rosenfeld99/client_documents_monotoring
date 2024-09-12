@@ -5,9 +5,11 @@ import { IoMdSettings } from 'react-icons/io'
 import { MdHistory } from 'react-icons/md'
 import { PiBuildingsBold } from 'react-icons/pi'
 import { TbHelpSquareFilled } from 'react-icons/tb'
+import { useNavigate } from 'react-router-dom'
 
 const Sidebar = () => {
     const [currentRoute, setCurrentRoute] = useState("")
+    const navigateion = useNavigate()
 
     const styleItem = "flex items-center gap-3 text-[#a4a5ac] hover:opacity-50 px-3 py-2 rounded-lg transition-all duration-700 cursor-pointer"
     const styleItemActive = "bg-primary text-background flex items-center gap-3 px-5 py-2 rounded-lg transition-all duration-700 " // active item style
@@ -17,7 +19,7 @@ const Sidebar = () => {
         <div className="flex flex-col h-full justify-between fixed max-h-screen w-[250px] min-w-[210px] bg-secondary min-h-screen p-5">
             <div className="flex flex-col">
                 {/* TOP */}
-                <div className="flex items-center gap-3">
+                <div onClick={() => navigateion(`/`)} className="flex items-center gap-3">
                     <h2 className='font-semibold text-xl'>לוגו זמני</h2>
                     <div className="bg-primary text-background rounded-full w-10 aspect-square justify-center flex items-center">L</div>
                 </div>
@@ -28,7 +30,7 @@ const Sidebar = () => {
                         <PiBuildingsBold className={styleIcon} />
                         <span>לובי</span>
                     </div>
-                    <div onClick={() => setCurrentRoute("דשבורד")} className={`${currentRoute === "דשבורד" ? styleItemActive : styleItem}`}>
+                    <div onClick={() => { setCurrentRoute("דשבורד"), navigateion(`/dashboard/id`) }} className={`${currentRoute === "דשבורד" ? styleItemActive : styleItem}`}>
                         <FaChartBar className={styleIcon} />
                         <span>דשבורד</span>
                     </div>
