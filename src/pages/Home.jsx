@@ -2,6 +2,7 @@ import React from 'react'
 import Sidebar from '../components/Sidebar'
 import Header from '../components/Header'
 import Nav from '../components/Nav'
+import Navbar from '../components/Navbar'
 
 const Home = () => {
     const lobbyOption = [
@@ -22,7 +23,7 @@ const Home = () => {
         <div className=' flex '>
             <Sidebar />
             <main className=' bg-background w-[100%] max-h-screen mr-[250px]'>
-                <Nav />
+                <Navbar />
                 <Header />
                 <section className='mx-10 flex-1 grid grid-cols-3'>
                     {lobbyOption.map((item, i) => (
