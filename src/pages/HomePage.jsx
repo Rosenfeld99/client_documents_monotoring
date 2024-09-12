@@ -7,6 +7,15 @@ const HomePage = () => {
         { name: "דסק תפעול" },
         { name: "מנו”ר" },
         { name: "תשתיות" },
+        { name: "דסק תפעול" },
+        { name: "מנו”ר" },
+        { name: "תשתיות" },
+        { name: "דסק תפעול" },
+        { name: "מנו”ר" },
+        { name: "תשתיות" },
+        { name: "דסק תפעול" },
+        { name: "מנו”ר" },
+        { name: "תשתיות" },
     ]
 
     const accessOption = [

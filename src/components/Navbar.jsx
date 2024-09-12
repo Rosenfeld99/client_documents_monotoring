@@ -7,7 +7,7 @@ const Navbar = () => {
     const parts = str.split(' / ');
 
     return (
-        <nav className="py-3 border-b-2 border-b-border px-10 flex items-center justify-between ">
+        <nav className=" border-b-[1px] border-b-border px-10 flex fixed h-16 top-0 left-0 w-[calc(100%-250px)] bg-[#ffffff56] backdrop-blur-sm items-center justify-between">
 
             <div className='sm:text-sm  md:text-base lg:text-xl'>
                 {parts.slice(0, parts.length - 1).map((part, index) => (

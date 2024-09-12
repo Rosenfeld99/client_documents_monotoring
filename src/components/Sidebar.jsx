@@ -1,15 +1,15 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { CgLoadbarDoc } from 'react-icons/cg'
 import { FaChartBar, FaUsers } from 'react-icons/fa'
 import { IoMdSettings } from 'react-icons/io'
 import { MdHistory } from 'react-icons/md'
 import { PiBuildingsBold } from 'react-icons/pi'
 import { TbHelpSquareFilled } from 'react-icons/tb'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 
 const Sidebar = () => {
-    const [currentRoute, setCurrentRoute] = useState("")
     const navigateion = useNavigate()
+    const location = useLocation() // useLocation to get the current path
 
     const styleItem = "flex items-center gap-3 text-[#a4a5ac] hover:opacity-50 px-3 py-2 rounded-lg transition-all duration-700 cursor-pointer"
     const styleItemActive = "bg-primary text-background flex items-center gap-3 px-5 py-2 rounded-lg transition-all duration-700 " // active item style
@@ -26,27 +26,27 @@ const Sidebar = () => {
 
                 {/* Middle */}
                 <div className="flex-col flex gap-5 pt-10">
-                    <div onClick={() => setCurrentRoute("לובי")} className={`${currentRoute === "לובי" ? styleItemActive : styleItem}`}>
+                    <div onClick={() => navigateion(`/`)} className={`${location.pathname === "/" ? styleItemActive : styleItem}`}>
                         <PiBuildingsBold className={styleIcon} />
                         <span>לובי</span>
                     </div>
-                    <div onClick={() => { setCurrentRoute("דשבורד"), navigateion(`/dashboard/id`) }} className={`${currentRoute === "דשבורד" ? styleItemActive : styleItem}`}>
+                    <div onClick={() => navigateion(`/dashboard/id`)} className={`${location.pathname.includes("/dashboard") ? styleItemActive : styleItem}`}>
                         <FaChartBar className={styleIcon} />
                         <span>דשבורד</span>
                     </div>
-                    <div onClick={() => setCurrentRoute("תקלה חדשה")} className={`${currentRoute === "תקלה חדשה" ? styleItemActive : styleItem}`}>
+                    <div onClick={() => navigateion(`/new-issue`)} className={`${location.pathname === "/new-issue" ? styleItemActive : styleItem}`}>
                         <CgLoadbarDoc className={styleIcon} />
                         <span>תקלה חדשה</span>
                     </div>
-                    <div onClick={() => setCurrentRoute("ניהול משתמשים")} className={`${currentRoute === "ניהול משתמשים" ? styleItemActive : styleItem}`}>
+                    <div onClick={() => navigateion(`/user-management`)} className={`${location.pathname === "/user-management" ? styleItemActive : styleItem}`}>
                         <FaUsers className={styleIcon} />
                         <span>ניהול משתמשים</span>
                     </div>
-                    <div onClick={() => setCurrentRoute("היסטורית תקלות")} className={`${currentRoute === "היסטורית תקלות" ? styleItemActive : styleItem}`}>
+                    <div onClick={() => navigateion(`/issue-history`)} className={`${location.pathname === "/issue-history" ? styleItemActive : styleItem}`}>
                         <MdHistory className={styleIcon} />
                         <span>היסטורית תקלות</span>
                     </div>
-                    <div onClick={() => setCurrentRoute("הגדרות מערכת")} className={`${currentRoute === "הגדרות מערכת" ? styleItemActive : styleItem}`}>
+                    <div onClick={() => navigateion(`/system-settings`)} className={`${location.pathname === "/system-settings" ? styleItemActive : styleItem}`}>
                         <IoMdSettings className={styleIcon} />
                         <span>הגדרות מערכת</span>
                     </div>
@@ -55,7 +55,7 @@ const Sidebar = () => {
 
             {/* bottom */}
             <div className="flex flex-col gap-3">
-                <div onClick={() => setCurrentRoute("עזרה")} className={`${currentRoute === "עזרה" ? styleItemActive : styleItem}`}>
+                <div onClick={() => navigateion(`/help`)} className={`${location.pathname === "/help" ? styleItemActive : styleItem}`}>
                     <TbHelpSquareFilled className='text-2xl mt-auto' />
                     <span>עזרה</span>
                 </div>
