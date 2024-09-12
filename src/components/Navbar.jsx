@@ -9,7 +9,7 @@ const Navbar = () => {
     return (
         <nav className="py-3 border-b-2 border-b-border px-10 flex items-center justify-between ">
 
-            <div>
+            <div className='sm:text-sm  md:text-base lg:text-xl'>
                 {parts.slice(0, parts.length - 1).map((part, index) => (
                     <span key={index}>{part} / </span>
                 ))}
