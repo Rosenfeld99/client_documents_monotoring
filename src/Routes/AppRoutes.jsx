@@ -1,12 +1,14 @@
 import React from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import Home from '../pages/Home'
+import HomePage from '../pages/HomePage'
+import DashboardPage from '../pages/DashboardPage'
 
 const AppRoutes = () => {
     return (
         <BrowserRouter>
             <Routes>
-                <Route path='/' element={<Home />} />
+                <Route path='/' element={<HomePage />} />
+                <Route path='/dashboard/:id' element={<DashboardPage />} />
             </Routes>
         </BrowserRouter>
     )
