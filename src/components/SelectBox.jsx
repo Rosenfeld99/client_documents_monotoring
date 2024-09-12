@@ -5,14 +5,14 @@ const SelectBox = () => {
     const options = ["סביבה", "תומר", "ג'וליס", "828"];
     
     const hasNotifications = true; 
-    
+
     return (
         <div className="w-auto flex items-center">
 
             <div className='relative'>
                 <IoMdNotifications className='sm:text-xl lg:text-3xl text-[#94a3b8]' />
                 {hasNotifications && (
-                    <div className='sm:w-1 sm:h-1 lg:w-2 lg:h-2 bg-error rounded-full absolute top-1 right-1'></div>
+                    <div className='sm:w-2 sm:h-2 lg:w-3 lg:h-3 bg-error border-2 border-background rounded-full absolute top-1 right-[2px]'></div>
                 )}
             </div>
             
