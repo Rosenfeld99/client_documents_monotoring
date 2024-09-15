@@ -5,14 +5,16 @@ import { IoMdSettings } from 'react-icons/io'
 import { MdHistory } from 'react-icons/md'
 import { PiBuildingsBold } from 'react-icons/pi'
 import { TbHelpSquareFilled } from 'react-icons/tb'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useNavigate, useLocation, useSearchParams } from 'react-router-dom'
 
 const Sidebar = () => {
     const navigateion = useNavigate()
     const location = useLocation() // useLocation to get the current path
+    const [searchParams] = useSearchParams()
+    console.log(searchParams.get('room'));
 
-    const styleItem = "flex items-center gap-3 text-[#a4a5ac] hover:opacity-50 px-3 py-2 rounded-lg transition-all duration-700 cursor-pointer"
-    const styleItemActive = "bg-primary text-background flex items-center gap-3 px-5 py-2 rounded-lg transition-all duration-700 " // active item style
+    const styleItem = "flex items-center gap-3 text-[#a4a5ac] hover:opacity-50 px-3 py-2 rounded-lg transition-all duration-150 cursor-pointer"
+    const styleItemActive = "bg-primary text-background flex items-center gap-3 px-5 py-2 rounded-lg transition-all duration-150 " // active item style
     const styleIcon = "text-2xl"
 
     return (
@@ -30,23 +32,23 @@ const Sidebar = () => {
                         <PiBuildingsBold className={styleIcon} />
                         <span>לובי</span>
                     </div>
-                    <div onClick={() => navigateion(`/dashboard/id`)} className={`${location.pathname.includes("/dashboard") ? styleItemActive : styleItem}`}>
+                    <div onClick={() => navigateion(`/dashboard?room=${searchParams.get('room') || "דשבורד"}`)} className={`${location.pathname.includes("/dashboard") ? styleItemActive : styleItem}`}>
                         <FaChartBar className={styleIcon} />
                         <span>דשבורד</span>
                     </div>
-                    <div onClick={() => navigateion(`/new-issue`)} className={`${location.pathname === "/new-issue" ? styleItemActive : styleItem}`}>
+                    <div onClick={() => navigateion(`/new-issue?room=${searchParams.get('room') || "תקלה חדשה"}`)} className={`${location.pathname === "/new-issue" ? styleItemActive : styleItem}`}>
                         <CgLoadbarDoc className={styleIcon} />
                         <span>תקלה חדשה</span>
                     </div>
-                    <div onClick={() => navigateion(`/user-management`)} className={`${location.pathname === "/user-management" ? styleItemActive : styleItem}`}>
+                    <div onClick={() => navigateion(`/user-management?room=${searchParams.get('room') || "ניהול משתמשים"}`)} className={`${location.pathname === "/user-management" ? styleItemActive : styleItem}`}>
                         <FaUsers className={styleIcon} />
                         <span>ניהול משתמשים</span>
                     </div>
-                    <div onClick={() => navigateion(`/issue-history`)} className={`${location.pathname === "/issue-history" ? styleItemActive : styleItem}`}>
+                    <div onClick={() => navigateion(`/issue-history?room=${searchParams.get('room') || "היסטורית תקלות"}`)} className={`${location.pathname === "/issue-history" ? styleItemActive : styleItem}`}>
                         <MdHistory className={styleIcon} />
                         <span>היסטורית תקלות</span>
                     </div>
-                    <div onClick={() => navigateion(`/system-settings`)} className={`${location.pathname === "/system-settings" ? styleItemActive : styleItem}`}>
+                    <div onClick={() => navigateion(`/system-settings?room=${searchParams.get('room') || "הגדרות מערכת"}`)} className={`${location.pathname === "/system-settings" ? styleItemActive : styleItem}`}>
                         <IoMdSettings className={styleIcon} />
                         <span>הגדרות מערכת</span>
                     </div>
@@ -55,13 +57,16 @@ const Sidebar = () => {
 
             {/* bottom */}
             <div className="flex flex-col gap-3">
-                <div onClick={() => navigateion(`/help`)} className={`${location.pathname === "/help" ? styleItemActive : styleItem}`}>
+                <div onClick={() => navigateion(`/help?room=${searchParams.get('room') || "עזרה"}`)} className={`${location.pathname === "/help" ? styleItemActive : styleItem}`}>
                     <TbHelpSquareFilled className='text-2xl mt-auto' />
                     <span>עזרה</span>
                 </div>
                 <div className={styleItem}>
                     <img src='/logo_dev.png' className='w-10 aspect-square rounded-xl border-2 border-primary mt-auto' />
-                    <span>פותוח ע”י צוות אלפא</span>
+                    <div className="">
+                        <div>פותוח ע”י צוות אלפא</div>
+                        <div className=' text-xs'>צוות אלפא CTR+K</div>
+                    </div>
                 </div>
             </div>
         </div>

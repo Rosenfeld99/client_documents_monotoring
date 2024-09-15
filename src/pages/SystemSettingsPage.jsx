@@ -8,9 +8,18 @@ const SystemSettingsPage = () => {
         { name: "מחלקה", value: "מחלקה" },
     ]
 
+    const str = "פיקוד ההכשרות והאימונים / תומר / דסק תפעול"
+
+
     return (
-        <TemplatePage showHeader={true} showNav={true} showSidebar={true} titleHeader={"דשבורד"} navRight={<CustomSelect labelText={"בחר קבוצה"} options={accessOption} placeholder="קבוצה..." keyToUpdate={"accessOption"} />
-        }>
+        <TemplatePage
+            showHeader={true}
+            showNav={true}
+            showSidebar={true}
+            titleHeader={"הגדרות מערכת"}
+            navRight={<CustomSelect labelText={"בחר קבוצה"} options={accessOption} placeholder="קבוצה..." keyToUpdate={"accessOption"} />}
+            navLeft={str}
+        >
             <section className='mx-10 flex-1 grid grid-cols-3'>
                 SystemSettingsPage
             </section>

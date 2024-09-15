@@ -7,13 +7,15 @@ import UserManagementPage from '../pages/UserManagementPage'
 import IssueHistoryPage from '../pages/IssueHistoryPage'
 import SystemSettingsPage from '../pages/SystemSettingsPage'
 import HelpPage from '../pages/HelpPage'
+import RootSWPage from '../pages/RootSWPage'
 
 const AppRoutes = () => {
     return (
         <BrowserRouter>
             <Routes>
-                <Route path='/' element={<HomePage />} />
-                <Route path='/dashboard/:id' element={<DashboardPage />} />
+                <Route path='/' element={<RootSWPage />} />
+                <Route path='/spaceWork' element={<HomePage />} />
+                <Route path='/dashboard' element={<DashboardPage />} />
                 <Route path='/new-issue' element={<NewIssuePage />} />
                 <Route path='/user-management' element={<UserManagementPage />} />
                 <Route path='/issue-history' element={<IssueHistoryPage />} />
