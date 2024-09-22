@@ -1,16 +1,17 @@
 import React from 'react'
 import TemplatePage from '../utils/TemplatePage'
 import CustomSelect from '../utils/CustomSelect'
+import { useSearchParams } from 'react-router-dom'
 
 const NewIssuePage = () => {
+    const [searchParams] = useSearchParams()
+
     const accessOption = [
         { name: "מדגם", value: "מדגם" },
         { name: "מחלקה", value: "מחלקה" },
     ]
 
-    const str = "פיקוד ההכשרות והאימונים / תומר / דסק תפעול"
-
-    
+    const str = `${searchParams.get('sw')} / ${searchParams.get('subSW')} / ${searchParams.get('room')}`
 
     return (
         <TemplatePage

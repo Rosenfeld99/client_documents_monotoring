@@ -63,11 +63,15 @@ export const ContextStoreProvider = ({ children }) => {
         },
     ]);
 
+    const [singleOptoin, setSingleOption] = useState(null)
+
+
     // const [showToast, setShowToast] = useState(false)
     // const [toast, setToast] = useState({ title: "", message: "", type: "", time: 0 });
 
     const contextValue = {
-        options, setOptions
+        options, setOptions,
+        singleOptoin, setSingleOption
     }
 
     return (
