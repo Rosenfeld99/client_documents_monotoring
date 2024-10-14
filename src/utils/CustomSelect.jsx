@@ -33,33 +33,33 @@ const CustomSelect = ({ options, placeholder, labelText, setState, layer, keyToU
     
 
     return (
-        <div className={`relative w-fit ${layer}`} ref={selectRef}>
+        <div className={`relative w-full ${layer}`} ref={selectRef}>
             <label
-                className={`absolute bg-background text-[#8e9ba5] right-2 px-2 transition-all duration-300 ${isOpen || selectedOption ? '-top-2.5 text-xs ' : 'top-2.5 text-base text-gray-500'} ${isOpen && "text-[#1298ff]"}`}
+                className={`absolute bg-background right-2 px-2 transition-all duration-300 ${isOpen || selectedOption ? '-top-2.5 text-primary ' : 'top-2.5 text-base text-gray-500'} ${isOpen && "text-primary"}`}
                 style={{ pointerEvents: 'none' }}
             >
                 {labelText}
             </label>
             <div
                 tabIndex={0}
-                className={`border border-[#8e9ba5] ${isOpen && "border border-[#1298ff]"} rounded-md p-2 cursor-pointer text-black font-semibold ${isOpen && "border-2 border-blue-400"}`}
+                className={`border border-border ${isOpen && "border border-[#1298ff]"} rounded-md p-2 cursor-pointer text-black font-semibold ${isOpen && "border-2 border-primary"}`}
                 onClick={toggleDropdown}
             >
                 {selectedOption || placeholder}
-                <span className="float-left flex items-center text-3xl justify-center mr-8 text-[#8e9ba5]">
+                <span className="float-left flex items-center text-3xl justify-center mr-8 text-border">
                     {isOpen ? (
-                        <FiChevronUp />
+                        <FiChevronUp className=' text-primary'/>
                     ) : (
                         <FiChevronDown />
                     )}
                 </span>
             </div>
             {isOpen && (
-                <ul className="absolute mt-1 w-full border border-[#8e9ba5] bg-background rounded-md z-10">
+                <ul className={`absolute mt-1 w-full border border-border bg-background rounded-md z-10 shadow-2xl ${isOpen && "border-primary"}`}>
                     {options.map((option, index) => (
                         <li
                             key={option.value}
-                            className={`p-2 px-5 flex items-center justify-between cursor-pointer hover:opacity-70 ${index !== options.length - 1 && "border-b-[1px] border-[#8e9ba5]"} `}
+                            className={`p-2 px-5 flex items-center justify-between cursor-pointer hover:opacity-70 ${index !== options.length - 1 && isOpen ? "border-b-[1px] border-primary" : "border-b-[1px] border-border"} `}
                             onClick={() => handleOptionClick(option?.name)}
                         >
                             <span>
