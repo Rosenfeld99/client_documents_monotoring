@@ -32,7 +32,7 @@ const CustomInput = ({ placeholder, label, state, setState, inputType, minLen, m
     return (
         <div className="relative w-full">
             <label
-                className={`absolute right-2 bg-light_primary dark:bg-dark_primary text-light_primary_content dark:text-dark_primary_content px-2 transition-all duration-200 ${isFocused || state ? '-top-2.5 text-xs text-gray-400' : 'top-2.5 text-base text-gray-500'}`}
+                className={`absolute right-2 px-2 bg-accent pl-20 transition-all duration-200 ${isFocused || state ? '-top-2.5 pl-2 text-gray-400 bg-accent text-primary' : 'top-2.5 text-base text-gray-500'}`}
                 onClick={() => inputRef.current.focus()}
                 style={{ pointerEvents: 'auto', cursor: 'text' }}
             >
@@ -40,7 +40,7 @@ const CustomInput = ({ placeholder, label, state, setState, inputType, minLen, m
             </label>
             <input
                 ref={inputRef}
-                className="justify-center px-4 py-2 bg-light_primary dark:bg-dark_primary text-light_primary_content dark:text-dark_primary_content rounded-lg w-full outline-blue-400 border border-solid border-gray-300 text-ellipsis "
+                className="justify-center px-4 py-2 rounded-lg w-full outline-primary border border-solid border-border text-ellipsis bg-accent"
                 type={isPasswordVisible ? "text" : inputType}
                 value={state}
                 minLength={minLen}

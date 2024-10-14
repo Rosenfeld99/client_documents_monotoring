@@ -8,7 +8,7 @@ const DonutChart = () => {
   const dataPoints = [
     { name: "תשתיות", y: 40, color: "#5a6acf" },
     { name: "מנו”ר", y: 33, color: "#c7ceff" },
-    { name: "דסק תפעול", y: 26, color: "#8593ed" },
+    { name: "דסק תפעול", y: 26, color: "#384282" },
   ]
 
   const options = {
@@ -16,12 +16,21 @@ const DonutChart = () => {
     height: 250,
     animationEnabled: true,
     theme: "light",
+    toolTip: {
+      backgroundColor: "#333",  // Background color of the tooltip
+      borderColor: "#aaa",      // Border color of the tooltip
+      fontColor: "#fff",        // Text color inside the tooltip
+      fontSize: 14,             // Font size of the tooltip text
+      fontStyle: "bold",        // Font style (optional)
+      cornerRadius: 5           // Tooltip corner radius
+    },
     data: [{
       type: "doughnut",
       startAngle: 90,
       yValueFormatString: "#,##0.0#",
       radius: "80%", // Controls the size of the doughnut
       innerRadius: "80%", // Controls the width of the doughnut ring
+      toolTipContent: "<b>{name}</b>: {y}",
       dataPoints
     }]
   };
