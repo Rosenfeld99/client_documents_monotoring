@@ -64,6 +64,17 @@ export const ContextStoreProvider = ({ children }) => {
     ]);
 
     const [singleOptoin, setSingleOption] = useState(null)
+    const [inputs, setInputs] = useState([
+        // {
+        // label: { type: String, default: "" },       // Default value for 'input1.label'
+        // placeHolder: { type: String, default: "" }, // Default value for 'input1.placeHolder'
+        // type: { type: String, default: "" },        // Default value for 'input1.type'
+        // options: { type: [String], default: [] },   // Default value for 'options' array
+        // require: { type: Boolean, default: false }, // Default value for 'require'
+        // disable: { type: Boolean, default: false }  // Default value for 'disable'
+        // }
+
+    ])
 
 
     // const [showToast, setShowToast] = useState(false)
@@ -71,7 +82,8 @@ export const ContextStoreProvider = ({ children }) => {
 
     const contextValue = {
         options, setOptions,
-        singleOptoin, setSingleOption
+        singleOptoin, setSingleOption,
+        inputs,setInputs
     }
 
     return (
