@@ -47,7 +47,8 @@ function ChooseOption({ updateInput, setUpdateInput, chooseOption, setChooseOpti
 // add new option to select func
 const addOptionToSelect=()=>{    
     const tempOptions=[...selectValue?.options,optionValue]
-    setSelectValue((prev)=>{return{...prev,options:tempOptions}})
+    setSelectValue((prev)=>{return{...prev,options:tempOptions,}})
+    setOptionValue("")
     setOpenSelect(true)
 }
 //end//
@@ -179,13 +180,13 @@ const createInputObj=(label,placeholder,type,options,requireInput,_id)=>{
 
                 // this is the button of require field
                 <div className='absolute left-0 items-center   flex gap-2 -top-6'>
-                    <p className={` ${require?"opacity-100":"opacity-50"}`}>
-                        שדה חובה
+                    <p className={`text-xs ${require?"opacity-100":"opacity-50"}`}>
+                        ציין שדה חובה
                         </p>
                  <label class="switch">
                    
                 <input checked={require} onChange={()=>setRequire(!require)} type="checkbox"/>
-                <span class="slider round"></span>
+                <span className="slider round"></span>
                 </label>
 
 
@@ -204,23 +205,32 @@ const createInputObj=(label,placeholder,type,options,requireInput,_id)=>{
 
                     {/* i create select manualy */}
                     {chooseOption?.includes("select_input") &&
-                        <div className=' relative  h-1/3'  >
+                        <div ref={optionsRef} className=' relative  h-1/3'  >
                             {/* label for title  */}
                             <span className={`absolute right-3 px-1 shadow-md     rounded-[4px] top-[-12px]  bg-[white] z-20  ${textChooseColor}`}>
-                                <input type="text" autoFocus={true} onChange={(e) => setSelectValue((prev)=>{return{...prev,label:e.target.value}})} placeholder={updateInput ? updateInput?.label : 'בחר/י כותרת'} className='outline-none px-2' />
+                                <input type="text"  autoFocus={true} onChange={(e) => setSelectValue((prev)=>{return{...prev,label:e.target.value}})} placeholder={updateInput ? updateInput?.label : 'בחר/י כותרת'} className='outline-none px-2' />
                             </span>
                             {/* create input +select manualy */}
                             <div className='relative flex  h-full'>
-                                <input type='text' onChange={(e)=>setOptionValue(e?.target?.value)} placeholder={selectValue?.placeholder}  className={`w-full h-full text-[#5A6ACF] px-5 pt-3  placeholder:text-[#5a6acf94]   border-2 outline-none rounded-[4px]  ${borderChooseColor + " " + textChooseColor}  `} />
+                                <input type='text' value={optionValue} onFocus={()=>setOpenSelect(true)} onChange={(e)=>setOptionValue(e?.target?.value)} placeholder={selectValue?.placeholder}  className={`w-full h-full text-[#5A6ACF] px-5 pt-3  placeholder:text-[#5a6acf94]   border-2 outline-none rounded-[4px]  ${borderChooseColor + " " + textChooseColor}  `} />
                                 <span className="top-[20%] flex items-center left-2 absolute text-3xl justify-center mr-8 text-[#8e9ba5]">
                                     <IoMdAdd onClick={addOptionToSelect} size={20} className='cursor-pointer  text-[#5A6ACF] ' />
                                     {openSelect ? (<FiChevronUp className='cursor-pointer' onClick={() => setOpenSelect(false)} />) : (<FiChevronDown className='cursor-pointer' onClick={() => setOpenSelect(true)} />)}
                                 </span>
                                 {openSelect && (
-                                    <span ref={openSelect} className='w-full shadow-2xl max-h-60 overflow-auto bg-[white] absolute right-0 top-11'>
-                                        {selectValue?.options?.map((option) => (
+                                    <span  className='w-full shadow-lg rounded-b-xl max-h-60 overflow-auto bg-[white] absolute right-0 top-11'>
+                                        {selectValue?.options?.length==0?
+                                         <div className='flex flex-col  justify-center  w-full'>
+                                         <div className='flex px-4 h-10 justify-center items-center'>
+                                             <span>הכניסו אפשרויות</span>
+                                         </div>
+                                         <span className='divide-y-2 w-full  border-b border-[#DDE4F0] '></span>
+
+                                     </div>
+                                        :
+                                        selectValue?.options.map((option) => (
                                             <div className='flex flex-col  justify-center  w-full'>
-                                                <div className='flex px-4 h-14 justify-between items-center'>
+                                                <div className='flex px-4 h-10 justify-between items-center'>
                                                     <span>{option}</span>
                                                     <span>
                                                         <ul className='flex gap-3'>
