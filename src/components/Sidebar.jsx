@@ -50,6 +50,10 @@ const Sidebar = () => {
                         <MdHistory className={styleIcon} />
                         <span>היסטורית תקלות</span>
                     </div>}
+                    {(searchParams.get('sw') && searchParams.get('subSW') && searchParams.get('room')) && <div onClick={() => navigateion(`/open-issue?sw=${searchParams.get('sw')}&subSW=${searchParams.get('subSW')}&room=${searchParams.get('room') || "תקלות פתוחות"}`)} className={`${location.pathname === "/open-issue" ? styleItemActive : styleItem}`}>
+                        <MdHistory className={styleIcon} />
+                        <span>תקלות פתוחות</span>
+                    </div>}
                     {(searchParams.get('sw') && searchParams.get('subSW') && searchParams.get('room')) && <div onClick={() => navigateion(`/system-settings?sw=${searchParams.get('sw')}&subSW=${searchParams.get('subSW')}&room=${searchParams.get('room') || "הגדרות מערכת"}`)} className={`${location.pathname === "/system-settings" ? styleItemActive : styleItem}`}>
                         <IoMdSettings className={styleIcon} />
                         <span>הגדרות מערכת</span>

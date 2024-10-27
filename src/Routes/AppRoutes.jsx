@@ -8,6 +8,7 @@ import IssueHistoryPage from '../pages/IssueHistoryPage'
 import SystemSettingsPage from '../pages/SystemSettingsPage'
 import HelpPage from '../pages/HelpPage'
 import RootSWPage from '../pages/RootSWPage'
+import OpenIssues from '../pages/OpenIssues'
 
 const AppRoutes = () => {
     return (
@@ -19,6 +20,7 @@ const AppRoutes = () => {
                 <Route path='/new-issue' element={<NewIssuePage />} />
                 <Route path='/user-management' element={<UserManagementPage />} />
                 <Route path='/issue-history' element={<IssueHistoryPage />} />
+                <Route path='/open-issue' element={<OpenIssues />} />
                 <Route path='/system-settings' element={<SystemSettingsPage />} />
                 <Route path='/help' element={<HelpPage />} />
                 <Route path='/*' element={<div className=' flex items-center justify-center w-full h-screen text-2xl font-semibold gap-5'>Not found 404 <Link to={'/'} className=' px-3 py-1 bg-success text-white '>Back Home</Link></div>} />
