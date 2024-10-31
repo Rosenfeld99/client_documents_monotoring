@@ -160,7 +160,7 @@ function ChooseOption({ updateInput, setUpdateInput, chooseOption, setChooseOpti
     return (
         <div className='w-full min-h-[70vh] grid pt-2 grid-cols-3'>
             <div className='col-span-1 w-[80%]  flex gap-10 flex-col'>
-                <p className='font-extrabold text-lg tracking-wider'>בחרו אפשרות</p>
+                <p className='text-lg font-semibold'>בחרו אפשרות</p>
 
                 {/* show the types of inputs in the right in screen */}
                 <TextAreaInput setFunc={() => { setChooseOption("textarea_input_0"); setUpdateInput(null); }} defaultValue={"לדוגמא:תיאור תקלה, דרך פתרון..."} title={"טקסט חופשי"} chooseOption={chooseOption === "textarea_input_0"} />
@@ -174,7 +174,7 @@ function ChooseOption({ updateInput, setUpdateInput, chooseOption, setChooseOpti
 
             {/* show the selected input */}
             <div className='col-span-2 h-full gap-9  flex flex-col  pr-16'>
-                <p className='font-extrabold text-lg tracking-wider'> {chooseOption ? "הזינו תוכן לאפשרות שבחרתם" : "בחרו אפשרות"}</p>
+                <p className=' text-lg font-semibold'> {chooseOption ? "הזינו תוכן לאפשרות שבחרתם" : "בחרו אפשרות"}</p>
                 <div className='w-3/4 h-32 relative '>
                     {chooseOption && (
 

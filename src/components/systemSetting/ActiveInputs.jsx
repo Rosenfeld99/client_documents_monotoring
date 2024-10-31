@@ -9,7 +9,7 @@ function ActiveInputs({ chooseOption, setChooseOption, setInputDeatils }) {
     return (
         <div className='pt-3 '>
             <div className='flex mb-5 mr-5 justify-between'>
-                <h1 className='font-extrabold text-lg tracking-wider'>שדות פעילים </h1>
+                <h1 className='text-lg font-semibold'>שדות פעילים </h1>
                 <p className='text-xs text-[#737b8b]'>מוגבל  ל6</p>
             </div>
             <div className='flex  flex-col gap-5 overflow-auto h-[65vh]'>
