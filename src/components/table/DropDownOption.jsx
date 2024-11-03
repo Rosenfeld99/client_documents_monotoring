@@ -5,7 +5,7 @@ import { TfiLayoutColumn3Alt } from 'react-icons/tfi'
 import CustomModal from '../../utils/CustomModal'
 
 const DropDownOption = ({ setOpenManageColumns, index, column, setCurrentColumn, currentColumn, showIconDots, toggleColumn, handleFilterChange, filteredData, showOptionSelect, setShowOptionSelect, setFilteredData, filters }) => {
-
+ 
     return (
         <div>
             <button className="absolute active:bg-secondary left-0.5 top-0.5 p-2 z-20 text-xl cursor-pointer active:duration-100 rounded-full">
