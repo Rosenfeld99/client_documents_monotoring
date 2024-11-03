@@ -5,7 +5,7 @@ import Navbar from '../components/Navbar'
 
 const TemplatePage = ({ setState, children, showSidebar, showNav, showHeader, titleHeader, navRight, navLeft, showBall, showExcel, showSelectOption, options,optionDisaled }) => {
     return (
-        <div className=' flex '>
+        <div className=' flex  overflow-x-hidden'>
             {showSidebar && <Sidebar />}
             <main className={` bg-background w-[100%] max-h-screen ${showSidebar && "mr-[250px]"}`}>
                 {showNav && <Navbar optionDisaled={optionDisaled} setState={setState} navRight={navRight} navLeft={navLeft} showExcel={showExcel} showBall={showBall} options={options} showSelectOption={showSelectOption} />}
