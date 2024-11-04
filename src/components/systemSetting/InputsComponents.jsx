@@ -5,14 +5,13 @@ const borderChooseColor = "border-[#5A6ACF]"
 const borderDefultColor = "border-[#DDE4F0]"
 const textChooseColor = "text-[#5A6ACF]"
 const textDefultColor = "text-[#737b8b]"
-const placeholderChooseColor="text-[#5a6acf94]"
-const placeholderDefultValueColor="text-[#737b8b63]"
+const placeholderChooseColor = "text-[#5a6acf94]"
+const placeholderDefultValueColor = "text-[#737b8b63]"
 
 
 
 export const TextAreaInput = ({ title, setFunc, defaultValue, chooseOption }) => {
-    console.log(title);
-    
+
     return (
         <div className='relative w-full ' onClick={setFunc}>
             <span className={`absolute right-3 top-[-12px] px-2 bg-[white] z-20  ${chooseOption ? textChooseColor : textDefultColor}`}>{title}</span>
@@ -40,3 +39,13 @@ export const ShortInput = ({ title, setFunc, defaultValue, chooseOption }) => {
         </div>
     )
 }
+
+
+export function Button({ color, text, onclickFunc, updateId }) {
+    return (
+        <button style={{ color: color, borderColor: color }} onClick={(e) => onclickFunc(e, updateId)} className={`px-6 p-1 font-bold border-2 rounded-md `}>
+            {text}
+        </button>
+    )
+}
+

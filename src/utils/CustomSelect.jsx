@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
 
-const CustomSelect = ({ options, placeholder, labelText, setState, layer, keyToUpdate, defaultValue }) => {
+const CustomSelect = ({ options, placeholder,required, labelText, setState, layer, keyToUpdate, defaultValue }) => {
     const [selectedOption, setSelectedOption] = useState(defaultValue || "");
     const [isOpen, setIsOpen] = useState(false);
     const selectRef = useRef(null);
@@ -29,20 +29,17 @@ const CustomSelect = ({ options, placeholder, labelText, setState, layer, keyToU
         };
     }, []);
 
-    console.log(options,selectedOption);
-    
-
     return (
         <div className={`relative w-full ${layer}`} ref={selectRef}>
             <label
-                className={`absolute bg-background right-2 px-2 transition-all duration-300 ${isOpen || selectedOption ? '-top-2.5 text-primary ' : 'top-2.5 text-base text-gray-500'} ${isOpen && "text-primary"}`}
+                className={`absolute bg-accent right-2 px-2 transition-all duration-300 -top-2.5  text-base text-gray-500`}
                 style={{ pointerEvents: 'none' }}
             >
                 {labelText}
             </label>
             <div
                 tabIndex={0}
-                className={`border border-border ${isOpen && "border border-[#1298ff]"} rounded-md p-2 cursor-pointer text-black font-semibold ${isOpen && "border-2 border-primary"}`}
+                className={`border border-border ${isOpen && "border border-[#1298ff]"} rounded-md p-2 cursor-pointer text-black font-medium ${isOpen && "border-2 border-primary"}`}
                 onClick={toggleDropdown}
             >
                 {selectedOption || placeholder}
@@ -56,20 +53,23 @@ const CustomSelect = ({ options, placeholder, labelText, setState, layer, keyToU
             </div>
             {isOpen && (
                 <ul className={`absolute mt-1 w-full border border-border bg-background rounded-md z-10 shadow-2xl ${isOpen && "border-primary"}`}>
-                    {options.map((option, index) => (
+                    {options?.map((option, index) => (
                         <li
-                            key={option.value}
+                            key={option}
                             className={`p-2 px-5 flex items-center justify-between cursor-pointer hover:opacity-70 ${index !== options.length - 1 && isOpen ? "border-b-[1px] border-primary" : "border-b-[1px] border-border"} `}
-                            onClick={() => handleOptionClick(option?.name)}
+                            onClick={() => handleOptionClick(option)}
                         >
                             <span>
-                                {option.name}
+                                {option}
                             </span>
-                            {option.name == selectedOption && <div className=" w-4 h-4 rounded-full bg-primary" />}
+                            {option == selectedOption && <div className=" w-4 h-4 rounded-full bg-primary" />}
                         </li>
                     ))}
                 </ul>
             )}
+             {required &&
+                <div className='absolute -top-5 left-0 text-[#E57373]'>*שדה חובה </div>
+            }
         </div>
     );
 };

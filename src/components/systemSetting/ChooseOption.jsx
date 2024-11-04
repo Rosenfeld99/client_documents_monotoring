@@ -1,11 +1,8 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import setting from "../../assets/setting_withoutSpace.png"
-import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
-import { TiDeleteOutline } from "react-icons/ti";
-import { AiOutlineEdit } from 'react-icons/ai';
-import { SelectInput, ShortInput, TextAreaInput } from './InputsComponents';
-import { IoMdAdd } from "react-icons/io";
-import { ContextStore } from '../../context/ContextStore';
+import { Button, SelectInput, ShortInput, TextAreaInput } from './InputsComponents';
+import { ContextStore } from '../../context/contextStore';
+import SelectImplement from './SelectImplement';
 
 // chooseOption=string that get the input type+id to recognize it like:`{inputType}_input_{_id}`
 // updateInput=this is the input obj selected if it is exsist
@@ -13,45 +10,10 @@ function ChooseOption({ updateInput, setUpdateInput, chooseOption, setChooseOpti
 
     // inputs= is the array of all inputs
     const { inputs, setInputs } = useContext(ContextStore)
-
-    const [openSelect, setOpenSelect] = useState(false)
-    const [optionValue, setOptionValue] = useState("")
     const [textAreaValue, setTextAreaValue] = useState({})
     const [selectValue, setSelectValue] = useState({})
     const [inputValue, setInputValue] = useState({})
     const [require, setRequire] = useState()
-
-
-    // handle click outside of the options in select input
-    const optionsRef = useRef()
-
-    const handleClickOutside = (event) => {
-        // Check if the click is outside the div
-        if (optionsRef?.current && !optionsRef?.current?.contains(event.target)) {
-            setOpenSelect(false); // Close the div or perform your action
-        }
-    };
-
-    useEffect(() => {
-        // Add event listener for clicks
-        document.addEventListener('mousedown', handleClickOutside);
-
-        // Cleanup the event listener on unmount
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, []);
-    //end //
-
-
-    // add new option to select func
-    const addOptionToSelect = () => {
-        const tempOptions = [...selectValue?.options, optionValue]
-        setSelectValue((prev) => { return { ...prev, options: tempOptions, } })
-        setOptionValue("")
-        setOpenSelect(true)
-    }
-    //end//
 
     // delete input
     const deleteInputFunc = (e) => {
@@ -61,7 +23,6 @@ function ChooseOption({ updateInput, setUpdateInput, chooseOption, setChooseOpti
         setInputs(inputsTemp)
     }
     //end
-
 
     const createInputObj = (label, placeholder, type, options, requireInput, _id) => {
         //create new obj input
@@ -76,10 +37,11 @@ function ChooseOption({ updateInput, setUpdateInput, chooseOption, setChooseOpti
         return newInput
     }
 
-
     // create and update inputs
     const createInput = (e, inputIdUpdate) => {
-
+        if (inputs.length == 12) {
+            alert("הגעתם למקסימום שדות מחקו שדה כדי להכניס שדה חדש")
+        }
         //inputIdUpdate if user want to update input this is th id of wanted update
         // chooseOption=`{inputType}_input_{_id}`
         switch (chooseOption.split("_")[0]) {
@@ -91,14 +53,16 @@ function ChooseOption({ updateInput, setUpdateInput, chooseOption, setChooseOpti
                 const newTextArea = createInputObj(textAreaValue?.label, textAreaValue?.placeholder, "textarea", [], require)
                 if (inputIdUpdate) {
                     const newArray = inputs.map((input) => input._id == inputIdUpdate ? newTextArea : input)
-                    console.log(newArray);
-
                     setInputs(newArray)
                 } else {
-                    setInputs((prev) => [...prev, newTextArea])
+                    const duplicateLabel = inputs.findIndex((input) => input?.label === textAreaValue?.label)
+                    if (duplicateLabel !== -1) {
+                        alert("יש כבר שדה עם כותרת זו")
+                        return
+                    }
+                    setInputs((prev) => [newTextArea, ...prev])
                 }
                 setTextAreaValue({})
-                console.log(textAreaValue);
                 break;
 
             case "select":
@@ -111,7 +75,12 @@ function ChooseOption({ updateInput, setUpdateInput, chooseOption, setChooseOpti
                     const newArray = inputs.map((input) => input._id == inputIdUpdate ? newSelect : input)
                     setInputs(newArray)
                 } else {
-                    setInputs((prev) => [...prev, newSelect])
+                    const duplicateLabel = inputs.findIndex((input) => input?.label === selectValue?.label)
+                    if (duplicateLabel !== -1) {
+                        alert("יש כבר שדה עם כותרת זו")
+                        return
+                    }
+                    setInputs((prev) => [newSelect, ...prev])
                 }
                 setSelectValue({})
                 break;
@@ -126,7 +95,12 @@ function ChooseOption({ updateInput, setUpdateInput, chooseOption, setChooseOpti
                     const newArray = inputs.map((input) => input._id == inputIdUpdate ? newInput : input)
                     setInputs(newArray)
                 } else {
-                    setInputs((prev) => [...prev, newInput])
+                    const duplicateLabel = inputs.findIndex((input) => input?.label === inputValue?.label)
+                    if (duplicateLabel !== -1) {
+                        alert("יש כבר שדה עם כותרת זו")
+                        return
+                    }
+                    setInputs((prev) => [newInput, ...prev])
                 }
                 setInputValue({})
                 break;
@@ -160,8 +134,7 @@ function ChooseOption({ updateInput, setUpdateInput, chooseOption, setChooseOpti
     return (
         <div className='w-full min-h-[70vh] grid pt-2 grid-cols-3'>
             <div className='col-span-1 w-[80%]  flex gap-10 flex-col'>
-                <p className='font-extrabold text-lg tracking-wider'>בחרו אפשרות</p>
-
+                <p className='font-semibold text-lg '>בחרו אפשרות</p>
                 {/* show the types of inputs in the right in screen */}
                 <TextAreaInput setFunc={() => { setChooseOption("textarea_input_0"); setUpdateInput(null); }} defaultValue={"לדוגמא:תיאור תקלה, דרך פתרון..."} title={"טקסט חופשי"} chooseOption={chooseOption === "textarea_input_0"} />
 
@@ -174,25 +147,25 @@ function ChooseOption({ updateInput, setUpdateInput, chooseOption, setChooseOpti
 
             {/* show the selected input */}
             <div className='col-span-2 h-full gap-9  flex flex-col  pr-16'>
-                <p className='font-extrabold text-lg tracking-wider'> {chooseOption ? "הזינו תוכן לאפשרות שבחרתם" : "בחרו אפשרות"}</p>
+                <p className='font-semibold text-lg '> {chooseOption ? "הזינו תוכן לאפשרות שבחרתם" : "בחרו אפשרות"}</p>
                 <div className='w-3/4 h-32 relative '>
+                    {!chooseOption &&
+                        <div>
+                            <span className={`absolute right-3 text-[#DDE4F0] top-[-12px] px-2 bg-[white] z-20 `}>כותרת</span>
+                            <div className={`w-full  min-h-10 p-2 h-32 border-[#DDE4F0] text-[#DDE4F0]  pointer-events-none border-2 rounded-[5px] `}>בחרו תבנית...</div>
+                        </div>}
                     {chooseOption && (
-
                         // this is the button of require field
                         <div className='absolute left-0 items-center   flex gap-2 -top-6'>
                             <p className={`text-xs ${require ? "opacity-100" : "opacity-50"}`}>
                                 ציין שדה חובה
                             </p>
-                            <label class="switch">
-
+                            <label className="switch">
                                 <input checked={require} onChange={() => setRequire(!require)} type="checkbox" />
                                 <span className="slider round"></span>
                             </label>
-
-
                         </div>
                     )}
-
                     {chooseOption?.includes("textarea_input") &&
                         <div className='relative h-full '>
                             <span className={`absolute  right-3 px-1  shadow-md  rounded-[4px] top-[-12px]  bg-[white] z-20  ${textChooseColor}`}>
@@ -202,59 +175,15 @@ function ChooseOption({ updateInput, setUpdateInput, chooseOption, setChooseOpti
                             <textarea placeholder={textAreaValue?.placeholder} onChange={(e) => setTextAreaValue((prev) => { return { ...prev, placeholder: e.target.value } })} className={`w-full h-full placeholder:text-[#5a6acf94]  p-5 outline-none  border-2 rounded-[4px] ${textChooseColor + " " + borderChooseColor} `} />
                         </div>
                     }
-
                     {/* i create select manualy */}
                     {chooseOption?.includes("select_input") &&
-                        <div ref={optionsRef} className=' relative  h-1/3'  >
-                            {/* label for title  */}
-                            <span className={`absolute right-3 px-1 shadow-md     rounded-[4px] top-[-12px]  bg-[white] z-20  ${textChooseColor}`}>
-                                <input type="text" autoFocus={true} onChange={(e) => setSelectValue((prev) => { return { ...prev, label: e.target.value } })} placeholder={updateInput ? updateInput?.label : 'בחר/י כותרת'} className='outline-none px-2' />
-                            </span>
-                            {/* create input +select manualy */}
-                            <div className='relative flex  h-full'>
-                                <input type='text' value={optionValue} onFocus={() => setOpenSelect(true)} onChange={(e) => setOptionValue(e?.target?.value)} placeholder={selectValue?.placeholder} className={`w-full h-full text-[#5A6ACF] px-5 pt-3  placeholder:text-[#5a6acf94]   border-2 outline-none rounded-[4px]  ${borderChooseColor + " " + textChooseColor}  `} />
-                                <span className="top-[20%] flex items-center left-2 absolute text-3xl justify-center mr-8 text-[#8e9ba5]">
-                                    <IoMdAdd onClick={addOptionToSelect} size={20} className='cursor-pointer  text-[#5A6ACF] ' />
-                                    {openSelect ? (<FiChevronUp className='cursor-pointer' onClick={() => setOpenSelect(false)} />) : (<FiChevronDown className='cursor-pointer' onClick={() => setOpenSelect(true)} />)}
-                                </span>
-                                {openSelect && (
-                                    <span className='w-full shadow-lg rounded-b-xl max-h-60 overflow-auto bg-[white] absolute right-0 top-11'>
-                                        {selectValue?.options?.length == 0 ?
-                                            <div className='flex flex-col  justify-center  w-full'>
-                                                <div className='flex px-4 h-10 justify-center items-center'>
-                                                    <span>הכניסו אפשרויות</span>
-                                                </div>
-                                                <span className='divide-y-2 w-full  border-b border-[#DDE4F0] '></span>
-
-                                            </div>
-                                            :
-                                            selectValue?.options.map((option) => (
-                                                <div className='flex flex-col  justify-center  w-full'>
-                                                    <div className='flex px-4 h-10 justify-between items-center'>
-                                                        <span>{option}</span>
-                                                        <span>
-                                                            <ul className='flex gap-3'>
-                                                                <li><AiOutlineEdit size={20} /></li>
-                                                                <li><TiDeleteOutline size={20} /></li>
-                                                            </ul>
-                                                        </span>
-                                                    </div>
-                                                    <span className='divide-y-2 w-full  border-b border-[#DDE4F0] '></span>
-
-                                                </div>
-
-                                            ))}
-
-                                    </span>
-                                )}
-
-                            </div>
-                        </div>}
+                        <SelectImplement selectValue={selectValue} updateInput={updateInput} setSelectValue={setSelectValue} />
+                    }
                     {/* short input */}
                     {chooseOption?.includes("short_input") &&
                         <div className='relative  h-1/3' >
                             <span className={`absolute right-3 px-1 shadow-md   rounded-[4px] top-[-12px]  bg-[white] z-20  ${textChooseColor}`}>
-                                <input onChange={(e) => setInputValue((prev) => { return { ...prev, label: e.target.value } })} type="text" autoFocus="true" placeholder={updateInput ? updateInput.label : 'בחר/י כותרת'} className='outline-none px-2' />
+                                <input onChange={(e) => setInputValue((prev) => { return { ...prev, label: e.target.value } })} type="text" autoFocus={true} placeholder={updateInput ? updateInput.label : 'בחר/י כותרת'} className='outline-none px-2' />
                             </span>
                             <input type="text" placeholder={inputValue?.placeholder} onChange={(e) => setInputValue((prev) => { return { ...prev, placeholder: e.target.value } })} className={`w-full h-full placeholder:text-[#5a6acf94]  outline-none  border-2 px-5 pt-3 rounded-[4px] ${borderChooseColor + " " + textChooseColor} `} />
                         </div>}
@@ -278,18 +207,8 @@ function ChooseOption({ updateInput, setUpdateInput, chooseOption, setChooseOpti
                 <div className='mt-auto'>
                     <img src={setting} alt="" className="h-56 mr-1 object-contain" />
                 </div>
-
             </div>
         </div>
     )
 }
-const Button = ({ color, text, onclickFunc, updateId }) => {
-    return (
-        <button style={{ color: color, borderColor: color }} onClick={(e) => onclickFunc(e, updateId)} className={`px-6 p-1 font-bold border-2 rounded-md `}>
-            {text}
-        </button>
-    )
-}
-
-
 export default ChooseOption

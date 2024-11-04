@@ -15,7 +15,7 @@ const SelectBox = ({ options, setState, optionDisaled }) => {
         console.log(options?.find((item) => item?.name == val));
 
         location !== "/dashboard" && handleGetSingleOption(val)
-        setState && setState(options?.find((item) => item?.name == val))
+        // setState && setState(options?.find((item) => item?.name == val))
 
         location == "/dashboard"
             ? navigate(`?sw=${searchParams.get('sw')}&subSW=${searchParams.get('subSW')}&room=${val}`)
