@@ -63,19 +63,10 @@ export const ContextStoreProvider = ({ children }) => {
             ]
         },
     ]);
-
     const [singleOptoin, setSingleOption] = useState(null)
     const [currentUser, setCurrentUser] = useState()
-    const [inputs, setInputs] = useState([{
-        label: "דחיפות",       // Default value for 'input1.label'
-        placeholder: "רמת דחיפות התקלה", // Default value for 'input1.placeholder'
-        type: "select",        // Default value for 'input1.type'
-        options: ["1-גבוהה", "2-בינונית", "3-נמוכה"],   // Default value for 'options' array
-        require: false, // Default value for 'require'
-        disable: false
-    }
-
-    ])
+    const [inputs, setInputs] = useState([])
+    const [historyReports, setHistoryReports] = useState([])
 
 
     // const [showToast, setShowToast] = useState(false)
@@ -84,8 +75,10 @@ export const ContextStoreProvider = ({ children }) => {
     const contextValue = {
         options, setOptions,
         singleOptoin, setSingleOption,
-        inputs, setInputs, currentUser, setCurrentUser
+        inputs, setInputs, currentUser, setCurrentUser,
+        historyReports, setHistoryReports
     }
+
 
 
 

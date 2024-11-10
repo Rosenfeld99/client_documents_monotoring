@@ -3,20 +3,37 @@ import setting from "../../assets/setting_withoutSpace.png"
 import { Button, SelectInput, ShortInput, TextAreaInput } from './InputsComponents';
 import { ContextStore } from '../../context/contextStore';
 import SelectImplement from './SelectImplement';
+import { MAX_LENGTH } from '../../utils/fakeDB';
+import { useSearchParams } from 'react-router-dom';
+import useInput from '../../hooks/useInput';
 
 // chooseOption=string that get the input type+id to recognize it like:`{inputType}_input_{_id}`
 // updateInput=this is the input obj selected if it is exsist
 function ChooseOption({ updateInput, setUpdateInput, chooseOption, setChooseOption }) {
 
     // inputs= is the array of all inputs
-    const { inputs, setInputs } = useContext(ContextStore)
+    const { inputs, setInputs, currentUser } = useContext(ContextStore)
     const [textAreaValue, setTextAreaValue] = useState({})
     const [selectValue, setSelectValue] = useState({})
     const [inputValue, setInputValue] = useState({})
     const [require, setRequire] = useState()
+    const [searchParams] = useSearchParams()
+    const { createInput, deleteInput, updateInputFields } = useInput()
+
+
 
     // delete input
-    const deleteInputFunc = (e) => {
+    const deleteInputFunc = (e, id) => {
+
+        const spaceDeatiles = {
+            spaceWorkName: searchParams?.get('sw'),
+            adminId: currentUser?.userId,
+            subSpaceWorkName: searchParams?.get('subSW'),
+            roomName: searchParams?.get('room'),
+            inputId: id
+
+        }
+        deleteInput(spaceDeatiles)
         const inputsTemp = inputs.filter((input) => input?._id != updateInput?._id)
         setUpdateInput(null)
         setChooseOption("")
@@ -27,6 +44,7 @@ function ChooseOption({ updateInput, setUpdateInput, chooseOption, setChooseOpti
     const createInputObj = (label, placeholder, type, options, requireInput, _id) => {
         //create new obj input
         const newInput = {
+            disable: false,
             label,       // Default value for 'input1.label'
             placeholder, // Default value for 'input1.placeholder'
             type,        // Default value for 'input1.type'
@@ -36,30 +54,42 @@ function ChooseOption({ updateInput, setUpdateInput, chooseOption, setChooseOpti
         }
         return newInput
     }
-
     // create and update inputs
-    const createInput = (e, inputIdUpdate) => {
-        if (inputs.length == 12) {
+    const handeleCreateInput = async (e, inputIdUpdate) => {
+        if (inputs.length == MAX_LENGTH) {
             alert("הגעתם למקסימום שדות מחקו שדה כדי להכניס שדה חדש")
         }
-        //inputIdUpdate if user want to update input this is th id of wanted update
-        // chooseOption=`{inputType}_input_{_id}`
+        // spaceWork deatiles to server functionality
+        const spaceDeatiles = {
+            spaceWorkName: searchParams?.get('sw'),
+            adminId: currentUser?.userId,
+            subSpaceWorkName: searchParams?.get('subSW'),
+            roomName: searchParams?.get('room'),
+        }
+        //inputIdUpdate if user want to update input this is the id of wanted update
         switch (chooseOption.split("_")[0]) {
             case "textarea":
                 if (!textAreaValue?.label) {
                     alert("חובה להכניס כותרת ")
                     return
                 }
-                const newTextArea = createInputObj(textAreaValue?.label, textAreaValue?.placeholder, "textarea", [], require)
+                // create new textarea object input
+                const newTextArea = createInputObj(textAreaValue?.label, textAreaValue?.placeholder, "textarea", [], require, inputIdUpdate)
+                // check if update or create
                 if (inputIdUpdate) {
                     const newArray = inputs.map((input) => input._id == inputIdUpdate ? newTextArea : input)
-                    setInputs(newArray)
+
+                    updateInputFields({ ...spaceDeatiles, editInput: newTextArea, inputId: newTextArea._id })
+                    setInputs(() => newArray)
+
+
                 } else {
                     const duplicateLabel = inputs.findIndex((input) => input?.label === textAreaValue?.label)
                     if (duplicateLabel !== -1) {
                         alert("יש כבר שדה עם כותרת זו")
                         return
                     }
+                    createInput({ ...spaceDeatiles, input: { ...newTextArea } })
                     setInputs((prev) => [newTextArea, ...prev])
                 }
                 setTextAreaValue({})
@@ -70,9 +100,11 @@ function ChooseOption({ updateInput, setUpdateInput, chooseOption, setChooseOpti
                     alert("חובה להכניס כותרת ")
                     return
                 }
-                const newSelect = createInputObj(selectValue?.label, "בחר/י אפשרות", "select", selectValue?.options ? selectValue?.options : [], require)
+                const newSelect = createInputObj(selectValue?.label, "בחר/י אפשרות", "select", selectValue?.options ? selectValue?.options : [], require, inputIdUpdate)
                 if (inputIdUpdate) {
                     const newArray = inputs.map((input) => input._id == inputIdUpdate ? newSelect : input)
+                    updateInputFields({ ...spaceDeatiles, editInput: newSelect, inputId: newSelect._id })
+
                     setInputs(newArray)
                 } else {
                     const duplicateLabel = inputs.findIndex((input) => input?.label === selectValue?.label)
@@ -80,6 +112,8 @@ function ChooseOption({ updateInput, setUpdateInput, chooseOption, setChooseOpti
                         alert("יש כבר שדה עם כותרת זו")
                         return
                     }
+                    createInput({ ...spaceDeatiles, input: { ...newSelect } })
+
                     setInputs((prev) => [newSelect, ...prev])
                 }
                 setSelectValue({})
@@ -90,9 +124,10 @@ function ChooseOption({ updateInput, setUpdateInput, chooseOption, setChooseOpti
                     alert("חובה להכניס כותרת ")
                     return
                 }
-                const newInput = createInputObj(inputValue?.label, inputValue?.placeholder, "short", [], require)
+                const newInput = createInputObj(inputValue?.label, inputValue?.placeholder, "short", [], require, inputIdUpdate)
                 if (inputIdUpdate) {
                     const newArray = inputs.map((input) => input._id == inputIdUpdate ? newInput : input)
+                    updateInputFields({ ...spaceDeatiles, editInput: newInput, inputId: newInput._id })
                     setInputs(newArray)
                 } else {
                     const duplicateLabel = inputs.findIndex((input) => input?.label === inputValue?.label)
@@ -100,6 +135,7 @@ function ChooseOption({ updateInput, setUpdateInput, chooseOption, setChooseOpti
                         alert("יש כבר שדה עם כותרת זו")
                         return
                     }
+                    createInput({ ...spaceDeatiles, input: { ...newInput } })
                     setInputs((prev) => [newInput, ...prev])
                 }
                 setInputValue({})
@@ -169,8 +205,7 @@ function ChooseOption({ updateInput, setUpdateInput, chooseOption, setChooseOpti
                     {chooseOption?.includes("textarea_input") &&
                         <div className='relative h-full '>
                             <span className={`absolute  right-3 px-1  shadow-md  rounded-[4px] top-[-12px]  bg-[white] z-20  ${textChooseColor}`}>
-                                <input type="text" onChange={(e) => setTextAreaValue((prev) => { return { ...prev, label: e.target.value } })} autoFocus={true} placeholder={updateInput ? updateInput?.label : 'בחר/י כותרת'} className='outline-none w-24 lg:w-40  xl:w-fit px-2' />
-
+                                <input type="text" onChange={(e) => setTextAreaValue((prev) => { return { ...prev, label: e.target.value } })} autoFocus={true} placeholder={updateInput ? updateInput?.label : 'בחר/י כותרת'} className='outline-none w-full lg:w-40  xl:w-fit px-2' />
                             </span>
                             <textarea placeholder={textAreaValue?.placeholder} onChange={(e) => setTextAreaValue((prev) => { return { ...prev, placeholder: e.target.value } })} className={`w-full h-full placeholder:text-[#5a6acf94]  p-5 outline-none  border-2 rounded-[4px] ${textChooseColor + " " + borderChooseColor} `} />
                         </div>
@@ -183,7 +218,7 @@ function ChooseOption({ updateInput, setUpdateInput, chooseOption, setChooseOpti
                     {chooseOption?.includes("short_input") &&
                         <div className='relative  h-1/3' >
                             <span className={`absolute right-3 px-1 shadow-md   rounded-[4px] top-[-12px]  bg-[white] z-20  ${textChooseColor}`}>
-                                <input onChange={(e) => setInputValue((prev) => { return { ...prev, label: e.target.value } })} type="text" autoFocus={true} placeholder={updateInput ? updateInput.label : 'בחר/י כותרת'} className='outline-none px-2' />
+                                <input onChange={(e) => setInputValue((prev) => { return { ...prev, label: e.target.value } })} type="text" autoFocus={true} placeholder={updateInput ? updateInput.label : 'בחר/י כותרת'} className='outline-none w-full px-2' />
                             </span>
                             <input type="text" placeholder={inputValue?.placeholder} onChange={(e) => setInputValue((prev) => { return { ...prev, placeholder: e.target.value } })} className={`w-full h-full placeholder:text-[#5a6acf94]  outline-none  border-2 px-5 pt-3 rounded-[4px] ${borderChooseColor + " " + textChooseColor} `} />
                         </div>}
@@ -196,10 +231,10 @@ function ChooseOption({ updateInput, setUpdateInput, chooseOption, setChooseOpti
                     {chooseOption && (
                         <>
                             {updateInput ? (<>
-                                <Button onclickFunc={deleteInputFunc} color={"#E57373"} text={"מחיקה"} />
-                                <Button updateId={updateInput._id} onclickFunc={createInput} color={"#FF8A65"} text={"עדכון"} />
+                                <Button updateId={updateInput._id} onclickFunc={deleteInputFunc} color={"#E57373"} text={"מחיקה"} />
+                                <Button updateId={updateInput._id} onclickFunc={handeleCreateInput} color={"#FF8A65"} text={"עדכון"} />
                             </>) :
-                                <Button onclickFunc={createInput} color={"#66BB6A"} text={"יצירה"} />
+                                <Button onclickFunc={handeleCreateInput} color={"#66BB6A"} text={"יצירה"} />
                             }
                         </>)
                     }

@@ -1,8 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
+import { useSearchParams } from 'react-router-dom';
 
 const CustomSelect = ({ options, placeholder,required, labelText, setState, layer, keyToUpdate, defaultValue }) => {
-    const [selectedOption, setSelectedOption] = useState(defaultValue || "");
+    const [searchParams] = useSearchParams()
+    const [selectedOption, setSelectedOption] = useState("");
     const [isOpen, setIsOpen] = useState(false);
     const selectRef = useRef(null);
 
@@ -17,6 +19,25 @@ const CustomSelect = ({ options, placeholder,required, labelText, setState, laye
     };
 
     useEffect(() => {
+        let defultePlaceHolder;
+      if(labelText==="יחידה מטפלת"){
+        // set the placeholder and the value to name of room
+        defultePlaceHolder=searchParams.get('room');
+        setState(defultePlaceHolder, "יחידה מטפלת")
+      }
+     else if (labelText==="דחיפות") {
+        // set the placeholder and the value to LEVEL OF QUEST
+        defultePlaceHolder="נמוכה-3";
+        setState(defultePlaceHolder,"דחיפות")
+
+      }
+      else{
+        defultePlaceHolder=defaultValue;
+      }
+      setSelectedOption(defultePlaceHolder)
+
+
+
         const handleClickOutside = (event) => {
             if (selectRef.current && !selectRef.current.contains(event.target)) {
                 setIsOpen(false);
@@ -42,7 +63,8 @@ const CustomSelect = ({ options, placeholder,required, labelText, setState, laye
                 className={`border border-border ${isOpen && "border border-[#1298ff]"} rounded-md p-2 cursor-pointer text-black font-medium ${isOpen && "border-2 border-primary"}`}
                 onClick={toggleDropdown}
             >
-                {selectedOption || placeholder}
+               
+                {selectedOption || placeholder||"בחרו אופצייה"}
                 <span className="float-left flex items-center text-3xl justify-center mr-8 text-border">
                     {isOpen ? (
                         <FiChevronUp className=' text-primary'/>

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useCallback, useContext, useState } from 'react'
 import TemplatePage from '../utils/TemplatePage'
 import CustomSelect from '../utils/CustomSelect'
 import { Link, useSearchParams } from 'react-router-dom'
@@ -7,15 +7,47 @@ import CustomTextarea from '../utils/CustomTextarea'
 import { ContextStore } from '../context/contextStore'
 import { Button } from '../components/systemSetting/InputsComponents'
 import { IoMdSettings } from 'react-icons/io'
+import useReport from '../hooks/useReport'
 
 const NewIssuePage = () => {
     const [searchParams] = useSearchParams()
-    const [newReportInputs, setNewReportInputs] = useState({})
+    const [newReportData, setNewReportData] = useState({
+
+    })
     const str = `${searchParams.get('sw')} / ${searchParams.get('subSW')} / ${searchParams.get('room')}`
-    const { inputs, setInputs } = useContext(ContextStore)
+    const { inputs, setInputs, currentUser } = useContext(ContextStore)
+    const { addReport } = useReport()
 
-    const handleInputChange = (e, key) => {
+    const handleInputChange = useCallback((value, key) => {
+        setNewReportData((prev) => ({ ...prev, [key]: value }))
+    }, [])
 
+    const createReport = (e) => {
+        const arrayInputs = []
+        for (let index = 0; index < inputs.length; index++) {
+            // check if there is require fields that are empty 
+
+            if (inputs[index]?.require && !newReportData[inputs[index].label]) {
+                alert("יש שדות חובה שלא מילאו")
+                return;
+            }
+            // convert the inputs data into array of obj {name,value}
+            arrayInputs.push({ name: inputs[index]?.label, value: newReportData[inputs[index]?.label] })
+        }
+        const newReportObj = {
+            spaceWorkName: searchParams.get('sw'),
+            subSpaceWorkName: searchParams.get('subSW'),
+            roomName: searchParams.get('room'),
+            userId: currentUser?.userId,
+            report: {
+                inputs: arrayInputs,
+                problemTimeStart: new Date(),
+                reportStatus: true
+            }
+        }
+        addReport(newReportObj)
+        //reset the inputs
+        setNewReportData({})
     }
 
 
@@ -33,22 +65,22 @@ const NewIssuePage = () => {
                 <div className="flex justify-start flex-col px-10  h-full gap-6 w-2/3">
                     {/* just if inputs length more than 1 (urgancey) show new report */}
 
-                    {inputs.length > 1 && <div className="mt-3">מספר תקלה 0012</div>}
+                    {inputs.length > 2 && <div className="mt-3">מספר תקלה 0012</div>}
                     <div className=" flex h-[29rem] gap-20 w-full">
-                        {inputs.length > 1 ?
+                        {inputs.length > 2 ?
                             <div className=" flex flex-col flex-wrap h-full j w-full max-w-60 items-center gap-6">
                                 {inputs.map((input, i) => {
-                                    console.log(input);
+
 
                                     switch (input?.type) {
                                         case "textarea":
-                                            return <CustomTextarea key={input?._id} state={newReportInputs} setState={handleInputChange} label={input?.label} keyToUpdate={input?.label} required={input?.require} placeholder={input?.placeholder} />
+                                            return <CustomTextarea key={input?._id} state={newReportData} setState={handleInputChange} label={input?.label} keyToUpdate={input?.label} required={input?.require} placeholder={input?.placeholder} />
                                             break;
                                         case "select":
                                             return <CustomSelect key={input?._id} options={input?.options} setState={handleInputChange} labelText={input?.label} keyToUpdate={input?.label} required={input?.require} placeholder={input?.placeholder} />
                                             break;
                                         case "short":
-                                            return <CustomInput key={input?._id} state={newReportInputs} setState={handleInputChange} label={input?.label} keyToUpdate={input?.label} required={input?.require} placeholder={input?.placeholder} />
+                                            return <CustomInput key={input?._id} state={newReportData} setState={handleInputChange} label={input?.label} keyToUpdate={input?.label} required={input?.require} placeholder={input?.placeholder} />
                                             break;
                                         default:
                                             break;
@@ -70,7 +102,7 @@ const NewIssuePage = () => {
                 </div>
                 <div className=" flex flex-col max-w-[600px] m-10 w-1/4">
                     <img src="/new-issuse.png" alt="new issuse" />
-                    {inputs.length > 1 && <button className={`px-6 text-[#66BB6A] border-[#66BB6A] p-1 mt-10 font-bold border-2 rounded-md `}>
+                    {inputs.length > 1 && <button onClick={createReport} className={`px-6 text-[#66BB6A] border-[#66BB6A] p-1 mt-10 font-bold border-2 rounded-md `}>
                         יצירת תקלה חדשה
                     </button>}
                 </div>
