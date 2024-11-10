@@ -3,7 +3,9 @@ import Sidebar from '../components/Sidebar'
 import Header from '../components/Header'
 import Navbar from '../components/Navbar'
 
-const TemplatePage = ({ setState, children, showSidebar, showNav, showHeader, titleHeader, navRight, navLeft, showBall, showExcel, showSelectOption, options,optionDisaled }) => {
+const TemplatePage = ({ setState, children, showSidebar, showNav, showHeader, titleHeader, navRight, navLeft, showBall, showExcel, showSelectOption, options, optionDisaled }) => {
+    // console.log(setState);
+
     return (
         <div className=' flex  overflow-x-hidden'>
             {showSidebar && <Sidebar />}

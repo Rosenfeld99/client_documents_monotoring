@@ -17,3 +17,4 @@ export const inputsDB = [
     { title: "שם6", id: 6, type: "short", placeholder: "הכנס שם פרט6", require: false, disable: false }
 
 ]
+export const MAX_LENGTH = 12

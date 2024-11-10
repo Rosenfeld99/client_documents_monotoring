@@ -12,7 +12,7 @@ const Sidebar = () => {
     const navigateion = useNavigate()
     const location = useLocation() // useLocation to get the current path
     const [searchParams] = useSearchParams()
-    console.log(searchParams.get('room'));
+    // console.log(searchParams.get('room'));
     const { options } = useContextStore()
 
     const styleItem = "flex items-center gap-3 text-[#a4a5ac] hover:opacity-50 px-3 py-2 rounded-lg transition-all duration-150 cursor-pointer"
@@ -46,13 +46,14 @@ const Sidebar = () => {
                         <FaUsers className={styleIcon} />
                         <span>ניהול משתמשים</span>
                     </div>}
-                    {(searchParams.get('sw') && searchParams.get('subSW') && searchParams.get('room')) && <div onClick={() => navigateion(`/issue-history?sw=${searchParams.get('sw')}&subSW=${searchParams.get('subSW')}&room=${searchParams.get('room') || "היסטורית תקלות"}`)} className={`${location.pathname === "/issue-history" ? styleItemActive : styleItem}`}>
-                        <MdHistory className={styleIcon} />
-                        <span>היסטורית תקלות</span>
-                    </div>}
+
                     {(searchParams.get('sw') && searchParams.get('subSW') && searchParams.get('room')) && <div onClick={() => navigateion(`/open-issue?sw=${searchParams.get('sw')}&subSW=${searchParams.get('subSW')}&room=${searchParams.get('room') || "תקלות פתוחות"}`)} className={`${location.pathname === "/open-issue" ? styleItemActive : styleItem}`}>
                         <MdHistory className={styleIcon} />
                         <span>תקלות פתוחות</span>
+                    </div>}
+                    {(searchParams.get('sw') && searchParams.get('subSW') && searchParams.get('room')) && <div onClick={() => navigateion(`/issue-history?sw=${searchParams.get('sw')}&subSW=${searchParams.get('subSW')}&room=${searchParams.get('room') || "היסטורית תקלות"}`)} className={`${location.pathname === "/issue-history" ? styleItemActive : styleItem}`}>
+                        <MdHistory className={styleIcon} />
+                        <span>היסטורית תקלות</span>
                     </div>}
                     {(searchParams.get('sw') && searchParams.get('subSW') && searchParams.get('room')) && <div onClick={() => navigateion(`/system-settings?sw=${searchParams.get('sw')}&subSW=${searchParams.get('subSW')}&room=${searchParams.get('room') || "הגדרות מערכת"}`)} className={`${location.pathname === "/system-settings" ? styleItemActive : styleItem}`}>
                         <IoMdSettings className={styleIcon} />
@@ -70,7 +71,7 @@ const Sidebar = () => {
                 <div className={styleItem}>
                     <img src='/logo_dev.png' className='w-10 aspect-square rounded-xl border-2 border-primary mt-auto' />
                     <div className="">
-                        <div>פותוח ע”י צוות אלפא</div>
+                        <div>פותח ע”י צוות אלפא</div>
                         <div className=' text-xs'>צוות אלפא CTR+K</div>
                     </div>
                 </div>

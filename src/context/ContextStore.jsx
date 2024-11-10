@@ -1,10 +1,11 @@
-import React, { createContext, useState } from 'react'
+import React, { createContext, useEffect, useState } from 'react'
+import useUsers from '../hooks/useUsers';
 export const ContextStore = createContext()
 
 export const ContextStoreProvider = ({ children }) => {
     const [options, setOptions] = useState([
         {
-            name: "מקשא''פ", id: "123456789",
+            name: "מקשאפ", id: "123456789",
             subSpaceWork: [
                 {
                     name: "תומר",
@@ -62,19 +63,10 @@ export const ContextStoreProvider = ({ children }) => {
             ]
         },
     ]);
-
     const [singleOptoin, setSingleOption] = useState(null)
-    const [inputs, setInputs] = useState([
-        // {
-        // label: { type: String, default: "" },       // Default value for 'input1.label'
-        // placeHolder: { type: String, default: "" }, // Default value for 'input1.placeHolder'
-        // type: { type: String, default: "" },        // Default value for 'input1.type'
-        // options: { type: [String], default: [] },   // Default value for 'options' array
-        // require: { type: Boolean, default: false }, // Default value for 'require'
-        // disable: { type: Boolean, default: false }  // Default value for 'disable'
-        // }
-
-    ])
+    const [currentUser, setCurrentUser] = useState()
+    const [inputs, setInputs] = useState([])
+    const [historyReports, setHistoryReports] = useState([])
 
 
     // const [showToast, setShowToast] = useState(false)
@@ -83,8 +75,13 @@ export const ContextStoreProvider = ({ children }) => {
     const contextValue = {
         options, setOptions,
         singleOptoin, setSingleOption,
-        inputs,setInputs
+        inputs, setInputs, currentUser, setCurrentUser,
+        historyReports, setHistoryReports
     }
+
+
+
+
 
     return (
         <ContextStore.Provider value={contextValue}>

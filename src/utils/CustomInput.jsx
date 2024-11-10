@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { LiaEyeSlash, LiaEyeSolid } from 'react-icons/lia';
 
-const CustomInput = ({ placeholder, label, state, setState, inputType, minLen, maxLen, pattern, keyToUpdate }) => {
+const CustomInput = ({ placeholder, required, label, state, setState, inputType, minLen, maxLen, pattern, keyToUpdate }) => {
     const inputRef = useRef(null);
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
@@ -39,9 +39,10 @@ const CustomInput = ({ placeholder, label, state, setState, inputType, minLen, m
                 maxLength={maxLen}
                 onChange={handleInputChange}
                 placeholder={placeholder}
+                required={required}
             />
-            {state?.length > 0 &&
-                <button onClick={togglePasswordVisibility} className=' absolute left-0 top-0 text-xl p-3'>{!isPasswordVisible ? <LiaEyeSolid /> : <LiaEyeSlash />}</button>
+            {required &&
+                <div className='absolute -top-5 left-0 text-[#E57373]'>*שדה חובה </div>
             }
         </div>
     );
