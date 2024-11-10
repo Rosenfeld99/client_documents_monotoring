@@ -1,14 +1,16 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import TemplatePage from '../utils/TemplatePage'
 import CustomSelect from '../utils/CustomSelect'
 import { useSearchParams } from 'react-router-dom'
 import ChooseOption from '../components/systemSetting/ChooseOption'
 import ActiveInputs from '../components/systemSetting/ActiveInputs'
+import { ContextStore } from '../context/contextStore'
 
 
 
 const SystemSettingsPage = () => {
     const [searchParams] = useSearchParams()
+    const { inputs, setInputs } = useContext(ContextStore)
 
     // this state is used for get wich input is clicked 
     const [chooseOption, setChooseOption] = useState("")
