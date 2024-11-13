@@ -29,9 +29,26 @@ function useReports() {
 
     }
 
+    const fatchReportsByConditions = async ({ dates, limitResultsIndex = 15, userId, indexToSkip, statusReport, spaceWorkName, subSpaceWorkName, roomName }) => {
+        try {
+            console.log(report);
+
+            const reportsConditions = await axios.post("http://localhost:3001/reports/getReports", {
+                dates, limitResultsIndex, userId, indexToSkip, statusReport, spaceWorkName, subSpaceWorkName, roomName
+            })
+
+            console.log(reportsConditions);
 
 
-    return { addReport }
+        } catch (error) {
+            console.log(error);
+        }
+
+    }
+
+
+
+    return { addReport, fatchReportsByConditions }
 }
 
 export default useReports
