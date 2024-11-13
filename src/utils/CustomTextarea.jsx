@@ -26,7 +26,7 @@ export default function CustomTextarea({ required, placeholder, label, state, se
             <textarea
                 ref={inputRef}
                 className="justify-center px-4 py-2 rounded-lg w-full outline-primary border border-solid border-border text-ellipsis bg-accent"
-                value={state[keyToUpdate]}
+                value={state[keyToUpdate] ?? ""}
                 minLength={minLen}
                 maxLength={maxLen}
                 onChange={handleInputChange}
