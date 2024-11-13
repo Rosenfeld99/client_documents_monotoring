@@ -29,7 +29,6 @@ function useReports() {
 
     }
 
- console.log(reportsConditions);
     //   "dates": {
     //     "fromOpenDate": "2024-11-07T14:56:23.456+00:00",
     //     "toOpenDate": "2024-11-08T14:56:23.456+00:00"

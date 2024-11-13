@@ -9,7 +9,7 @@ import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import useReports from '../hooks/useReport';
 
 const IssueHistoryPage = () => {
-    const { fatchReportsByConditions } = useReports()
+    const { historyReports,getReports } = useReports()
     const [searchParams] = useSearchParams();
     const [filteredData, setFilteredData] = useState(data);
     const [columns, setColumns] = useState(columnsList);
@@ -17,7 +17,7 @@ const IssueHistoryPage = () => {
     const [pagenations, setPagenations] = useState({ prev: 0, curr: 1, next: 2 })
 
     useEffect(() => {
-        fatchReportsByConditions(
+        getReports(
             {
                 "spaceWorkName": "מקשאפ",
                 "subSpaceWorkName": "תומר",
