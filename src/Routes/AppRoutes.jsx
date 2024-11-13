@@ -35,7 +35,7 @@ const AppRoutes = () => {
             getRoomInputs(roomObj)
             getRoomHistory(roomObj)
         }
-    }, [currentUser])
+    }, [currentUser, searchParams.get('room')])
 
 
 

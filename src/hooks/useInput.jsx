@@ -23,7 +23,7 @@ function useInput() {
                 roomName,
                 input
             })
-            console.log(newInput);
+            // console.log(newInput);
 
         } catch (error) {
             console.log(error);
@@ -43,7 +43,7 @@ function useInput() {
                 roomName,
                 inputId
             })
-            console.log(deletedInput);
+            // console.log(deletedInput);
 
         } catch (error) {
             console.log(error);

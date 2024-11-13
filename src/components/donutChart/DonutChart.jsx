@@ -1,15 +1,12 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import CanvasJSReact from '@canvasjs/react-charts';
+import useReports from '../../hooks/useReport';
 
 const CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
-const DonutChart = () => {
-
-  const dataPoints = [
-    { name: "תשתיות", y: 40, color: "#5a6acf" },
-    { name: "מנו”ר", y: 33, color: "#c7ceff" },
-    { name: "דסק תפעול", y: 26, color: "#384282" },
-  ]
+const DonutChart = ({ dataToChart }) => {
+  // console.log(dataToChart);
+  const { getReports, historyReports } = useReports()
 
   const options = {
     exportEnabled: false,
@@ -21,38 +18,76 @@ const DonutChart = () => {
       borderColor: "#aaa",      // Border color of the tooltip
       fontColor: "#fff",        // Text color inside the tooltip
       fontSize: 14,             // Font size of the tooltip text
-      fontStyle: "bold",        // Font style (optional)
-      cornerRadius: 5           // Tooltip corner radius
+      fontStyle: "bold",
+      label: "ffde",            // Font style (optional)
+      cornerRadius: 5,
+      contentFormatter: function (e) {
+        // Manually format tooltip content with inline styles
+        return `
+          <div style="text-align: end; color: #fff; font-size: 14px;">
+            <b style="color: #5a6acf;">${e?.entries[0]?.dataPoint?.name}</b>: ${e?.entries[0]?.dataPoint?.y} <br>
+            <b style="color: #c7ceff;">אחוזים: ${e?.entries[0]?.dataPoint?.percent?.toFixed(2)}%</b>
+          </div>`;
+      }                // Tooltip corner radius
     },
     data: [{
-      type: "doughnut",
+      type: "pie",  // Changed from "doughnut" to "pie"
       startAngle: 90,
       yValueFormatString: "#,##0.0#",
-      radius: "80%", // Controls the size of the doughnut
-      innerRadius: "80%", // Controls the width of the doughnut ring
-      toolTipContent: "<b>{name}</b>: {y}",
-      dataPoints
+      radius: "80%",           // Controls the size of the pie
+      // toolTipContent: "<b>{name}</b>: {y} <br /> <b>אחוזים:{percent}%</b> ",
+      // toolTipContent: "<div style='text-align: left;'><b>{name}</b>: {y} <br /> <b>אחוזים: {percent}%</b></div>",
+
+      dataPoints: dataToChart   // Use your data here
     }]
   };
 
+  // const options = {
+  //   exportEnabled: false,
+  //   height: 250,
+  //   animationEnabled: true,
+  //   theme: "light",
+  //   toolTip: {
+  //     backgroundColor: "#333",  // Background color of the tooltip
+  //     borderColor: "#aaa",      // Border color of the tooltip
+  //     fontColor: "#fff",        // Text color inside the tooltip
+  //     fontSize: 14,             // Font size of the tooltip text
+  //     fontStyle: "bold",
+  //     label: "ffde",// Font style (optional)
+  //     cornerRadius: 5           // Tooltip corner radius
+  //   },
+  //   data: [{
+  //     type: "doughnut",
+  //     startAngle: 90,
+  //     yValueFormatString: "#,##0.0#",
+  //     radius: "80%", // Controls the size of the doughnut
+  //     innerRadius: "80%", // Controls the width of the doughnut ring
+  //     toolTipContent: "<b>{name}</b>: {y}",
+  //     // dataPoints
+  //     // dataToChart
+  //     dataPoints: dataToChart
+  //   }]
+  // };
+
   return (
-    <div className=' relative'>
+
+    <div className='relative'>
       <div className="flex items-center justify-between">
         <div>
           <div className="text-text font-semibold">פילוח תקלות</div>
           <div className="text-[#8c8c8c]">תקלות פתוחות בחתך יחידות</div>
         </div>
-        <div className="px-7 py-1 bg-accent border-2 text-primary text-md font-semibold border-border shadow-md rounded-lg flex justify-center items-center hover:scale-110 duration-150">
+        {/* <div className="px-7 py-1 bg-accent border-2 text-primary text-md font-semibold border-border shadow-md rounded-lg flex justify-center items-center hover:scale-110 duration-150">
           <button>היום</button>
-        </div>
+        </div> */}
       </div>
-      <div className="m-10 relative">
+      <div className="relative">
         <CanvasJSChart options={options} />
-        <div className="absolute bottom-0 z-20 w-full">
-          <div className=" flex items-center justify-between">
-            {dataPoints.map((item, index) => (<div key={index} className=" flex items-center gap-2">
+        <div className="absolute -bottom-8 shadow-sm overflow-auto rounded-sm h-16 z-20 w-full">
+          <div className="flex flex-wrap">
+            {dataToChart?.map((item, index) => (<div key={index} className=" flex items-center gap-1 mx-2">
               <div className={`w-3 h-3 bg-[#bbb] rounded`} style={{ backgroundColor: item.color }} />
-              <div className="">{item?.name}</div>
+              <div className="">{item?.name ? item.name : "אין שם"}</div>
             </div>))}
           </div>
         </div>
