@@ -17,6 +17,11 @@ const CustomSelect = ({ options, placeholder,required, labelText, setState, laye
         setState(option, keyToUpdate)
         setIsOpen(false);
     };
+    const handleClickOutside = (event) => {
+        if (selectRef.current && !selectRef.current.contains(event.target)) {
+            setIsOpen(false);
+        }
+    };
 
     useEffect(() => {
         let defultePlaceHolder;
@@ -28,6 +33,8 @@ const CustomSelect = ({ options, placeholder,required, labelText, setState, laye
      else if (labelText==="דחיפות") {
         // set the placeholder and the value to LEVEL OF QUEST
         defultePlaceHolder="נמוכה-3";
+       
+        
         setState(defultePlaceHolder,"דחיפות")
 
       }
@@ -35,15 +42,6 @@ const CustomSelect = ({ options, placeholder,required, labelText, setState, laye
         defultePlaceHolder=defaultValue;
       }
       setSelectedOption(defultePlaceHolder)
-
-
-
-        const handleClickOutside = (event) => {
-            if (selectRef.current && !selectRef.current.contains(event.target)) {
-                setIsOpen(false);
-            }
-        };
-
         document.addEventListener('mousedown', handleClickOutside);
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
@@ -74,7 +72,7 @@ const CustomSelect = ({ options, placeholder,required, labelText, setState, laye
                 </span>
             </div>
             {isOpen && (
-                <ul className={`absolute mt-1 w-full border border-border bg-background rounded-md z-10 shadow-2xl ${isOpen && "border-primary"}`}>
+                <ul className={`absolute mt-1 w-full border max-h-52 overflow-auto border-border bg-background rounded-md z-10 shadow-2xl ${isOpen && "border-primary"}`}>
                     {options?.map((option, index) => (
                         <li
                             key={option}

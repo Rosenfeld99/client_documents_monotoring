@@ -56,7 +56,6 @@ export default function SelectImplement({ selectValue, setSelectValue, updateInp
         setOpenSelect(true)
     }
     const removeOptionFromSelect = (optionName) => {
-        console.log(selectValue);
 
         const tempOptions = selectValue?.options?.filter((option) => option !== optionName)
         setSelectValue((prev) => { return { ...prev, options: tempOptions, } })

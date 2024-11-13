@@ -1,10 +1,10 @@
 import React, { useContext } from 'react'
-import { useSearchParams } from 'react-router-dom'
-import useContextStore from './useContextStore'
 import { ContextStore } from '../context/contextStore'
 import axios from 'axios'
 
 function useReports() {
+    const { historyReports, setHistoryReports } = useContext(ContextStore)
+
 
     const addReport = async ({ spaceWorkName, subSpaceWorkName, roomName, userId, report }) => {
         try {
@@ -29,9 +29,37 @@ function useReports() {
 
     }
 
+    //   "dates": {
+    //     "fromOpenDate": "2024-11-07T14:56:23.456+00:00",
+    //     "toOpenDate": "2024-11-08T14:56:23.456+00:00"
+    // }
+    const getReports = async ({ indexToSkip, statusReport, dates, limitResultsIndex, userId, spaceWorkName, subSpaceWorkName, roomName }) => {
+        try {
+            const results = await axios.post("http://localhost:3001/reports/getReports", {
+                spaceWorkName,
+                subSpaceWorkName,
+                roomName,
+                statusReport,
+                indexToSkip,
+                limitResultsIndex,
+                userId,
+                dates
+            })
+            console.log(results?.data[0]);
+
+            setHistoryReports(results?.data[0]);
 
 
-    return { addReport }
+        } catch (error) {
+            console.log(error);
+
+        }
+
+    }
+
+
+
+    return { addReport, getReports, historyReports }
 }
 
 export default useReports

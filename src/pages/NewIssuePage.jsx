@@ -11,12 +11,12 @@ import useReport from '../hooks/useReport'
 
 const NewIssuePage = () => {
     const [searchParams] = useSearchParams()
-    const [newReportData, setNewReportData] = useState({
-
-    })
     const str = `${searchParams.get('sw')} / ${searchParams.get('subSW')} / ${searchParams.get('room')}`
     const { inputs, setInputs, currentUser } = useContext(ContextStore)
     const { addReport } = useReport()
+    const [newReportData, setNewReportData] = useState({
+        דחיפות: "נמוכה-3", "יחידה מטפלת": searchParams?.get('room'), "מ.א": currentUser?.userId
+    })
 
     const handleInputChange = useCallback((value, key) => {
         setNewReportData((prev) => ({ ...prev, [key]: value }))
@@ -45,11 +45,18 @@ const NewIssuePage = () => {
                 reportStatus: true
             }
         }
+        console.log(newReportData["יחידה מטפלת"]);
+
         addReport(newReportObj)
         //reset the inputs
-        setNewReportData({})
+        setNewReportData({ דחיפות: "נמוכה-3", "יחידה מטפלת": searchParams?.get('room'), "מ.א": currentUser?.userId })
     }
 
+
+    const reversString = (array) => {
+        const arrayInputs = array?.map((string) => string?.split("-")?.reverse()?.join("-"))
+        return arrayInputs
+    }
 
 
     return (
@@ -69,6 +76,7 @@ const NewIssuePage = () => {
                     <div className=" flex h-[29rem] gap-20 w-full">
                         {inputs.length > 2 ?
                             <div className=" flex flex-col flex-wrap h-full j w-full max-w-60 items-center gap-6">
+                                <CustomInput state={newReportData} keyToUpdate={"מ.א"} label={"מ.א"} disabeld={true} required={false} placeholder={currentUser?.userId} />
                                 {inputs.map((input, i) => {
 
 
@@ -77,7 +85,8 @@ const NewIssuePage = () => {
                                             return <CustomTextarea key={input?._id} state={newReportData} setState={handleInputChange} label={input?.label} keyToUpdate={input?.label} required={input?.require} placeholder={input?.placeholder} />
                                             break;
                                         case "select":
-                                            return <CustomSelect key={input?._id} options={input?.options} setState={handleInputChange} labelText={input?.label} keyToUpdate={input?.label} required={input?.require} placeholder={input?.placeholder} />
+                                            // if the input is דחיפות  revers the array becuse the hebrew
+                                            return <CustomSelect key={input?._id} options={input.label === "דחיפות" ? reversString(input?.options) : input?.options} setState={handleInputChange} labelText={input?.label} keyToUpdate={input?.label} required={input?.require} placeholder={input?.placeholder} />
                                             break;
                                         case "short":
                                             return <CustomInput key={input?._id} state={newReportData} setState={handleInputChange} label={input?.label} keyToUpdate={input?.label} required={input?.require} placeholder={input?.placeholder} />
