@@ -29,6 +29,7 @@ function useReports() {
 
     }
 
+ console.log(reportsConditions);
     //   "dates": {
     //     "fromOpenDate": "2024-11-07T14:56:23.456+00:00",
     //     "toOpenDate": "2024-11-08T14:56:23.456+00:00"
@@ -50,6 +51,7 @@ function useReports() {
             setHistoryReports(results?.data[0]);
 
 
+
         } catch (error) {
             console.log(error);
 
@@ -60,6 +62,7 @@ function useReports() {
 
 
     return { addReport, getReports, historyReports }
+
 }
 
 export default useReports
