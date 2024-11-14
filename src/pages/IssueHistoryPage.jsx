@@ -7,30 +7,36 @@ import TableFilters from '../components/table/TableFilters';
 import Table from '../components/table/Table';
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import useReports from '../hooks/useReport';
+import useUsers from '../hooks/useUsers';
 
 const IssueHistoryPage = () => {
-    const { fatchReportsByConditions } = useReports()
+    const { getReportsByConditions, historyReports } = useReports()
     const [searchParams] = useSearchParams();
     const [filteredData, setFilteredData] = useState(data);
     const [columns, setColumns] = useState(columnsList);
     const [openManageColumns, setOpenManageColumns] = useState(false)
     const [pagenations, setPagenations] = useState({ prev: 0, curr: 1, next: 2 })
+    const { currentUser } = useUsers()
 
     useEffect(() => {
-        fatchReportsByConditions(
+        getReportsByConditions(
             {
-                "spaceWorkName": "מקשאפ",
-                "subSpaceWorkName": "תומר",
-                "roomName": "///",
+                "spaceWorkName": searchParams.get('sw'),
+                "subSpaceWorkName": searchParams.get('subSW'),
+                "roomName": searchParams.get('room'),
                 "indexToSkip": 0,
+                limitResultsIndex: 15,// -1 is get all reports 
                 "dates": {
-                    "fromOpenDate": "2024-11-07T14:56:23.456+00:00",
-                    "toOpenDate": "2024-11-09T14:56:23.456+00:00"
-                }
-
+                    "fromDate": "2024-11-07T14:56:23.456+00:00",
+                    "toDate": "2024-11-16T14:56:23.456+00:00"
+                },
+                statusReport: "open",
+                userId: currentUser?.userId,
             }
         )
-    }, [])
+        console.log(historyReports);
+
+    }, [currentUser])
 
     const accessOption = [{ name: "מדגם", value: "מדגם" }, { name: "מחלקה", value: "מחלקה" },];
 
