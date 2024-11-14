@@ -33,7 +33,7 @@ function useReports() {
     //     "fromOpenDate": "2024-11-07T14:56:23.456+00:00",
     //     "toOpenDate": "2024-11-08T14:56:23.456+00:00"
     // }
-    const getReports = async ({ indexToSkip, statusReport, dates, limitResultsIndex, userId, spaceWorkName, subSpaceWorkName, roomName }) => {
+    const getReportsByConditions = async ({ indexToSkip, statusReport, dates, limitResultsIndex, userId, spaceWorkName, subSpaceWorkName, roomName }) => {
         try {
             const results = await axios.post("http://localhost:3001/reports/getReports", {
                 spaceWorkName,
@@ -60,7 +60,7 @@ function useReports() {
 
 
 
-    return { addReport, getReports, historyReports }
+    return { addReport, getReportsByConditions, historyReports }
 
 }
 
