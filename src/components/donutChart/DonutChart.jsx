@@ -31,6 +31,7 @@ const DonutChart = ({ dataToChart }) => {
       }                // Tooltip corner radius
     },
     data: [{
+      // type: "doughnut",  // Changed from "doughnut" to "pie"
       type: "pie",  // Changed from "doughnut" to "pie"
       startAngle: 90,
       yValueFormatString: "#,##0.0#",
