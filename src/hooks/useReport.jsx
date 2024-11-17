@@ -35,7 +35,7 @@ function useReports() {
     // }
     const getReportsByConditions = async ({ indexToSkip, statusReport, dates, limitResultsIndex, userId, spaceWorkName, subSpaceWorkName, roomName }) => {
         try {
-            const results = await axios.post("http://localhost:3001/reports/getReports", {
+            const { data } = await axios.post("http://localhost:3001/reports/getReports", {
                 spaceWorkName,
                 subSpaceWorkName,
                 roomName,
@@ -45,9 +45,41 @@ function useReports() {
                 userId,
                 dates
             })
-            console.log(results?.data[0]);
+            console.log(data);
 
-            setHistoryReports(results?.data[0]);
+            const buildTable = data?.map((item) => {
+                const obj = {
+                    ...item,
+                    "columns": item?.report?.inputs,
+
+                }
+                // delete inputs
+                delete obj.inputs
+
+            })
+            // ----- data -------
+            // {
+            //     "id": "0033",
+            //     "date": "01/12/2024",
+            //     "time": "18:00",
+            //     "תיאור": "nnkjnk",
+            //     "subject": "שרת ניהול",
+            //     "status": "בטיפול",
+            //     "note": "נדרשת בדיקה נוספת"
+            //   }
+
+            // --------- columns --------
+            // {
+            //     "key": "תיאור",
+            //     "label": "יחידה",
+            //     "selectOption": [
+            //       { "id": "1", "name": 'מקשא"פ' },
+            //       { "id": "2", "name": "בהד 3" },
+            //       { "id": "3", "name": "בהד 4" },
+            //       { "id": "4", "name": "בהד 5" }
+            //     ]
+            //   },
+            setHistoryReports(data);
 
 
 
