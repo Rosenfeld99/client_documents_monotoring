@@ -111,7 +111,7 @@ const IssueHistoryPage = () => {
                     <span className=' select-none px-2 underline text-text'>
                         {pagenations.curr}
                     </span>
-                    {pagenations.next <= (Math.ceil(100 / 15)) && <button onClick={() => handleClickOnPage("RIGHT")} className="px-3 py-1 bg-accent border-2 text-primary text-md font-semibold border-border shadow-md rounded-lg flex justify-center gap-1 items-center hover:scale-110 duration-150">
+                    {pagenations.next <= (Math.ceil(historyReports?.totalCount / 15)) && <button onClick={() => handleClickOnPage("RIGHT")} className="px-3 py-1 bg-accent border-2 text-primary text-md font-semibold border-border shadow-md rounded-lg flex justify-center gap-1 items-center hover:scale-110 duration-150">
                         <MdKeyboardArrowRight className=' text-2xl' />
                         {pagenations.next}
                     </button>}

@@ -67,7 +67,7 @@ const ColumnChart = ({ dataToChart, optionsSelect, setColumnChartSelect }) => {
         {/* <div className="px-7 py-1 bg-accent border-2 text-primary text-md font-semibold border-border shadow-md rounded-lg flex justify-center items-center hover:scale-110 duration-150">
           <button>היום</button>
         </div> */}
-        <div className='w-52'>
+        <div className='min-w-52 w-fit'>
 
           <CustomSelect defaultValue={"יחידה מטפלת"} setState={funcSetToSelect} options={optionsSelect} />
         </div>
