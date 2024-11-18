@@ -1,18 +1,93 @@
-import React from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import TemplatePage from '../utils/TemplatePage'
 import CustomSelect from '../utils/CustomSelect'
 import { useSearchParams } from 'react-router-dom'
+import { MdKeyboardArrowRight, MdKeyboardArrowLeft } from 'react-icons/md'
+import TableFilters from '../components/table/TableFilters'
+import Table from '../components/table/Table'
+import { columnsList, soldiersData } from '../constant/USERS.demo'
+import useUsers from '../hooks/useUsers'
+import useReports from '../hooks/useReport'
 
 const UserManagementPage = () => {
+    const { getReportsByConditions, historyReports } = useReports()
     const [searchParams] = useSearchParams()
+    const [filteredData, setFilteredData] = useState(soldiersData);
+    const [columns, setColumns] = useState(columnsList);
+    const [openManageColumns, setOpenManageColumns] = useState(false)
+    const [pagenations, setPagenations] = useState({ prev: 0, curr: 1, next: 2 })
+    const { currentUser } = useUsers()
 
+    useEffect(() => {
+        getReportsByConditions(
+            {
+                "spaceWorkName": searchParams.get('sw'),
+                "subSpaceWorkName": searchParams.get('subSW'),
+                "roomName": searchParams.get('room'),
+                "indexToSkip": 0,
+                limitResultsIndex: 15,// -1 is get all reports 
+                "dates": {
+                    "fromDate": "2024-11-07T14:56:23.456+00:00",
+                    "toDate": "2024-11-16T14:56:23.456+00:00"
+                },
+                statusReport: "open",
+                userId: currentUser?.userId,
+            }
+        )
+        console.log(historyReports);
+
+    }, [currentUser])
     const accessOption = [
         { name: "מדגם", value: "מדגם" },
         { name: "מחלקה", value: "מחלקה" },
     ]
 
     const str = `${searchParams.get('sw')} / ${searchParams.get('subSW')} / ${searchParams.get('room')}`
+    const [columnVisibility, setColumnVisibility] = useState(
+        columns.reduce((acc, column) => ({ ...acc, [column.key]: true }), {})
+    );
+    const [filters, setFilters] = useState({});
 
+    useMemo(() => {
+        const temp = () => {
+            return soldiersData.filter((row) =>
+                Object.entries(filters).every(([key, value]) =>
+                    row[key]?.toLowerCase().includes(value.toLowerCase())
+                )
+            );
+        }
+        setFilteredData(temp())
+    }, [filters]);
+
+    const toggleColumn = (key) => {
+        setColumnVisibility((prev) => ({
+            ...prev,
+            [key]: !prev[key],
+        }));
+    };
+
+    const handleFilterChange = (key, value) => {
+        setFilters((prev) => ({
+            ...prev,
+            [key]: value,
+        }));
+    };
+
+
+    const handleClickOnPage = (arrowType) => {
+
+        switch (arrowType) {
+            case "RIGHT":
+                setPagenations({ ...pagenations, prev: pagenations.curr, curr: pagenations.next, next: pagenations.next + 1 })
+                break;
+            case "LEFT":
+                setPagenations({ ...pagenations, prev: pagenations.prev - 1, curr: pagenations.prev, next: pagenations.curr })
+                break;
+            default:
+                console.log("Not flag sending");
+                break;
+        }
+    }
 
     return (
         <TemplatePage
@@ -23,8 +98,25 @@ const UserManagementPage = () => {
             navRight={<CustomSelect labelText={"בחר קבוצה"} options={accessOption} placeholder="קבוצה..." keyToUpdate={"accessOption"} />}
             navLeft={str}
         >
-            <section className='mx-10 flex-1 grid grid-cols-3'>
-                UserManagementPage
+            <section className="p-10 flex flex-col gap-3 flex-1 lg:w-[80%] xl:w-[83%] 2xl:w-full 2xl:max-w-[93%]">
+                <TableFilters openManageColumns={openManageColumns} setOpenManageColumns={setOpenManageColumns} columnVisibility={columnVisibility} columns={columns} handleFilterChange={handleFilterChange} toggleColumn={toggleColumn} filters={filters} />
+                <div className="overflow-x-auto">
+                    <Table setOpenManageColumns={setOpenManageColumns} filters={filters} toggleColumn={toggleColumn} columnVisibility={columnVisibility} columns={columns} setColumns={setColumns} filteredData={filteredData} handleFilterChange={handleFilterChange} setFilteredData={setFilteredData} />
+                </div>
+                {/* paggintions */}
+                <div className=" flex flex-row-reverse w-full justify-center items-center gap-3">
+                    {pagenations.prev > 0 && <button onClick={() => handleClickOnPage("LEFT")} className="px-3 py-1 bg-accent border-2 text-primary text-md font-semibold border-border shadow-md rounded-lg flex justify-center items-center gap-1 hover:scale-110 duration-150">
+                        {pagenations.prev}
+                        <MdKeyboardArrowLeft className=' text-2xl' />
+                    </button>}
+                    <span className=' select-none px-2 underline text-text'>
+                        {pagenations.curr}
+                    </span>
+                    {pagenations.next <= (Math.ceil(historyReports?.totalCount / 15)) && <button onClick={() => handleClickOnPage("RIGHT")} className="px-3 py-1 bg-accent border-2 text-primary text-md font-semibold border-border shadow-md rounded-lg flex justify-center gap-1 items-center hover:scale-110 duration-150">
+                        <MdKeyboardArrowRight className=' text-2xl' />
+                        {pagenations.next}
+                    </button>}
+                </div>
             </section>
         </TemplatePage>
     )
