@@ -51,7 +51,6 @@ function useReports() {
                 const obj = {
                     ...item,
                     "columns": item?.report?.inputs,
-
                 }
                 // delete inputs
                 delete obj.inputs
