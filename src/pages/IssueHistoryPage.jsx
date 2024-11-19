@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import TemplatePage from '../utils/TemplatePage';
 import CustomSelect from '../utils/CustomSelect';
 import { useSearchParams } from 'react-router-dom';
-import { columnsList, data } from '../constant/DB.demo';
+// import { columnsList, data } from '../constant/DB.demo';
 import TableFilters from '../components/table/TableFilters';
 import Table from '../components/table/Table';
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
@@ -10,52 +10,55 @@ import useReports from '../hooks/useReport';
 import useUsers from '../hooks/useUsers';
 
 const IssueHistoryPage = () => {
-    const { getReportsByConditions, historyReports } = useReports()
+    const { getReportsByConditions, historyReports, columns, setColumns, filteredData, setFilteredData, columnVisibility, setColumnVisibility, loading, setLoading } = useReports()
     const [searchParams] = useSearchParams();
-    const [filteredData, setFilteredData] = useState(data);
-    const [columns, setColumns] = useState(columnsList);
     const [openManageColumns, setOpenManageColumns] = useState(false)
     const [pagenations, setPagenations] = useState({ prev: 0, curr: 1, next: 2 })
     const { currentUser } = useUsers()
 
+
     useEffect(() => {
-        getReportsByConditions(
-            {
-                "spaceWorkName": searchParams.get('sw'),
-                "subSpaceWorkName": searchParams.get('subSW'),
-                "roomName": searchParams.get('room'),
-                "indexToSkip": 0,
-                limitResultsIndex: 15,// -1 is get all reports 
-                "dates": {
-                    "fromDate": "2024-11-07T14:56:23.456+00:00",
-                    "toDate": "2024-11-16T14:56:23.456+00:00"
-                },
-                statusReport: "open",
+        if (currentUser?.userId) {
+            const getReportObj = {
+                limitResultsIndex: -1,// -1 is get all reports 
+                indexToSkip: 0,
+                // dates: {
+                //     fromDate,
+                //     toDate
+                // },
+                statusReport: "both",
                 userId: currentUser?.userId,
+                spaceWorkName: searchParams.get('sw'),
+                subSpaceWorkName: searchParams.get('subSW'),
+                roomName: searchParams.get('room'),
             }
-        )
-        console.log(historyReports);
+            getReportsByConditions(getReportObj)
+        }
+
 
     }, [currentUser])
+
+    console.log(columnVisibility)
+
 
     const accessOption = [{ name: "מדגם", value: "מדגם" }, { name: "מחלקה", value: "מחלקה" },];
 
     const str = `${searchParams.get('sw')} / ${searchParams.get('subSW')} / ${searchParams.get('room')}`;
 
-    const [columnVisibility, setColumnVisibility] = useState(
-        columns.reduce((acc, column) => ({ ...acc, [column.key]: true }), {})
-    );
-    const [filters, setFilters] = useState({});
+
+    const [filters, setFilters] = useState();
 
     useMemo(() => {
-        const temp = () => {
-            return data.filter((row) =>
-                Object.entries(filters).every(([key, value]) =>
-                    row[key]?.toLowerCase().includes(value.toLowerCase())
-                )
-            );
+        if (historyReports?.data?.length > 0 && filters) {
+            const temp = () => {
+                return historyReports?.data?.filter((row) =>
+                    Object?.entries(filters)?.every(([key, value]) =>
+                        row[key]?.toString()?.toLowerCase()?.includes(value?.toLowerCase())
+                    )
+                );
+            }
+            setFilteredData(temp())
         }
-        setFilteredData(temp())
     }, [filters]);
 
     const toggleColumn = (key) => {
@@ -100,7 +103,9 @@ const IssueHistoryPage = () => {
             <section className="p-10 flex flex-col gap-3 flex-1 lg:w-[80%] xl:w-[83%] 2xl:w-full 2xl:max-w-[93%]">
                 <TableFilters openManageColumns={openManageColumns} setOpenManageColumns={setOpenManageColumns} columnVisibility={columnVisibility} columns={columns} handleFilterChange={handleFilterChange} toggleColumn={toggleColumn} filters={filters} />
                 <div className="overflow-x-auto">
-                    <Table setOpenManageColumns={setOpenManageColumns} filters={filters} toggleColumn={toggleColumn} columnVisibility={columnVisibility} columns={columns} setColumns={setColumns} filteredData={filteredData} handleFilterChange={handleFilterChange} setFilteredData={setFilteredData} />
+                    {loading ? <div>Loading...</div> :
+                        <Table setOpenManageColumns={setOpenManageColumns} filters={filters} toggleColumn={toggleColumn} columnVisibility={columnVisibility} columns={columns} setColumns={setColumns} filteredData={filteredData} handleFilterChange={handleFilterChange} setFilteredData={setFilteredData} />
+                    }
                 </div>
                 {/* paggintions */}
                 <div className=" flex flex-row-reverse w-full justify-center items-center gap-3">

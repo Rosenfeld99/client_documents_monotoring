@@ -68,15 +68,21 @@ export const ContextStoreProvider = ({ children }) => {
     const [inputs, setInputs] = useState([])
     const [historyReports, setHistoryReports] = useState([])
 
-
-    // const [showToast, setShowToast] = useState(false)
-    // const [toast, setToast] = useState({ title: "", message: "", type: "", time: 0 });
+    // table issus
+    const [filteredData, setFilteredData] = useState([]);
+    const [columns, setColumns] = useState([]);
+    const [columnVisibility, setColumnVisibility] = useState(
+        columns?.reduce((acc, column) => ({ ...acc, [column.key]: true,_id:false }), {})
+    );
 
     const contextValue = {
         options, setOptions,
         singleOptoin, setSingleOption,
         inputs, setInputs, currentUser, setCurrentUser,
-        historyReports, setHistoryReports
+        historyReports, setHistoryReports,
+        filteredData, setFilteredData,
+        columns, setColumns,
+        columnVisibility, setColumnVisibility
     }
 
 

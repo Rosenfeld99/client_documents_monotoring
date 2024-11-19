@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react'
-import { BrowserRouter, Link, Route, Routes, useSearchParams } from 'react-router-dom'
+import { Link, Route, Routes, useSearchParams } from 'react-router-dom'
 import HomePage from '../pages/HomePage'
 import DashboardPage from '../pages/DashboardPage'
 import NewIssuePage from '../pages/NewIssuePage'

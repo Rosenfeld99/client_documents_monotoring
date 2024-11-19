@@ -3,11 +3,10 @@ import TemplatePage from '../utils/TemplatePage'
 import CustomSelect from '../utils/CustomSelect'
 import { useSearchParams } from 'react-router-dom'
 import useContextStore from '../hooks/useContextStore'
-// import DonutChart from '../components/donutChart/DonutChart'
-// import ColumnChart from '../components/columnChart/ColumnChart'
 import useReports from '../hooks/useReport'
 import useUsers from '../hooks/useUsers'
 import { formatDataToChart, formatDay, formatHour, formatMonth, formatWeek, listOption } from '../utils/dashbordUtils'
+import { notify } from '../utils/Tastify/notify'
 
 const DonutChart = lazy(() => import('../components/donutChart/DonutChart'));
 const ColumnChart = lazy(() => import('../components/columnChart/ColumnChart'));
@@ -126,7 +125,6 @@ const DashboardPage = () => {
                 </div>
             </div>
             <section className='mx-10 grid grid-cols-3 gap-[1px] bg-border'>
-
                 <div className="bg-background pl-10">
                     <Suspense fallback={<div>wait loading...</div>}>
                         <DonutChart optionsSelect={listOption(historyReports?.paginatedResults)} setColumnChartSelect={setColumnChart1Select} dataToChart={formatDataToChart(historyReports?.paginatedResults, ColumnChart1Select?.label, ColumnChart1Select?.dateFunc, "name")} />

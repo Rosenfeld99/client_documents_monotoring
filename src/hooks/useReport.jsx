@@ -1,10 +1,11 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { ContextStore } from '../context/contextStore'
 import axios from 'axios'
+import { notify } from '../utils/Tastify/notify'
 
 function useReports() {
-    const { historyReports, setHistoryReports } = useContext(ContextStore)
-
+    const { historyReports, setHistoryReports, columns, setColumns, filteredData, setFilteredData, columnVisibility, setColumnVisibility } = useContext(ContextStore)
+    const [loading, setLoading] = useState(true)
 
     const addReport = async ({ spaceWorkName, subSpaceWorkName, roomName, userId, report }) => {
         try {
@@ -20,6 +21,7 @@ function useReports() {
             })
 
             console.log(newReport);
+            notify("SUCCESS", "תקלה נוצרה בהצלחה")
 
 
         } catch (error) {
@@ -34,64 +36,32 @@ function useReports() {
     //     "toOpenDate": "2024-11-08T14:56:23.456+00:00"
     // }
     const getReportsByConditions = async ({ indexToSkip, statusReport, dates, limitResultsIndex, userId, spaceWorkName, subSpaceWorkName, roomName }) => {
+        setLoading(true)
         try {
-            const { data } = await axios.post("http://localhost:3001/reports/getReports", {
-                spaceWorkName,
-                subSpaceWorkName,
-                roomName,
-                statusReport,
-                indexToSkip,
-                limitResultsIndex,
-                userId,
-                dates
+            const { data } = await axios.post("http://localhost:3001/reports/getReportsFormatToTable", {
+                userId, indexToSkip, statusReport, spaceWorkName, subSpaceWorkName, roomName
             })
             console.log(data);
-
-            const buildTable = data?.map((item) => {
-                const obj = {
-                    ...item,
-                    "columns": item?.report?.inputs,
-                }
-                // delete inputs
-                delete obj.inputs
-
-            })
-            // ----- data -------
-            // {
-            //     "id": "0033",
-            //     "date": "01/12/2024",
-            //     "time": "18:00",
-            //     "תיאור": "nnkjnk",
-            //     "subject": "שרת ניהול",
-            //     "status": "בטיפול",
-            //     "note": "נדרשת בדיקה נוספת"
-            //   }
-
-            // --------- columns --------
-            // {
-            //     "key": "תיאור",
-            //     "label": "יחידה",
-            //     "selectOption": [
-            //       { "id": "1", "name": 'מקשא"פ' },
-            //       { "id": "2", "name": "בהד 3" },
-            //       { "id": "3", "name": "בהד 4" },
-            //       { "id": "4", "name": "בהד 5" }
-            //     ]
-            //   },
             setHistoryReports(data);
-
+            setColumns(data.columnsList)
+            setFilteredData(data.data)
+            setColumnVisibility(
+                data.columnsList?.reduce((acc, column) => ({ ...acc, [column.key]: true, _id: false }), {})
+            )
 
 
         } catch (error) {
             console.log(error);
 
+        } finally {
+            setLoading(false)
         }
 
     }
 
 
 
-    return { addReport, getReportsByConditions, historyReports }
+    return { addReport, getReportsByConditions, historyReports, columns, setColumns, filteredData, setFilteredData, columnVisibility, setColumnVisibility, loading, setLoading }
 
 }
 
