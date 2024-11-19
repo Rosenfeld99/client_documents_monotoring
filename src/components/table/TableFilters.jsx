@@ -17,7 +17,7 @@ const TableFilters = ({ openManageColumns, setOpenManageColumns, columns, column
                 </button>
                 {openManageColumns && <CustomModal doOnCilckOutside={() => setOpenManageColumns(false)}>
                     <div className={`fixed z-30 flex flex-col gap-4 left-5 top-20 bg-accent shadow-md shadow-[#00000034] border-[1px] border-border w-fit h-fit max-h-[700px] p-5`}>
-                        {columns.map((column) => (
+                        {columns?.map((column) => (
                             <label onClick={() => toggleColumn(column.key)} key={column.key} className="flex select-none items-center gap-3 min-w-44 w-fit justify-between space-x-2">
                                 {/* Toggle Switch */}
                                 <span className="text-gray-700 font-medium">{column.label}</span>
@@ -43,14 +43,14 @@ const TableFilters = ({ openManageColumns, setOpenManageColumns, columns, column
                 </button>
                 {openFilters && <CustomModal doOnCilckOutside={() => setOpenFilters(false)}>
                     <div className="fixed z-30 flex flex-col gap-4 left-5 top-20 bg-accent shadow-md shadow-[#00000034] border-[1px] border-border w-fit h-fit max-h-[700px] p-5">
-                        {columns.map(
+                        {columns?.map(
                             (column) =>
-                                columnVisibility[column.key] && (
+                                columnVisibility[column?.key] && (
                                     <input
-                                        key={column.key}
-                                        placeholder={`חיפוש לפי ${column.label}`}
-                                        value={filters[column.key] || ''}
-                                        onChange={(e) => handleFilterChange(column.key, e.target.value)}
+                                        key={column?.key}
+                                        placeholder={`חיפוש לפי ${column?.label}`}
+                                        value={filters[column?.key] || ''}
+                                        onChange={(e) => handleFilterChange(column?.key, e.target.value)}
                                         className="px-4 py-2 border border-border rounded-lg w-44 focus:outline-none focus:ring-2 focus:ring-blue-400"
                                     />
                                 )
