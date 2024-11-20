@@ -33,13 +33,7 @@ const ColumnChart = ({ dataToChart, optionsSelect, setColumnChartSelect }) => {
 
 
         dataPoints: dataToChart,
-        // dataPoints: [
-        //   { label: "Apple", y: 10, color: "#5a6acf" },
-        //   { label: "Orange", y: 15, color: "#5a6acf" },
-        //   { label: "Banana", y: 25, color: "#5a6acf" },
-        //   { label: "Mango", y: 30, color: "#5a6acf" },
-        //   { label: "Grape abd text", y: 28, color: "#5a6acf" },
-        // ],
+       
       }
     ],
     axisX: {
@@ -62,7 +56,7 @@ const ColumnChart = ({ dataToChart, optionsSelect, setColumnChartSelect }) => {
       <div className="flex items-center justify-between">
         <div>
           <div className="text-text font-semibold">פילוח תקלות</div>
-          <div className="text-[#8c8c8c]">תקלות פתוחות בחתך יחידות</div>
+          <div className="text-[#8c8c8c]">תקלות פתוחות בחתך נושא</div>
         </div>
         {/* <div className="px-7 py-1 bg-accent border-2 text-primary text-md font-semibold border-border shadow-md rounded-lg flex justify-center items-center hover:scale-110 duration-150">
           <button>היום</button>

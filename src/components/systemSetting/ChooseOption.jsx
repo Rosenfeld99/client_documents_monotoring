@@ -164,6 +164,8 @@ function ChooseOption({ updateInput, setUpdateInput, chooseOption, setChooseOpti
         setRequire(updateInput ? updateInput?.require : false)
     }, [chooseOption, updateInput])
 
+
+    
     const borderChooseColor = "border-[#5A6ACF]"
     const textChooseColor = "text-[#5A6ACF]"
 
@@ -183,7 +185,7 @@ function ChooseOption({ updateInput, setUpdateInput, chooseOption, setChooseOpti
 
             {/* show the selected input */}
             <div className='col-span-2 h-full gap-9  flex flex-col  pr-16'>
-                <p className='font-semibold text-lg '> {chooseOption ? "הזינו תוכן לאפשרות שבחרתם" : "בחרו אפשרות"}</p>
+                <p className='font-semibold text-lg '> {chooseOption ? "הזינו תוכן לאפשרות שבחרתם" : "בחרו תבנית"}</p>
                 <div className='w-3/4 h-32 relative '>
                     {!chooseOption &&
                         <div>
@@ -231,7 +233,7 @@ function ChooseOption({ updateInput, setUpdateInput, chooseOption, setChooseOpti
                     {chooseOption && (
                         <>
                             {updateInput ? (<>
-                                <Button updateId={updateInput._id} onclickFunc={deleteInputFunc} color={"#E57373"} text={"מחיקה"} />
+                              {updateInput?.label!=="יחידה מטפלת"?  <Button updateId={updateInput._id} onclickFunc={deleteInputFunc} color={"#E57373"} text={"מחיקה"} />:<Button  onclickFunc={()=>setChooseOption("")} color={"#5a6acf94"} text={"ביטול"} />}
                                 <Button updateId={updateInput._id} onclickFunc={handeleCreateInput} color={"#FF8A65"} text={"עדכון"} />
                             </>) :
                                 <Button onclickFunc={handeleCreateInput} color={"#66BB6A"} text={"יצירה"} />

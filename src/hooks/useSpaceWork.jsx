@@ -229,7 +229,7 @@ function useSpaceWork() {
   }
 
 
-  return { createSpaceWork, getRoomHistory, getRoomInputs, deleteRoom, editRoom, createSubSpaceWork, createRoom, deleteSubSpaceWork, editSubSpaceWork }
+  return { createSpaceWork, getRoomHistory, getRoomInputs, deleteRoom, editRoom, createSubSpaceWork, createRoom, deleteSubSpaceWork,inputs, editSubSpaceWork }
 }
 
 export default useSpaceWork

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import CanvasJSReact from '@canvasjs/react-charts';
 import useReports from '../../hooks/useReport';
+import "./mmo.css"
 
 const CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
@@ -72,18 +73,18 @@ const DonutChart = ({ dataToChart }) => {
 
   return (
 
-    <div className='relative'>
+    <div className='relative '>
       <div className="flex items-center justify-between">
         <div>
           <div className="text-text font-semibold">פילוח תקלות</div>
-          <div className="text-[#8c8c8c]">תקלות פתוחות בחתך יחידות</div>
+          <div className="text-[#8c8c8c]">תקלות פתוחות בחתך נושא</div>
         </div>
         {/* <div className="px-7 py-1 bg-accent border-2 text-primary text-md font-semibold border-border shadow-md rounded-lg flex justify-center items-center hover:scale-110 duration-150">
           <button>היום</button>
         </div> */}
       </div>
-      <div className="relative">
-        <CanvasJSChart options={options} />
+      <div className= "relative ">
+        <CanvasJSChart  options={options} />
         <div className="absolute -bottom-8 shadow-sm overflow-auto rounded-sm h-16 z-20 w-full">
           <div className="flex flex-wrap">
             {dataToChart?.map((item, index) => (<div key={index} className=" flex items-center gap-1 mx-2">

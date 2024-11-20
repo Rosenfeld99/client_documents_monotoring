@@ -8,6 +8,7 @@ import useContextStore from '../hooks/useContextStore'
 import useReports from '../hooks/useReport'
 import useUsers from '../hooks/useUsers'
 import { formatDataToChart, formatDay, formatHour, formatMonth, formatWeek, listOption } from '../utils/dashbordUtils'
+import useSpaceWork from '../hooks/useSpaceWork'
 
 const DonutChart = lazy(() => import('../components/donutChart/DonutChart'));
 const ColumnChart = lazy(() => import('../components/columnChart/ColumnChart'));
@@ -18,13 +19,18 @@ const DashboardPage = () => {
     const [searchParams] = useSearchParams()
     const { getReportsByConditions, historyReports } = useReports()
     const { currentUser } = useUsers()
+    const { inputs } = useSpaceWork()
     // this states are to chart and they get what user want to show and if it is date also func date is need
     const [ColumnChart1Select, setColumnChart1Select] = useState({ label: "יחידה מטפלת", dateFunc: null })
     const [ColumnChart2Select, setColumnChart2Select] = useState({ label: "יחידה מטפלת", dateFunc: null })
     // get the number of response of reports 
-    const [reportResponseRoom, setReportResponseRoom] = useState()
+    const [reportResponseRoom, setReportResponseRoom] = useState([])
+
+
     const [fromDate, setFromDate] = useState(new Date())
     const [toDate, setToDate] = useState(new Date())
+    
+     const [selectOptions, setSelectOptions] = useState([])
 
     // convert time to hours,days,week to show them in dashbord axiosX
     const chartDatesConvert = useCallback(
@@ -46,12 +52,12 @@ const DashboardPage = () => {
             }
         }
         , [])
-
     useEffect(() => {
-        setReportResponseRoom(historyReports?.paginatedResults?.filter((rep) => rep.report["יחידה מטפלת"] === searchParams.get("room")))
+        setReportResponseRoom(historyReports?.data?.filter((rep) => rep["יחידה מטפלת"] === searchParams.get("room")))
     }, [historyReports])
-
+ 
     useEffect(() => {
+       if ( currentUser?.userId) {
         const getReportObj = {
             limitResultsIndex: -1,// -1 is get all reports 
             indexToSkip: 0,
@@ -66,10 +72,12 @@ const DashboardPage = () => {
             roomName: searchParams.get('room'),
         }
         getReportsByConditions(getReportObj)
+       }
+      
     }, [currentUser, toDate, fromDate])
 
     useEffect(() => {
-
+          
         const fromDateObj = new Date(fromDate?.setHours(2));
         const toDateObj = new Date(toDate?.setHours(23))
         // Calculate the difference in milliseconds
@@ -84,6 +92,7 @@ const DashboardPage = () => {
         }
         else {
             setColumnChart1Select((prev) => ({ ...prev, dateFunc: null }))
+            setColumnChart2Select((prev) => ({ ...prev, dateFunc: null }))
         }
     }, [fromDate, toDate, ColumnChart1Select?.label, ColumnChart2Select?.label])
 
@@ -129,18 +138,18 @@ const DashboardPage = () => {
 
                 <div className="bg-background pl-10">
                     <Suspense fallback={<div>wait loading...</div>}>
-                        <DonutChart optionsSelect={listOption(historyReports?.paginatedResults)} setColumnChartSelect={setColumnChart1Select} dataToChart={formatDataToChart(historyReports?.paginatedResults, ColumnChart1Select?.label, ColumnChart1Select?.dateFunc, "name")} />
+                        <DonutChart optionsSelect={listOption(historyReports?.data,inputs)} setColumnChartSelect={setColumnChart1Select} dataToChart={formatDataToChart(historyReports?.data, ColumnChart1Select?.label, ColumnChart1Select?.dateFunc, "name")} />
                     </Suspense>
 
                 </div>
                 <div className="col-span-2 bg-background pr-10">
                     <Suspense fallback={<div>wait loading...</div>}>
-                        <ColumnChart optionsSelect={listOption(historyReports?.paginatedResults)} setColumnChartSelect={setColumnChart1Select} dataToChart={formatDataToChart(historyReports?.paginatedResults, ColumnChart1Select?.label, ColumnChart1Select?.dateFunc, "label")} />
+                        <ColumnChart optionsSelect={listOption(historyReports?.data,inputs)} setColumnChartSelect={setColumnChart1Select} dataToChart={formatDataToChart(historyReports?.data, ColumnChart1Select?.label, ColumnChart1Select?.dateFunc, "label")} />
                     </Suspense>
                 </div>
                 <div className="col-span-2 bg-background pl-10 pt-10">
                     <Suspense fallback={<div>wait loading...</div>}>
-                        <ColumnChart optionsSelect={listOption(historyReports?.paginatedResults)} setColumnChartSelect={setColumnChart2Select} dataToChart={formatDataToChart(historyReports?.paginatedResults, ColumnChart2Select?.label, ColumnChart2Select?.dateFunc, "label")} />
+                        <ColumnChart optionsSelect={listOption(historyReports?.data,inputs)} setColumnChartSelect={setColumnChart2Select} dataToChart={formatDataToChart(historyReports?.data, ColumnChart2Select?.label, ColumnChart2Select?.dateFunc, "label")} />
                     </Suspense>
                 </div>
                 <div className="bg-background pr-10 pt-10">
@@ -151,7 +160,7 @@ const DashboardPage = () => {
                         </div>
                         <div className=' h-full'>
                             <button className="px-3  cursor-default py-1 bg-accent border-2 text-primary text-md font-semibold border-border shadow-md rounded-lg flex justify-center items-center hover:scale-110 duration-150">תקלה בטיפול רמ”מ</button>
-                            <div className=" text-6xl font-bold text-text text-center h-full flex items-center justify-center">{historyReports?.paginatedResults?.length - reportResponseRoom?.length}</div>
+                            <div className=" text-6xl font-bold text-text text-center h-full flex items-center justify-center">{historyReports?.data?.length - reportResponseRoom?.length}</div>
                         </div>
 
                     </div>

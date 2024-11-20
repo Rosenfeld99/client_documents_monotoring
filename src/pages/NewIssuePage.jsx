@@ -101,7 +101,7 @@ const NewIssuePage = () => {
                                 <Link to={`/system-settings?sw=${searchParams.get('sw')}&subSW=${searchParams.get('subSW')}&room=${searchParams.get('room')}`} >
                                     <button className='text-2xl flex hover:opacity-50'>
                                         <IoMdSettings className="text-2xl ml-2 mt-1 " />
-                                        לא הוגדת תבנית תקלה, <br />
+                                        לא הוגדרה תבנית תקלה, <br />
                                         להגדרות מערכת
                                         ←
                                     </button>
@@ -111,7 +111,7 @@ const NewIssuePage = () => {
                 </div>
                 <div className=" flex flex-col max-w-[600px] m-10 w-1/4">
                     <img src="/new-issuse.png" alt="new issuse" />
-                    {inputs.length > 1 && <button onClick={createReport} className={`px-6 text-[#66BB6A] border-[#66BB6A] p-1 mt-10 font-bold border-2 rounded-md `}>
+                    {inputs.length > 2 && <button onClick={createReport} className={`px-6 text-[#66BB6A] border-[#66BB6A] hover:scale-110 duration-150  p-1 mt-10 font-bold border-2 rounded-md `}>
                         יצירת תקלה חדשה
                     </button>}
                 </div>

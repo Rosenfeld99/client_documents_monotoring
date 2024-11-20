@@ -21,10 +21,10 @@ function useReports() {
 
             console.log(newReport);
 
-
+alert("התקלה נוצרה בהצלחה")
         } catch (error) {
             console.log(error);
-
+alert("בעיה ביצירת בתקלה")
         }
 
     }
@@ -46,16 +46,6 @@ function useReports() {
                 dates
             })
             console.log(data);
-
-            const buildTable = data?.map((item) => {
-                const obj = {
-                    ...item,
-                    "columns": item?.report?.inputs,
-                }
-                // delete inputs
-                delete obj.inputs
-
-            })
             // ----- data -------
             // {
             //     "id": "0033",
