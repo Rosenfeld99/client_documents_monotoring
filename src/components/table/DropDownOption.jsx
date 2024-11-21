@@ -5,13 +5,14 @@ import { TfiLayoutColumn3Alt } from 'react-icons/tfi'
 import CustomModal from '../../utils/CustomModal'
 
 const DropDownOption = ({ setOpenManageColumns, index, column, setCurrentColumn, currentColumn, showIconDots, toggleColumn, handleFilterChange, filteredData, showOptionSelect, setShowOptionSelect, setFilteredData, filters }) => {
- 
+
     return (
         <div>
-            <button className="absolute active:bg-secondary left-0.5 top-0.5 p-2 z-20 text-xl cursor-pointer active:duration-100 rounded-full">
-                {(showIconDots === index || currentColumn?.key === column.key) &&
-                    <BsThreeDotsVertical onClick={() => { currentColumn?.key ? setCurrentColumn({}) : setCurrentColumn(column) }} />}
-            </button>
+            {(showIconDots === index || currentColumn?.key === column.key) &&
+                <button onClick={() => { currentColumn?.key ? setCurrentColumn({}) : setCurrentColumn(column) }} className="absolute active:bg-secondary bg-secondary border-[1px] border-border p-1.5 left-1 top-1 z-20 text-xl cursor-pointer active:duration-100 rounded-full">
+                    <BsThreeDotsVertical />
+                </button>
+            }
 
             {currentColumn?.key === column.key && (
                 <CustomModal
@@ -23,7 +24,7 @@ const DropDownOption = ({ setOpenManageColumns, index, column, setCurrentColumn,
                         <ul>
                             <li>
                                 <button onClick={() => toggleColumn(currentColumn?.key)} className='flex items-center gap-2 hover:bg-border p-2 px-4 w-full'>
-                                    <BsFillEyeSlashFill className='text-xl'/> <span>הסתר עמודה</span>
+                                    <BsFillEyeSlashFill className='text-xl' /> <span>הסתר עמודה</span>
                                 </button>
                             </li>
                             <li className='cursor-pointer relative'>
@@ -56,11 +57,11 @@ const DropDownOption = ({ setOpenManageColumns, index, column, setCurrentColumn,
                                     setFilteredData(filteredData.reverse()), setCurrentColumn({});
                                     setShowOptionSelect(false);
                                 }} className='flex items-center gap-2 hover:bg-border p-2 px-4 w-full'>
-                                    <LuArrowDownUp className='text-xl'/> <span>שינוי כיוון</span>
+                                    <LuArrowDownUp className='text-xl' /> <span>שינוי כיוון</span>
                                 </button>
                             </li>
                             <li>
-                                <button onClick={() => {setOpenManageColumns(true),setCurrentColumn({})}} className='flex items-center gap-3 hover:bg-border p-2 px-4 w-full'>
+                                <button onClick={() => { setOpenManageColumns(true), setCurrentColumn({}) }} className='flex items-center gap-3 hover:bg-border p-2 px-4 w-full'>
                                     <TfiLayoutColumn3Alt /> <span>ניהול עמודות</span>
                                 </button>
                             </li>
