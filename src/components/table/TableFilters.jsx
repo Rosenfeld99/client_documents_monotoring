@@ -5,6 +5,7 @@ import { TfiLayoutColumn3Alt } from 'react-icons/tfi'
 
 const TableFilters = ({ openManageColumns, setOpenManageColumns, columns, columnVisibility, handleFilterChange, toggleColumn, filters }) => {
     const [openFilters, setOpenFilters] = useState(false)
+
     return (
         <div>
 
@@ -18,7 +19,7 @@ const TableFilters = ({ openManageColumns, setOpenManageColumns, columns, column
                 {openManageColumns && <CustomModal doOnCilckOutside={() => setOpenManageColumns(false)}>
                     <div className={`fixed z-30 flex flex-col gap-4 left-5 top-20 bg-accent shadow-md shadow-[#00000034] border-[1px] border-border w-fit h-fit max-h-[700px] p-5`}>
                         {columns?.map((column) => (
-                            <label onClick={() => toggleColumn(column.key)} key={column.key} className="flex select-none items-center gap-3 min-w-44 w-fit justify-between space-x-2">
+                            <label onClick={() => toggleColumn(column.key)} key={column.key} className="flex select-none items-center gap-3 min-w-44 justify-between space-x-2 w-full">
                                 {/* Toggle Switch */}
                                 <span className="text-gray-700 font-medium">{column.label}</span>
                                 <div
@@ -42,20 +43,20 @@ const TableFilters = ({ openManageColumns, setOpenManageColumns, columns, column
                     </span>
                 </button>
                 {openFilters && <CustomModal doOnCilckOutside={() => setOpenFilters(false)}>
-                    <div className="fixed z-30 flex flex-col gap-4 left-5 top-20 bg-accent shadow-md shadow-[#00000034] border-[1px] border-border w-fit h-fit max-h-[700px] p-5">
+                    {<div className="fixed z-30 flex flex-col gap-4 left-5 top-20 bg-accent shadow-md shadow-[#00000034] border-[1px] border-border w-fit h-fit max-h-[800px] overflow-auto p-5">
                         {columns?.map(
                             (column) =>
                                 columnVisibility[column?.key] && (
                                     <input
                                         key={column?.key}
                                         placeholder={`חיפוש לפי ${column?.label}`}
-                                        value={filters[column?.key] || ''}
+                                        value={filters && filters[column?.key] && filters[column?.key] || ''}
                                         onChange={(e) => handleFilterChange(column?.key, e.target.value)}
                                         className="px-4 py-2 border border-border rounded-lg w-44 focus:outline-none focus:ring-2 focus:ring-blue-400"
                                     />
                                 )
                         )}
-                    </div>
+                    </div>}
                 </CustomModal>}
             </div>
             {/* )} */}
