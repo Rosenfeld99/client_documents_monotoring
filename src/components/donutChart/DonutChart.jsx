@@ -8,6 +8,7 @@ const CanvasJSChart = CanvasJSReact.CanvasJSChart;
 const DonutChart = ({ dataToChart }) => {
   // console.log(dataToChart);
   const { getReports, historyReports } = useReports()
+  console.log(dataToChart);
 
   const options = {
     exportEnabled: false,
@@ -26,6 +27,7 @@ const DonutChart = ({ dataToChart }) => {
         // Manually format tooltip content with inline styles
         return `
           <div style="text-align: end; color: #fff; font-size: 14px;">
+            <b>${e?.entries[0]?.dataPoint?.openReport ? "תקלות פתוחות" : "תקלות סגורות"} <br>
             <b style="color: #5a6acf;">${e?.entries[0]?.dataPoint?.name}</b>: ${e?.entries[0]?.dataPoint?.y} <br>
             <b style="color: #c7ceff;">אחוזים: ${e?.entries[0]?.dataPoint?.percent?.toFixed(2)}%</b>
           </div>`;
@@ -83,8 +85,8 @@ const DonutChart = ({ dataToChart }) => {
           <button>היום</button>
         </div> */}
       </div>
-      <div className= "relative ">
-        <CanvasJSChart  options={options} />
+      <div className="relative ">
+        <CanvasJSChart options={options} />
         <div className="absolute -bottom-8 shadow-sm overflow-auto rounded-sm h-16 z-20 w-full">
           <div className="flex flex-wrap">
             {dataToChart?.map((item, index) => (<div key={index} className=" flex items-center gap-1 mx-2">

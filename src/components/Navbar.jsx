@@ -32,7 +32,7 @@ const Navbar = ({ navLeft, showBall, showExcel, showSelectOption, options, setSt
                 </button>
 
                 {parts?.slice(0, parts?.length - 1).map((part, index) => (
-                    <span className=' hover:opacity-50 hover:scale-105 duration-150' onClick={() => navigate(`/${index == 0 ? "" : "spaceWork"}?sw=${searchParams.get('sw')}&subSW=${searchParams.get('subSW')}`)} key={index}>{part} / </span>
+                    <span className=' hover:opacity-50 hover:scale-105 duration-150 cursor-pointer' onClick={() => navigate(`/${index == 0 ? "" : "spaceWork"}?sw=${searchParams.get('sw')}&subSW=${searchParams.get('subSW')}`)} key={index}>{part} / </span>
                 ))}
                 <span className='text-primary'>{parts[parts?.length - 1]}</span>
             </div>

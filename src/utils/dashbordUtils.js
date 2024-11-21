@@ -97,7 +97,7 @@ export const formatDataToChart = (historyReports, label, formatDateToDashbord, f
         return
     }
 
-    let closeColor = "blue"
+    let closeColor = "red"
     let openColor = "#5a6acf"
 
     // iterate through all reports(historyReports)
@@ -105,31 +105,31 @@ export const formatDataToChart = (historyReports, label, formatDateToDashbord, f
         // get the report data
         const historyReportsItem = historyReports[index];
 
-        // if (!historyReportsItem[label]) {
-        //     continue
-        // }
+        if (!historyReportsItem[label]) {
+            continue
+        }
         // historyReportsItem[label]
         // convert all inputs from array to fields in historyReportsItem object
         // (inputs are array)
-      
+
         // remove unnecessary fields
-       
+
         //now historyReportsItem is only object with key and value
 
         // if the field is date so convert it to wanted format to dashbord label
-        const reportLabel = formatDateToDashbord ? formatDateToDashbord(historyReportsItem[label]) : historyReportsItem[label]||"שדה  לא קיים";
+        const reportLabel = formatDateToDashbord ? formatDateToDashbord(historyReportsItem[label]) : historyReportsItem[label] || "שדה  לא קיים";
 
         // check if the report open or close and set colors
         const reportStatusColor = historyReportsItem?.reportOpen ? openColor : closeColor;
 
         // check if the func is to donat dashbord so get random colos
-        const partDonatDashbord=historyReportsItem[label]?colors[index % colors?.length]:"white"
-        const color = donatDashbord ? partDonatDashbord: reportStatusColor
+        const partDonatDashbord = historyReportsItem[label] ? colors[index % colors?.length] : "white"
+        const color = donatDashbord ? partDonatDashbord : reportStatusColor
 
         // find if there is data with the same label and color if not create one else add 1
-        const indexData = arrayData?.findIndex((obj) => (obj[field] === reportLabel))
+        const indexData = arrayData?.findIndex((obj) => (obj[field] === reportLabel && obj?.openReport === historyReportsItem?.reportOpen))
         if (indexData == -1) {
-            arrayData.push({ [field]: reportLabel, y: 1, percent: (1 / historyReports?.length) * 100, color })
+            arrayData.push({ [field]: reportLabel, y: 1, openReport: historyReportsItem?.reportOpen, percent: (1 / historyReports?.length) * 100, color })
 
         } else {
             arrayData[indexData].y++
@@ -139,10 +139,10 @@ export const formatDataToChart = (historyReports, label, formatDateToDashbord, f
     return arrayData
 }
 
-export const listOption = (historyReports,roomInputs) => {
+export const listOption = (historyReports, roomInputs) => {
     // if there is no historyReports return 
     console.log(roomInputs);
-    
+
     if (!historyReports) {
         return
     }
@@ -163,7 +163,7 @@ export const listOption = (historyReports,roomInputs) => {
             delete list[key]
         }
     }
-console.log(roomInputs);
+    console.log(roomInputs);
 
     // iterate through all inputs and isert them to the object
     roomInputs?.forEach((item) => {

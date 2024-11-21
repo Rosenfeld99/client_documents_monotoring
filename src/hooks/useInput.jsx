@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom'
 import useContextStore from './useContextStore'
 import { ContextStore } from '../context/contextStore'
 import axios from 'axios'
+import { notify } from '../utils/Tastify/notify'
 
 function useInput() {
     const [searchParams] = useSearchParams()
@@ -24,6 +25,7 @@ function useInput() {
                 input
             })
             // console.log(newInput);
+            notify("SUCCESS", "שדה נוצר  בהצלחה")
 
         } catch (error) {
             console.log(error);

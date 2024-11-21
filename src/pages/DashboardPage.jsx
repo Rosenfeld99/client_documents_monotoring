@@ -3,11 +3,10 @@ import TemplatePage from '../utils/TemplatePage'
 import CustomSelect from '../utils/CustomSelect'
 import { useSearchParams } from 'react-router-dom'
 import useContextStore from '../hooks/useContextStore'
-// import DonutChart from '../components/donutChart/DonutChart'
-// import ColumnChart from '../components/columnChart/ColumnChart'
 import useReports from '../hooks/useReport'
 import useUsers from '../hooks/useUsers'
 import { formatDataToChart, formatDay, formatHour, formatMonth, formatWeek, listOption } from '../utils/dashbordUtils'
+import { notify } from '../utils/Tastify/notify'
 import useSpaceWork from '../hooks/useSpaceWork'
 
 const DonutChart = lazy(() => import('../components/donutChart/DonutChart'));
@@ -17,7 +16,7 @@ const DashboardPage = () => {
 
     const { singleOptoin } = useContextStore()
     const [searchParams] = useSearchParams()
-    const { getReportsByConditions, historyReports } = useReports()
+    const { getReportsByConditions, historyReports, getAllReports } = useReports()
     const { currentUser } = useUsers()
     const { inputs } = useSpaceWork()
     // this states are to chart and they get what user want to show and if it is date also func date is need
@@ -29,8 +28,8 @@ const DashboardPage = () => {
 
     const [fromDate, setFromDate] = useState(new Date())
     const [toDate, setToDate] = useState(new Date())
-    
-     const [selectOptions, setSelectOptions] = useState([])
+
+    const [selectOptions, setSelectOptions] = useState([])
 
     // convert time to hours,days,week to show them in dashbord axiosX
     const chartDatesConvert = useCallback(
@@ -55,29 +54,29 @@ const DashboardPage = () => {
     useEffect(() => {
         setReportResponseRoom(historyReports?.data?.filter((rep) => rep["יחידה מטפלת"] === searchParams.get("room")))
     }, [historyReports])
- 
+
     useEffect(() => {
-       if ( currentUser?.userId) {
-        const getReportObj = {
-            limitResultsIndex: -1,// -1 is get all reports 
-            indexToSkip: 0,
-            dates: {
-                fromDate,
-                toDate
-            },
-            statusReport: "both",
-            userId: currentUser?.userId,
-            spaceWorkName: searchParams.get('sw'),
-            subSpaceWorkName: searchParams.get('subSW'),
-            roomName: searchParams.get('room'),
+        if (currentUser?.userId) {
+            const getReportObj = {
+                limitResultsIndex: -1,// -1 is get all reports 
+                indexToSkip: 0,
+                dates: {
+                    fromDate,
+                    toDate
+                },
+                statusReport: "both",
+                userId: currentUser?.userId,
+                spaceWorkName: searchParams.get('sw'),
+                subSpaceWorkName: searchParams.get('subSW'),
+                roomName: searchParams.get('room'),
+            }
+            getAllReports(getReportObj)
         }
-        getReportsByConditions(getReportObj)
-       }
-      
+
     }, [currentUser, toDate, fromDate])
 
     useEffect(() => {
-          
+
         const fromDateObj = new Date(fromDate?.setHours(2));
         const toDateObj = new Date(toDate?.setHours(23))
         // Calculate the difference in milliseconds
@@ -135,21 +134,20 @@ const DashboardPage = () => {
                 </div>
             </div>
             <section className='mx-10 grid grid-cols-3 gap-[1px] bg-border'>
-
                 <div className="bg-background pl-10">
                     <Suspense fallback={<div>wait loading...</div>}>
-                        <DonutChart optionsSelect={listOption(historyReports?.data,inputs)} setColumnChartSelect={setColumnChart1Select} dataToChart={formatDataToChart(historyReports?.data, ColumnChart1Select?.label, ColumnChart1Select?.dateFunc, "name")} />
+                        <DonutChart optionsSelect={listOption(historyReports?.data, inputs)} setColumnChartSelect={setColumnChart1Select} dataToChart={formatDataToChart(historyReports?.data, ColumnChart1Select?.label, ColumnChart1Select?.dateFunc, "name")} />
                     </Suspense>
 
                 </div>
                 <div className="col-span-2 bg-background pr-10">
                     <Suspense fallback={<div>wait loading...</div>}>
-                        <ColumnChart optionsSelect={listOption(historyReports?.data,inputs)} setColumnChartSelect={setColumnChart1Select} dataToChart={formatDataToChart(historyReports?.data, ColumnChart1Select?.label, ColumnChart1Select?.dateFunc, "label")} />
+                        <ColumnChart optionsSelect={listOption(historyReports?.data, inputs)} setColumnChartSelect={setColumnChart1Select} dataToChart={formatDataToChart(historyReports?.data, ColumnChart1Select?.label, ColumnChart1Select?.dateFunc, "label")} />
                     </Suspense>
                 </div>
                 <div className="col-span-2 bg-background pl-10 pt-10">
                     <Suspense fallback={<div>wait loading...</div>}>
-                        <ColumnChart optionsSelect={listOption(historyReports?.data,inputs)} setColumnChartSelect={setColumnChart2Select} dataToChart={formatDataToChart(historyReports?.data, ColumnChart2Select?.label, ColumnChart2Select?.dateFunc, "label")} />
+                        <ColumnChart optionsSelect={listOption(historyReports?.data, inputs)} setColumnChartSelect={setColumnChart2Select} dataToChart={formatDataToChart(historyReports?.data, ColumnChart2Select?.label, ColumnChart2Select?.dateFunc, "label")} />
                     </Suspense>
                 </div>
                 <div className="bg-background pr-10 pt-10">

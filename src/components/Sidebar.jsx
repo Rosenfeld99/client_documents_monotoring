@@ -7,6 +7,7 @@ import { PiBuildingsBold } from 'react-icons/pi'
 import { TbHelpSquareFilled } from 'react-icons/tb'
 import { useNavigate, useLocation, useSearchParams } from 'react-router-dom'
 import useContextStore from '../hooks/useContextStore'
+import { BsClockHistory } from 'react-icons/bs'
 
 const Sidebar = () => {
     const navigateion = useNavigate()
@@ -48,7 +49,7 @@ const Sidebar = () => {
                     </div>}
 
                     {(searchParams.get('sw') && searchParams.get('subSW') && searchParams.get('room')) && <div onClick={() => navigateion(`/open-issue?sw=${searchParams.get('sw')}&subSW=${searchParams.get('subSW')}&room=${searchParams.get('room') || "תקלות פתוחות"}`)} className={`${location.pathname === "/open-issue" ? styleItemActive : styleItem}`}>
-                        <MdHistory className={styleIcon} />
+                        <BsClockHistory className={styleIcon+ " text-xl"} />
                         <span>תקלות פתוחות</span>
                     </div>}
                     {(searchParams.get('sw') && searchParams.get('subSW') && searchParams.get('room')) && <div onClick={() => navigateion(`/issue-history?sw=${searchParams.get('sw')}&subSW=${searchParams.get('subSW')}&room=${searchParams.get('room') || "היסטורית תקלות"}`)} className={`${location.pathname === "/issue-history" ? styleItemActive : styleItem}`}>
@@ -63,7 +64,7 @@ const Sidebar = () => {
             </div>
 
             {/* bottom */}
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-3 pt-3 border-t-[1px] border-t-border">
                 <div onClick={() => navigateion(`/help?room=${searchParams.get('room') || "עזרה"}`)} className={`${location.pathname === "/help" ? styleItemActive : styleItem}`}>
                     <TbHelpSquareFilled className='text-2xl mt-auto' />
                     <span>עזרה</span>

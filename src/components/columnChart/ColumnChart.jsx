@@ -13,6 +13,7 @@ const ColumnChart = ({ dataToChart, optionsSelect, setColumnChartSelect }) => {
 
     setColumnChartSelect((prev) => ({ ...prev, label }))
   }
+  console.log(dataToChart);
 
   const getMaxYValue = () => {
     let maxYValue = 0;
@@ -33,7 +34,7 @@ const ColumnChart = ({ dataToChart, optionsSelect, setColumnChartSelect }) => {
 
 
         dataPoints: dataToChart,
-       
+
       }
     ],
     axisX: {

@@ -2,8 +2,10 @@ import React, { useState } from 'react'
 import DropDownOption from './DropDownOption';
 import { BiEdit } from 'react-icons/bi';
 import { GoIssueClosed } from 'react-icons/go';
+import useReports from '../../hooks/useReport';
 
-const Table = ({ setOpenManageColumns, columns, columnVisibility, setColumns, filteredData, handleFilterChange, setFilteredData, toggleColumn, filters }) => {
+const Table = ({ setOpenManageColumns, columns, columnVisibility, setColumns, filteredData, handleFilterChange, setFilteredData, toggleColumn, filters,HoverComps }) => {
+    const { loading } = useReports()
     const [currentColumn, setCurrentColumn] = useState({});
     const [showOptionSelect, setShowOptionSelect] = useState(false);
     const [showIconDots, setShowIconDots] = useState(false);
@@ -15,10 +17,10 @@ const Table = ({ setOpenManageColumns, columns, columnVisibility, setColumns, fi
     };
 
     const handleDrop = (index) => (event) => {
-        const draggedIndex = event.dataTransfer.getData("colIndex");
+        const draggedIndex = event.dataTransfer?.getData("colIndex");
         if (draggedIndex !== index) {
             const updatedColumns = [...columns];
-            const [draggedColumn] = updatedColumns.splice(draggedIndex, 1);
+            const [draggedColumn] = updatedColumns?.splice(draggedIndex, 1);
             updatedColumns.splice(index, 0, draggedColumn);
             setColumns(updatedColumns);
         }
@@ -33,9 +35,9 @@ const Table = ({ setOpenManageColumns, columns, columnVisibility, setColumns, fi
             <table className="w-full border border-border shadow-md rounded-lg">
                 <thead className="bg-accent text-white border-b border-b-border">
                     <tr>
-                        {columns.map(
+                        {columns?.map(
                             (column, index) =>
-                                columnVisibility[column.key] && (
+                                columnVisibility[column?.key] && (
                                     <th
                                         draggable
                                         onDragStart={handleDragStart(index)}
@@ -55,18 +57,19 @@ const Table = ({ setOpenManageColumns, columns, columnVisibility, setColumns, fi
                     </tr>
                 </thead>
                 <tbody>
-                    {filteredData.map((row, index) => (
+                    {filteredData?.map((row, index) => (
                         <tr key={index} className={`border-b border-b-border relative group text-nowrap last:border-none hover:bg-blue-50`}>
-                            {columns.map(
+                            {columns?.map(
                                 (column) =>
-                                    columnVisibility[column.key] && (
+                                    columnVisibility[column?.key] && (
                                         <td key={column.key} className="py-2 px-4 text-center border-r border-r-border">
                                             {row[column.key]}
                                         </td>
                                     )
                             )}
+                            {HoverComps}
                             <div className=" hidden items-center gap-3 w-full h-full bg-border  text-text group-hover:flex duration-150 transition ease-in-out text-xl px-10 absolute top-0 right-0">
-                                <button className=' flex items-center  text-lg h-7 gap-2 justify-end border-2 rounded-lg px-2 hover:scale-105 duration-150 hover:text-primary hover:border-pritext-primary'>
+                                <button className=' flex items-center text-lg h-7 gap-2 justify-end border-2 rounded-lg px-2 hover:scale-105 duration-150 hover:text-primary hover:border-pritext-primary'>
                                     <span >עריכת תקלה</span>
                                     <BiEdit />
 
@@ -82,7 +85,7 @@ const Table = ({ setOpenManageColumns, columns, columnVisibility, setColumns, fi
 
                 </tbody>
             </table>
-            {filteredData?.length == 0 && <div className=' text-xl py-20 flex items-center justify-center w-full mx-auto'>
+            {!loading && (filteredData?.length == 0 || filteredData == []) && <div className=' text-xl py-20 flex items-center justify-center w-full mx-auto'>
                 <span>אין נותונים להצגה...</span>
                 <img className='w-72' src="/src/assets/not-found-data.png" alt="img not found" />
             </div>}
