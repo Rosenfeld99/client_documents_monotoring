@@ -78,21 +78,16 @@ const NewIssuePage = () => {
                             <div className=" flex flex-col flex-wrap h-full j w-full max-w-60 items-center gap-6">
                                 <CustomInput state={newReportData} keyToUpdate={"מ.א"} label={"מ.א"} disabeld={true} required={false} placeholder={currentUser?.userId} />
                                 {inputs.map((input, i) => {
-
-
                                     switch (input?.type) {
                                         case "textarea":
                                             return <CustomTextarea key={input?._id} state={newReportData} setState={handleInputChange} label={input?.label} keyToUpdate={input?.label} required={input?.require} placeholder={input?.placeholder} />
-                                            break;
                                         case "select":
                                             // if the input is דחיפות  revers the array becuse the hebrew
                                             return <CustomSelect key={input?._id} options={input.label === "דחיפות" ? reversString(input?.options) : input?.options} setState={handleInputChange} labelText={input?.label} keyToUpdate={input?.label} required={input?.require} placeholder={input?.placeholder} />
-                                            break;
                                         case "short":
                                             return <CustomInput key={input?._id} state={newReportData} setState={handleInputChange} label={input?.label} keyToUpdate={input?.label} required={input?.require} placeholder={input?.placeholder} />
-                                            break;
                                         default:
-                                            break;
+                                            return
                                     }
                                 })}
                             </div>

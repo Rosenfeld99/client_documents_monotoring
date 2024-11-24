@@ -2,17 +2,17 @@ import React, { useEffect, useMemo, useState } from 'react';
 import TemplatePage from '../utils/TemplatePage';
 import CustomSelect from '../utils/CustomSelect';
 import { useSearchParams } from 'react-router-dom';
-// import { columnsList, data } from '../constant/DB.demo';
 import TableFilters from '../components/table/TableFilters';
 import Table from '../components/table/Table';
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import useReports from '../hooks/useReport';
 import useUsers from '../hooks/useUsers';
 import { BiEdit } from 'react-icons/bi';
-import { IoDocumentTextOutline } from 'react-icons/io5';
+import { IoCloseCircleOutline, IoDocumentTextOutline } from 'react-icons/io5';
+import { decodeFormatDate } from '../utils/funcs/decodeDate';
 
 const IssueHistoryPage = () => {
-    const { getReportsByConditions, historyReports, columns, setColumns, filteredData, setFilteredData, columnVisibility, setColumnVisibility, loading, setLoading } = useReports()
+    const { getReportsByConditions, handleCloseReport,handleDeleteReport, historyReports, columns, setColumns, filteredData, setFilteredData, columnVisibility, setColumnVisibility, loading, setLoading } = useReports()
     const [searchParams] = useSearchParams();
     const [openManageColumns, setOpenManageColumns] = useState(false)
     const [pagenations, setPagenations] = useState({ prev: 0, curr: 1, next: 2 })
@@ -24,11 +24,11 @@ const IssueHistoryPage = () => {
             const getReportObj = {
                 limitResultsIndex: -1,// -1 is get all reports 
                 indexToSkip: 0,
-                // dates: {
-                //     fromDate,
-                //     toDate
-                // },
-                statusReport: "both",
+                "dates": {
+                    "fromDate": "2024-11-07T14:56:23.456+00:00",
+                    "toDate": "2024-11-27T14:56:23.456+00:00"
+                },
+                statusReport: "close",
                 userId: currentUser?.userId,
                 spaceWorkName: searchParams.get('sw'),
                 subSpaceWorkName: searchParams.get('subSW'),
@@ -93,6 +93,50 @@ const IssueHistoryPage = () => {
         }
     }
 
+    const handleDeleteReportClick = (currReport) => {
+        console.log(currReport);
+        
+        const reqBody =  {
+            userId: currentUser?.userId,
+            reportId: currReport?._id,
+            dateRequst: decodeFormatDate(currReport?.["זמן פתיחת תקלה"]),
+            spaceWorkName: searchParams.get('sw'),
+            subSpaceWorkName: searchParams.get('subSW'),
+            roomName: searchParams.get('room'),
+        }
+
+        console.log(reqBody);
+        
+        handleDeleteReport(reqBody)
+    }
+    
+    const handleViewReportClick = (currReport) => {
+        console.log(currReport);
+    }
+   
+    const handleEditReportClick = (currReport) => {
+        console.log(currReport);
+    }
+
+    const HoverComps = (currReport) => {
+
+        return (<div className=" hidden items-center gap-3 w-full h-full bg-border  text-text group-hover:flex duration-150 transition ease-in-out text-xl px-10 absolute top-0 right-0">
+            <button onClick={() => handleEditReportClick(currReport)} className=' flex items-center text-lg h-7 gap-2 justify-end border-2 rounded-lg px-2 hover:scale-105 duration-150 hover:text-primary hover:border-pritext-primary'>
+                <BiEdit />
+                <span >עריכת תקלה</span>
+            </button>|
+            <button onClick={() => handleViewReportClick(currReport)} className=' flex items-center  text-lg h-7 gap-2 justify-end border-2 rounded-lg px-2 hover:scale-105 duration-150 hover:text-info hover:border-info '>
+                <IoDocumentTextOutline />
+                <span >צפייה בתקלה</span>
+            </button>|
+            <button onClick={() => handleDeleteReportClick(currReport)} className=' flex items-center  text-lg h-7 gap-2 justify-end border-2 rounded-lg px-2 hover:scale-105 duration-150 hover:text-error hover:border-errtext-error '>
+                <IoCloseCircleOutline className='text-2xl' />
+                <span >מחיקת בתקלה</span>
+            </button>
+
+        </div>)
+    }
+
     return (
         <TemplatePage
             showHeader={true}
@@ -106,18 +150,7 @@ const IssueHistoryPage = () => {
                 <TableFilters openManageColumns={openManageColumns} setOpenManageColumns={setOpenManageColumns} columnVisibility={columnVisibility} columns={columns} handleFilterChange={handleFilterChange} toggleColumn={toggleColumn} filters={filters} />
                 <div className="overflow-x-auto ml-[240px]">
                     {loading ? <div>Loading...</div> :
-                        <Table HoverComps={<div className=" hidden items-center gap-3 w-full h-full bg-border  text-text group-hover:flex duration-150 transition ease-in-out text-xl px-10 absolute top-0 right-0">
-                            <button className=' flex items-center text-lg h-7 gap-2 justify-end border-2 rounded-lg px-2 hover:scale-105 duration-150 hover:text-primary hover:border-pritext-primary'>
-                                <BiEdit />
-                                <span >עריכת תקלה</span>
-                            </button>
-                            <button className=' flex items-center  text-lg h-7 gap-2 justify-end border-2 rounded-lg px-2 hover:scale-105 duration-150 hover:text-success hover:border-success '>
-                                <IoDocumentTextOutline />
-                                <span >צפייה בתקלה</span>
-                            </button>
-
-                        </div>
-                        } setOpenManageColumns={setOpenManageColumns} filters={filters} toggleColumn={toggleColumn} columnVisibility={columnVisibility} columns={columns} setColumns={setColumns} filteredData={filteredData} handleFilterChange={handleFilterChange} setFilteredData={setFilteredData} />
+                        <Table HoverComps={HoverComps} setOpenManageColumns={setOpenManageColumns} filters={filters} toggleColumn={toggleColumn} columnVisibility={columnVisibility} columns={columns} setColumns={setColumns} filteredData={filteredData} handleFilterChange={handleFilterChange} setFilteredData={setFilteredData} />
                     }
                 </div>
                 {/* paggintions */}
