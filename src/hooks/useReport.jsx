@@ -31,22 +31,86 @@ function useReports() {
 
     }
 
-    //   "dates": {
-    //     "fromOpenDate": "2024-11-07T14:56:23.456+00:00",
-    //     "toOpenDate": "2024-11-08T14:56:23.456+00:00"
-    // }
+    const handleDeleteReport = async ({
+        userId,
+        reportId,
+        dateRequst,
+        spaceWorkName,
+        subSpaceWorkName,
+        roomName
+    }) => {
+        console.log( userId,
+            reportId,
+            dateRequst,
+            spaceWorkName,
+            subSpaceWorkName,
+            roomName);
+        
+        try {
+            const deleteReport = await axios.post("http://localhost:3001/reports/deleteReport", {
+                userId,
+                reportId,
+                dateRequst,
+                spaceWorkName,
+                subSpaceWorkName,
+                roomName,
+            })
+
+            console.log(deleteReport);
+            notify("SUCCESS", "תקלה נמחקה בהצלחה")
+
+
+        } catch (error) {
+            console.log(error);
+
+        }
+
+    }
+
+    const handleCloseReport = async ({
+        userId,
+        reportId,
+        dateRequst,
+        spaceWorkName,
+        subSpaceWorkName,
+        roomName, }) => {
+        try {
+            const closeReport = await axios.put("http://localhost:3001/reports/finishReport", {
+                userId,
+                reportId,
+                dateRequst,
+                spaceWorkName,
+                subSpaceWorkName,
+                roomName,
+            })
+
+            console.log(closeReport);
+            notify("SUCCESS", "תקלה נסגרה בהצלחה")
+
+
+        } catch (error) {
+            console.log(error);
+
+        }
+
+    }
+
     const getReportsByConditions = async ({ indexToSkip, statusReport, dates, limitResultsIndex, userId, spaceWorkName, subSpaceWorkName, roomName }) => {
         setLoading(true)
         try {
             const { data } = await axios.post("http://localhost:3001/reports/getReportsFormatToTable", {
-                userId, indexToSkip, statusReport, spaceWorkName, subSpaceWorkName, roomName
+                userId, indexToSkip, statusReport, spaceWorkName, subSpaceWorkName, roomName, dates
             })
             console.log(data);
             setHistoryReports(data);
             setColumns(data.columnsList)
             setFilteredData(data.data)
             setColumnVisibility(
-                data.columnsList?.reduce((acc, column) => ({ ...acc, [column.key]: true, _id: false }), {})
+                data.columnsList?.reduce((acc, column) => ({
+                    ...acc, [column.key]: true, _id: false,
+                    "סטאטוס תקלה": false,
+                    "תאריך מחיקת תקלה": false
+                }), {})
             )
 
 
@@ -61,7 +125,7 @@ function useReports() {
 
 
 
-    return { addReport, getReportsByConditions, historyReports, columns, setColumns, filteredData, setFilteredData, columnVisibility, setColumnVisibility, loading, setLoading }
+    return { addReport, getReportsByConditions, handleCloseReport, handleDeleteReport, historyReports, columns, setColumns, filteredData, setFilteredData, columnVisibility, setColumnVisibility, loading, setLoading }
 
 }
 

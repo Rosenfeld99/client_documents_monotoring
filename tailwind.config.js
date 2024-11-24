@@ -16,6 +16,7 @@ export default {
       error: '#E12D2D',       // Error
       warning: '#C69F4C',     // Warning
       success: '#1D9B40',     // Success
+      info: '#2764eb',     // Success
     }
   },
   plugins: [],

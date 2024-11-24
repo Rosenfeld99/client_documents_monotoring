@@ -1,10 +1,8 @@
 import React, { useState } from 'react'
 import DropDownOption from './DropDownOption';
-import { BiEdit } from 'react-icons/bi';
-import { GoIssueClosed } from 'react-icons/go';
 import useReports from '../../hooks/useReport';
 
-const Table = ({ setOpenManageColumns, columns, columnVisibility, setColumns, filteredData, handleFilterChange, setFilteredData, toggleColumn, filters,HoverComps }) => {
+const Table = ({ setOpenManageColumns, columns, columnVisibility, setColumns, filteredData, handleFilterChange, setFilteredData, toggleColumn, filters, HoverComps }) => {
     const { loading } = useReports()
     const [currentColumn, setCurrentColumn] = useState({});
     const [showOptionSelect, setShowOptionSelect] = useState(false);
@@ -63,23 +61,11 @@ const Table = ({ setOpenManageColumns, columns, columnVisibility, setColumns, fi
                                 (column) =>
                                     columnVisibility[column?.key] && (
                                         <td key={column.key} className="py-2 px-4 text-center border-r border-r-border">
-                                            {row[column.key]}
+                                            {row[column.key] && typeof String ? String(row[column.key])?.substring(0, 30) : typeof Date ? row[column.key] : (row[column.key])}
+                                            {HoverComps && HoverComps(row)}
                                         </td>
                                     )
                             )}
-                            {HoverComps}
-                            <div className=" hidden items-center gap-3 w-full h-full bg-border  text-text group-hover:flex duration-150 transition ease-in-out text-xl px-10 absolute top-0 right-0">
-                                <button className=' flex items-center text-lg h-7 gap-2 justify-end border-2 rounded-lg px-2 hover:scale-105 duration-150 hover:text-primary hover:border-pritext-primary'>
-                                    <span >עריכת תקלה</span>
-                                    <BiEdit />
-
-                                </button>|
-                                <button className=' flex items-center  text-lg h-7 gap-2 justify-end border-2 rounded-lg px-2 hover:scale-105 duration-150 hover:text-success hover:border-success '>
-                                    <span >סגירת תקלה</span>
-                                    <GoIssueClosed />
-
-                                </button>
-                            </div>
                         </tr>
                     ))}
 
