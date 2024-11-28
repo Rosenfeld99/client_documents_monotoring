@@ -6,6 +6,7 @@ import SelectImplement from './SelectImplement';
 import { MAX_LENGTH } from '../../utils/fakeDB';
 import { useSearchParams } from 'react-router-dom';
 import useInput from '../../hooks/useInput';
+import StepContainer from '../../utils/steps/StepContainer';
 
 // chooseOption=string that get the input type+id to recognize it like:`{inputType}_input_{_id}`
 // updateInput=this is the input obj selected if it is exsist
@@ -168,79 +169,84 @@ function ChooseOption({ updateInput, setUpdateInput, chooseOption, setChooseOpti
     const textChooseColor = "text-[#5A6ACF]"
 
     return (
-        <div className='w-full min-h-[70vh] grid pt-2 grid-cols-3'>
-            <div className='col-span-1 w-[80%]  flex gap-10 flex-col'>
-                <p className='font-semibold text-lg '>בחרו אפשרות</p>
-                {/* show the types of inputs in the right in screen */}
-                <TextAreaInput setFunc={() => { setChooseOption("textarea_input_0"); setUpdateInput(null); }} defaultValue={"לדוגמא:תיאור תקלה, דרך פתרון..."} title={"טקסט חופשי"} chooseOption={chooseOption === "textarea_input_0"} />
+        <div className=' w-full ml-20'>
+            {/* Steps of option */}
+            {/* <StepContainer finelStep={"שמירה וסיום"} beforeFinel={"הוספת תוכן"} listOption={["בחירת תבנית"]} addingCustomStyele={"max-w-[49vw] 2xl:w-[44vw]"} /> */}
 
-                <SelectInput setFunc={() => { setChooseOption("select_input_1"); setUpdateInput(null); }} chooseOption={chooseOption === "select_input_1"} title={"בחירת אפשרות"} optionValue={"לדוגמא:רשימת רשתות,יחידות..."} />
+            <div className='w-full min-h-[70vh] grid pt-10 grid-cols-3'>
+                <div className='col-span-1 w-[80%]  flex gap-10 flex-col'>
+                    {/* <p className='font-semibold text-lg '>בחרו אפשרות</p> */}
+                    {/* show the types of inputs in the right in screen */}
+                    <TextAreaInput setFunc={() => { setChooseOption("textarea_input_0"); setUpdateInput(null); }} defaultValue={"לדוגמא:תיאור תקלה, דרך פתרון..."} title={"טקסט חופשי"} chooseOption={chooseOption === "textarea_input_0"} />
 
-                <ShortInput setFunc={() => { setChooseOption("short_input_2"); setUpdateInput(null); }} chooseOption={chooseOption === "short_input_2"} title={"טקסט קצר"} defaultValue={"לדוגמא:שם פרטי, שם משפחה..."} />
+                    <SelectInput setFunc={() => { setChooseOption("select_input_1"); setUpdateInput(null); }} chooseOption={chooseOption === "select_input_1"} title={"בחירת אפשרות"} optionValue={"לדוגמא:רשימת רשתות,יחידות..."} />
 
-            </div>
-            {/* end */}
+                    <ShortInput setFunc={() => { setChooseOption("short_input_2"); setUpdateInput(null); }} chooseOption={chooseOption === "short_input_2"} title={"טקסט קצר"} defaultValue={"לדוגמא:שם פרטי, שם משפחה..."} />
 
-            {/* show the selected input */}
-            <div className='col-span-2 h-full gap-9  flex flex-col  pr-16'>
-                <p className='font-semibold text-lg '> {chooseOption ? "הזינו תוכן לאפשרות שבחרתם" : "בחרו אפשרות"}</p>
-                <div className='w-3/4 h-32 relative '>
-                    {!chooseOption &&
-                        <div>
-                            <span className={`absolute right-3 text-[#DDE4F0] top-[-12px] px-2 bg-[white] z-20 `}>כותרת</span>
-                            <div className={`w-full  min-h-10 p-2 h-32 border-[#DDE4F0] text-[#DDE4F0]  pointer-events-none border-2 rounded-[5px] `}>בחרו תבנית...</div>
-                        </div>}
-                    {chooseOption && (
-                        // this is the button of require field
-                        <div className='absolute left-0 items-center   flex gap-2 -top-6'>
-                            <p className={`text-xs ${require ? "opacity-100" : "opacity-50"}`}>
-                                ציין שדה חובה
-                            </p>
-                            <label className="switch">
-                                <input checked={require} onChange={() => setRequire(!require)} type="checkbox" />
-                                <span className="slider round"></span>
-                            </label>
-                        </div>
-                    )}
-                    {chooseOption?.includes("textarea_input") &&
-                        <div className='relative h-full '>
-                            <span className={`absolute  right-3 px-1  shadow-md  rounded-[4px] top-[-12px]  bg-[white] z-20  ${textChooseColor}`}>
-                                <input type="text" onChange={(e) => setTextAreaValue((prev) => { return { ...prev, label: e.target.value } })} autoFocus={true} placeholder={updateInput ? updateInput?.label : 'בחר/י כותרת'} className='outline-none w-full lg:w-40  xl:w-fit px-2' />
-                            </span>
-                            <textarea placeholder={textAreaValue?.placeholder} onChange={(e) => setTextAreaValue((prev) => { return { ...prev, placeholder: e.target.value } })} className={`w-full h-full placeholder:text-[#5a6acf94]  p-5 outline-none  border-2 rounded-[4px] ${textChooseColor + " " + borderChooseColor} `} />
-                        </div>
-                    }
-                    {/* i create select manualy */}
-                    {chooseOption?.includes("select_input") &&
-                        <SelectImplement selectValue={selectValue} updateInput={updateInput} setSelectValue={setSelectValue} />
-                    }
-                    {/* short input */}
-                    {chooseOption?.includes("short_input") &&
-                        <div className='relative  h-1/3' >
-                            <span className={`absolute right-3 px-1 shadow-md   rounded-[4px] top-[-12px]  bg-[white] z-20  ${textChooseColor}`}>
-                                <input onChange={(e) => setInputValue((prev) => { return { ...prev, label: e.target.value } })} type="text" autoFocus={true} placeholder={updateInput ? updateInput.label : 'בחר/י כותרת'} className='outline-none w-full px-2' />
-                            </span>
-                            <input type="text" placeholder={inputValue?.placeholder} onChange={(e) => setInputValue((prev) => { return { ...prev, placeholder: e.target.value } })} className={`w-full h-full placeholder:text-[#5a6acf94]  outline-none  border-2 px-5 pt-3 rounded-[4px] ${borderChooseColor + " " + textChooseColor} `} />
-                        </div>}
                 </div>
-                {/* end show selected input */}
+                {/* end */}
 
-                {/* just if user select input show the save and delete buttons */}
-                {/* and if it is create input show just 1 button in middle */}
-                <div className={`flex w-3/4  ${updateInput ? "justify-between" : "justify-center"}  px-5 h-10`}   >
-                    {chooseOption && (
-                        <>
-                            {updateInput ? (<>
-                                <Button updateId={updateInput._id} onclickFunc={deleteInputFunc} color={"#E57373"} text={"מחיקה"} />
-                                <Button updateId={updateInput._id} onclickFunc={handeleCreateInput} color={"#FF8A65"} text={"עדכון"} />
-                            </>) :
-                                <Button onclickFunc={handeleCreateInput} color={"#66BB6A"} text={"יצירה"} />
-                            }
-                        </>)
-                    }
-                </div>
-                <div className='mt-auto'>
-                    <img src={setting} alt="" className="h-56 mr-1 object-contain" />
+                {/* show the selected input */}
+                <div className='col-span-2 h-full gap-9  flex flex-col pr-16'>
+                    {/* <p className='font-semibold text-lg '> {chooseOption ? "הזינו תוכן לאפשרות שבחרתם" : "בחרו אפשרות"}</p> */}
+                    <div className=' h-32 relative '>
+                        {!chooseOption &&
+                            <div>
+                                <span className={`absolute right-3 text-[#DDE4F0] top-[-12px] px-2 bg-[white] z-20 `}>כותרת</span>
+                                <div className={`w-full  min-h-10 p-2 h-32 border-[#DDE4F0] text-[#DDE4F0]  pointer-events-none border-2 rounded-[5px] `}>בחרו תבנית...</div>
+                            </div>}
+                        {chooseOption && (
+                            // this is the button of require field
+                            <div className='absolute left-0 items-center   flex gap-2 -top-6'>
+                                <p className={`text-xs ${require ? "opacity-100" : "opacity-50"}`}>
+                                    ציין שדה חובה
+                                </p>
+                                <label className="switch">
+                                    <input checked={require} onChange={() => setRequire(!require)} type="checkbox" />
+                                    <span className="slider round"></span>
+                                </label>
+                            </div>
+                        )}
+                        {chooseOption?.includes("textarea_input") &&
+                            <div className='relative h-full '>
+                                <span className={`absolute  right-3 px-1  shadow-md  rounded-[4px] top-[-12px]  bg-[white] z-20  ${textChooseColor}`}>
+                                    <input type="text" onChange={(e) => setTextAreaValue((prev) => { return { ...prev, label: e.target.value } })} autoFocus={true} placeholder={updateInput ? updateInput?.label : 'בחר/י כותרת'} className='outline-none w-full lg:w-40  xl:w-fit px-2' />
+                                </span>
+                                <textarea placeholder={textAreaValue?.placeholder} onChange={(e) => setTextAreaValue((prev) => { return { ...prev, placeholder: e.target.value } })} className={`w-full h-full placeholder:text-[#5a6acf94]  p-5 outline-none  border-2 rounded-[4px] ${textChooseColor + " " + borderChooseColor} `} />
+                            </div>
+                        }
+                        {/* i create select manualy */}
+                        {chooseOption?.includes("select_input") &&
+                            <SelectImplement selectValue={selectValue} updateInput={updateInput} setSelectValue={setSelectValue} />
+                        }
+                        {/* short input */}
+                        {chooseOption?.includes("short_input") &&
+                            <div className='relative  h-1/3' >
+                                <span className={`absolute right-3 px-1 shadow-md   rounded-[4px] top-[-12px]  bg-[white] z-20  ${textChooseColor}`}>
+                                    <input onChange={(e) => setInputValue((prev) => { return { ...prev, label: e.target.value } })} type="text" autoFocus={true} placeholder={updateInput ? updateInput.label : 'בחר/י כותרת'} className='outline-none w-full px-2' />
+                                </span>
+                                <input type="text" placeholder={inputValue?.placeholder} onChange={(e) => setInputValue((prev) => { return { ...prev, placeholder: e.target.value } })} className={`w-full h-full placeholder:text-[#5a6acf94]  outline-none  border-2 px-5 pt-3 rounded-[4px] ${borderChooseColor + " " + textChooseColor} `} />
+                            </div>}
+                    </div>
+                    {/* end show selected input */}
+
+                    {/* just if user select input show the save and delete buttons */}
+                    {/* and if it is create input show just 1 button in middle */}
+                    <div className={`flex w-3/4  ${updateInput ? "justify-between" : "justify-center"}  px-5 h-10`}   >
+                        {chooseOption && (
+                            <>
+                                {updateInput ? (<>
+                                    <Button updateId={updateInput._id} onclickFunc={deleteInputFunc} color={"#E57373"} text={"מחיקה"} />
+                                    <Button updateId={updateInput._id} onclickFunc={handeleCreateInput} color={"#FF8A65"} text={"עדכון"} />
+                                </>) :
+                                    <Button onclickFunc={handeleCreateInput} color={"#66BB6A"} text={"יצירה"} />
+                                }
+                            </>)
+                        }
+                    </div>
+                    <div className='mt-auto'>
+                        <img src={setting} alt="" className="h-56 mr-1 object-contain" />
+                    </div>
                 </div>
             </div>
         </div>
