@@ -12,6 +12,7 @@ import OpenIssues from '../pages/OpenIssues'
 import useUsers from '../hooks/useUsers'
 import { ContextStore } from '../context/contextStore'
 import useSpaceWork from '../hooks/useSpaceWork'
+import ManageUserAccess from '../pages/ManageUserAccess'
 
 const AppRoutes = () => {
     const { getUser, currentUser } = useUsers()
@@ -52,6 +53,7 @@ const AppRoutes = () => {
             <Route path='/dashboard' element={<DashboardPage />} />
             <Route path='/new-issue' element={<NewIssuePage />} />
             <Route path='/user-management' element={<UserManagementPage />} />
+            <Route path='/user-management/:id' element={<ManageUserAccess />} />
             <Route path='/issue-history' element={<IssueHistoryPage />} />
             <Route path='/open-issue' element={<OpenIssues />} />
             <Route path='/system-settings' element={<SystemSettingsPage />} />
