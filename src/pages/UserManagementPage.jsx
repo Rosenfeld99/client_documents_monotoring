@@ -10,9 +10,10 @@ import useUsers from '../hooks/useUsers'
 import useReports from '../hooks/useReport'
 import { GoIssueClosed } from 'react-icons/go'
 import { BiEdit } from 'react-icons/bi'
+import StepContainer from '../utils/steps/StepContainer'
 
 const UserManagementPage = () => {
-    const { getReportsByConditions, historyReports } = useReports()
+    const { getReportsByConditions, historyReports, loading } = useReports()
     const [searchParams] = useSearchParams()
     const [filteredData, setFilteredData] = useState(soldiersData);
     const [columns, setColumns] = useState(columnsList);
@@ -91,6 +92,49 @@ const UserManagementPage = () => {
         }
     }
 
+    const HoverComps = (currUser) => {
+        return (
+            <div className=" hidden items-center gap-3 w-full h-full bg-border  text-text group-hover:flex duration-150 transition ease-in-out text-xl px-10 absolute top-0 right-0">
+                <button className=' flex items-center text-lg h-7 gap-2 justify-end border-2 rounded-lg px-2 hover:scale-105 duration-150 hover:text-primary hover:border-pritext-primary'>
+                    <BiEdit />
+                    <span >ניהול הרשאות</span>
+                </button>
+            </div>
+        )
+    }
+
+    const [steps, setSteps] = useState({
+        data: ["BBB", "AAA", "DDD", "FFF"],
+        prevData: ["DDD", "FFF"],
+        nextData: ["BBB", "AAA"],
+    })
+
+    const handleNext = (currItem) => {
+        console.log(currItem);
+    
+        setSteps((prev) => {
+            // Ensure immutability by creating new arrays
+            const newPrevData = prev?.prevData || [];
+            const newNextData = (prev?.nextData || []).filter((item) => item !== currItem);
+    
+            // Only add `currItem` to `prevData` if it doesn't already exist
+            if (!newPrevData.includes(currItem)) {
+                return {
+                    ...prev,
+                    prevData: [...newPrevData, currItem],
+                    nextData: newNextData
+                };
+            }
+    
+            return {
+                ...prev,
+                nextData: newNextData
+            };
+        });
+    };
+    
+    
+
     return (
         <TemplatePage
             showHeader={true}
@@ -100,16 +144,14 @@ const UserManagementPage = () => {
             navRight={<CustomSelect labelText={"בחר קבוצה"} options={accessOption} placeholder="קבוצה..." keyToUpdate={"accessOption"} />}
             navLeft={str}
         >
-            <section className="p-10 flex flex-col gap-3 flex-1 ">
+            <section className="p-10 flex flex-col gap-3 flex-1">
+
                 <TableFilters openManageColumns={openManageColumns} setOpenManageColumns={setOpenManageColumns} columnVisibility={columnVisibility} columns={columns} handleFilterChange={handleFilterChange} toggleColumn={toggleColumn} filters={filters} />
-                <div className="overflow-x-auto w-full ml-[240px]">
-                    <Table HoverComps={<div className=" hidden items-center gap-3 w-full h-full bg-border  text-text group-hover:flex duration-150 transition ease-in-out text-xl px-10 absolute top-0 right-0">
-                        <button className=' flex items-center text-lg h-7 gap-2 justify-end border-2 rounded-lg px-2 hover:scale-105 duration-150 hover:text-primary hover:border-pritext-primary'>
-                            <BiEdit />
-                            <span >ניהול הרשאות</span>
-                        </button>
-                    </div>
-                    } setOpenManageColumns={setOpenManageColumns} filters={filters} toggleColumn={toggleColumn} columnVisibility={columnVisibility} columns={columns} setColumns={setColumns} filteredData={filteredData} handleFilterChange={handleFilterChange} setFilteredData={setFilteredData} />
+                <div className="overflow-x-auto ml-[240px]">
+                    {loading ? <div>Loading...</div> :
+                        <Table HoverComps={HoverComps} setOpenManageColumns={setOpenManageColumns} filters={filters} toggleColumn={toggleColumn} columnVisibility={columnVisibility} columns={columns} setColumns={setColumns} filteredData={filteredData} handleFilterChange={handleFilterChange} setFilteredData={setFilteredData} />
+                    }
+                    <StepContainer steps={steps} handleNext={handleNext} />
                 </div>
                 {/* paggintions */}
                 <div className=" flex flex-row-reverse w-full justify-center items-center gap-3 fixed bottom-0 p-3 pl-[330px] backdrop-blur-sm">

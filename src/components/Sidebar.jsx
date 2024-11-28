@@ -81,7 +81,7 @@ const Sidebar = () => {
                 <div className={styleItem}>
                     <img src='/logo_dev.png' className='w-10 aspect-square rounded-xl border-2 border-primary mt-auto' />
                     <div className="">
-                        <div>פותח ע”י צוות אלפא</div>
+                        <div className='text-sm font-semibold text-text'>פותח ע”י צוות אלפא</div>
                         <div className=' text-xs'>צוות אלפא CTR+K</div>
                     </div>
                 </div>

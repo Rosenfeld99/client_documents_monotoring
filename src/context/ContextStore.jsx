@@ -1,5 +1,4 @@
 import React, { createContext, useEffect, useState } from 'react'
-import useUsers from '../hooks/useUsers';
 export const ContextStore = createContext()
 
 export const ContextStoreProvider = ({ children }) => {
