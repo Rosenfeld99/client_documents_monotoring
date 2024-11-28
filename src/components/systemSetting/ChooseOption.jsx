@@ -253,6 +253,7 @@ function ChooseOption({ updateInput, setUpdateInput, chooseOption, setChooseOpti
                 </div>
 
             </div>
-            )
+        </div>
+    )
 }
-            export default ChooseOption
+export default ChooseOption
