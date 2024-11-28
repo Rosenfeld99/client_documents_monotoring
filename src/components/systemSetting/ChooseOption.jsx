@@ -14,6 +14,7 @@ function ChooseOption({ updateInput, setUpdateInput, chooseOption, setChooseOpti
 
     // inputs= is the array of all inputs
     const { inputs, setInputs, currentUser } = useContext(ContextStore)
+
     const [textAreaValue, setTextAreaValue] = useState({})
     const [selectValue, setSelectValue] = useState({})
     const [inputValue, setInputValue] = useState({})
@@ -165,6 +166,8 @@ function ChooseOption({ updateInput, setUpdateInput, chooseOption, setChooseOpti
         setRequire(updateInput ? updateInput?.require : false)
     }, [chooseOption, updateInput])
 
+
+
     const borderChooseColor = "border-[#5A6ACF]"
     const textChooseColor = "text-[#5A6ACF]"
 
@@ -187,9 +190,9 @@ function ChooseOption({ updateInput, setUpdateInput, chooseOption, setChooseOpti
                 {/* end */}
 
                 {/* show the selected input */}
-                <div className='col-span-2 h-full gap-9  flex flex-col pr-16'>
-                    {/* <p className='font-semibold text-lg '> {chooseOption ? "הזינו תוכן לאפשרות שבחרתם" : "בחרו אפשרות"}</p> */}
-                    <div className=' h-32 relative '>
+                <div className='col-span-2 h-full gap-9  flex flex-col  pr-16'>
+                    <p className='font-semibold text-lg '> {chooseOption ? "הזינו תוכן לאפשרות שבחרתם" : "בחרו אפשרות"}</p>
+                    <div className='w-3/4 h-32 relative '>
                         {!chooseOption &&
                             <div>
                                 <span className={`absolute right-3 text-[#DDE4F0] top-[-12px] px-2 bg-[white] z-20 `}>כותרת</span>
@@ -248,6 +251,7 @@ function ChooseOption({ updateInput, setUpdateInput, chooseOption, setChooseOpti
                         <img src={setting} alt="" className="h-56 mr-1 object-contain" />
                     </div>
                 </div>
+
             </div>
         </div>
     )

@@ -8,6 +8,7 @@ import { TbHelpSquareFilled } from 'react-icons/tb'
 import { useNavigate, useLocation, useSearchParams } from 'react-router-dom'
 import useContextStore from '../hooks/useContextStore'
 import { BsClockHistory } from 'react-icons/bs'
+import Logo from "../../public/logo.png"
 
 const Sidebar = () => {
     const navigateion = useNavigate()
@@ -25,8 +26,16 @@ const Sidebar = () => {
             <div className="flex flex-col">
                 {/* TOP */}
                 <div onClick={() => navigateion(searchParams.get('sw') ? `/?sw=${searchParams.get('sw')}` : "/")} className="flex items-center gap-3">
-                    <h2 className='font-semibold text-xl'>לוגו זמני</h2>
-                    <div className="bg-primary text-background rounded-full w-10 aspect-square justify-center flex items-center">L</div>
+                    {/* <h2 className='font-semibold text-xl'>לוגו זמני</h2> */}
+                    <div className=" text-background rounded-full w-20 aspect-square justify-center flex items-center"><img src={Logo} alt="" /></div>
+                    <div className='font-semibold text-xl'>
+                        <div className="text-[20px]">
+                            תמ"ר
+                        </div>
+                        <div className="text-[12px]">
+                            תפעול מערכות רשתיות
+                        </div>
+                    </div>
                 </div>
 
                 {/* Middle */}
@@ -49,7 +58,7 @@ const Sidebar = () => {
                     </div>}
 
                     {(searchParams.get('sw') && searchParams.get('subSW') && searchParams.get('room')) && <div onClick={() => navigateion(`/open-issue?sw=${searchParams.get('sw')}&subSW=${searchParams.get('subSW')}&room=${searchParams.get('room') || "תקלות פתוחות"}`)} className={`${location.pathname === "/open-issue" ? styleItemActive : styleItem}`}>
-                        <BsClockHistory className={styleIcon+ " text-xl"} />
+                        <BsClockHistory className={styleIcon + " text-xl"} />
                         <span>תקלות פתוחות</span>
                     </div>}
                     {(searchParams.get('sw') && searchParams.get('subSW') && searchParams.get('room')) && <div onClick={() => navigateion(`/issue-history?sw=${searchParams.get('sw')}&subSW=${searchParams.get('subSW')}&room=${searchParams.get('room') || "היסטורית תקלות"}`)} className={`${location.pathname === "/issue-history" ? styleItemActive : styleItem}`}>

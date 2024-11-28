@@ -15,7 +15,7 @@ import useSpaceWork from '../hooks/useSpaceWork'
 
 const AppRoutes = () => {
     const { getUser, currentUser } = useUsers()
-    const { inputs, setInputs } = useContext(ContextStore)
+    const { inputs, setInputs, setCountRoomReports, historyReports } = useContext(ContextStore)
     const [searchParams] = useSearchParams()
     const { getRoomInputs, getRoomHistory } = useSpaceWork()
 
@@ -34,10 +34,16 @@ const AppRoutes = () => {
             }
             getRoomInputs(roomObj)
             getRoomHistory(roomObj)
+            setCountRoomReports(historyReports?.data?.filter((rep) => rep["יחידה מטפלת"] === searchParams.get("room")))
+
         }
     }, [currentUser, searchParams.get('room')])
 
+    // useEffect(() => {
+    //     console.log(historyReports?.data);
+    //     setCountRoomReports(historyReports?.data?.filter((rep) => rep["יחידה מטפלת"] === searchParams.get("room")))
 
+    // }, [historyReports])
 
     return (
         <Routes>
