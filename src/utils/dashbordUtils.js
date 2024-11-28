@@ -5,6 +5,8 @@ const monthNames = [
 
 
 
+
+
 export const translateFieldsToHebrow = {
     problemTimeStart: "זמן פתיחת תקלה",
 
@@ -87,6 +89,75 @@ export const formatMonth = (timestamp) => {
 // historyReports->all reports
 // label->the label to show in dashbord in x direction
 // formatDateToDashbord->if the user want to show by date so nwwd to get func to conver it to hours or day or week...
+export const formatDataToChartForBar = (historyReports, label, formatDateToDashboard) => {
+
+    // this is map by the filter that user want to show in dashbord
+    const mapObjBySearchType = {}
+
+    let maxHeight = 1
+    const openLabelsReports = {};
+    const closeLabelsReports = {};
+    const openReportsData = [];
+    const closeReportsData = [];
+    const pieColors = [];
+    let index = 0;
+
+    if (!historyReports || historyReports.length === 0) {
+        return []; // Return empty arrays if no data
+    }
+
+    // Iterate through all reports
+    for (const historyReportsItem of historyReports) {
+        if (!historyReportsItem[label]) {
+            continue;
+        }
+
+        // Format the label if needed
+        const reportLabel = formatDateToDashboard
+            ? formatDateToDashboard(historyReportsItem[label])
+            : historyReportsItem[label] || "Field Not Found";
+
+        const isReportOpen = historyReportsItem?.reportOpen
+
+        if (isReportOpen) {
+
+            if (!openLabelsReports?.hasOwnProperty(reportLabel)) {
+                openLabelsReports[reportLabel] = index;
+                openReportsData[index] = 1,
+                    pieColors.push(colors[index % colors.length])
+
+                if (!closeLabelsReports?.hasOwnProperty(reportLabel)) {
+                    closeLabelsReports[reportLabel] = index;
+                    closeReportsData[index] = 0
+                }
+                index++
+
+            }
+            else openReportsData[openLabelsReports[reportLabel]]++;
+            maxHeight = openReportsData[openLabelsReports[reportLabel]] && maxHeight < openReportsData[openLabelsReports[reportLabel]] ? openReportsData[openLabelsReports[reportLabel]] : maxHeight
+        }
+        else {
+            if (!closeLabelsReports?.hasOwnProperty(reportLabel)) {
+                closeLabelsReports[reportLabel] = index;
+                closeReportsData[index] = 1
+
+                pieColors.push(colors[index % colors.length])
+
+                if (!openLabelsReports?.hasOwnProperty(reportLabel)) {
+                    openLabelsReports[reportLabel] = index;
+                    openReportsData[index] = 0
+                }
+                index++
+            }
+            else closeReportsData[closeLabelsReports[reportLabel]]++
+            maxHeight = closeReportsData[closeLabelsReports[reportLabel]] && maxHeight < closeReportsData[closeLabelsReports[reportLabel]] ? closeReportsData[closeLabelsReports[reportLabel]] : maxHeight
+        }
+
+    }
+
+    return { label: Object.keys(openLabelsReports), openReportsData, closeReportsData, maxHeight, pieColors };
+};
+
 export const formatDataToChart = (historyReports, label, formatDateToDashbord, field) => {
     const arrayData = [];
 
@@ -115,6 +186,7 @@ export const formatDataToChart = (historyReports, label, formatDateToDashbord, f
         // remove unnecessary fields
 
         //now historyReportsItem is only object with key and value
+        console.log(historyReportsItem[label]);
 
         // if the field is date so convert it to wanted format to dashbord label
         const reportLabel = formatDateToDashbord ? formatDateToDashbord(historyReportsItem[label]) : historyReportsItem[label] || "שדה  לא קיים";
@@ -141,7 +213,6 @@ export const formatDataToChart = (historyReports, label, formatDateToDashbord, f
 
 export const listOption = (historyReports, roomInputs) => {
     // if there is no historyReports return 
-    console.log(roomInputs);
 
     if (!historyReports) {
         return
@@ -159,17 +230,47 @@ export const listOption = (historyReports, roomInputs) => {
     for (const key in list) {
         // if the key is in the translateFieldsToHebrow object remove it and add the translated key to the object
         if (translateFieldsToHebrow[key]) {
+
             list[translateFieldsToHebrow[key]] = list[key]
             delete list[key]
         }
     }
-    console.log(roomInputs);
 
     // iterate through all inputs and isert them to the object
     roomInputs?.forEach((item) => {
-        list[item?.label] = item?.label;
+        if (item.type !== "textarea") {
+            list[item?.label] = item?.label;
+        }
+
     });
     // console.log(list);
-
+    delete list.SLA
+    delete list["מ.א של לקוח"]
+    delete list["תאריך מחיקה"]
+    delete list["זמן סגירת תקלה"]
     return list ? Object.keys(list) : [];
+}
+
+
+
+export const showDatesSelect = (e, setDateToggle) => {
+    const chooseDatesDiv = document?.querySelector("#chooseDates")
+
+    chooseDatesDiv.classList.add("visibleDiv")
+    if (chooseDatesDiv.classList.contains('hiddenDiv')) {
+        chooseDatesDiv.classList.remove("hiddenDiv")
+    } else {
+        chooseDatesDiv.classList.remove("animateHiddenDiv")
+    }
+    setDateToggle(true)
+
+}
+
+export const hideDatesSelect = (e, setDateToggle) => {
+    const chooseDatesDiv = document?.querySelector("#chooseDates")
+    console.log("bbb");
+
+    chooseDatesDiv.classList.remove("visibleDiv")
+    chooseDatesDiv.classList.add("animateHiddenDiv")
+    setDateToggle(false)
 }

@@ -13,6 +13,7 @@ function ChooseOption({ updateInput, setUpdateInput, chooseOption, setChooseOpti
 
     // inputs= is the array of all inputs
     const { inputs, setInputs, currentUser } = useContext(ContextStore)
+
     const [textAreaValue, setTextAreaValue] = useState({})
     const [selectValue, setSelectValue] = useState({})
     const [inputValue, setInputValue] = useState({})
@@ -165,12 +166,14 @@ function ChooseOption({ updateInput, setUpdateInput, chooseOption, setChooseOpti
     }, [chooseOption, updateInput])
 
 
-    
+
     const borderChooseColor = "border-[#5A6ACF]"
     const textChooseColor = "text-[#5A6ACF]"
 
     return (
         <div className='w-full min-h-[70vh] grid pt-2 grid-cols-3'>
+            {/* 
+             */}
             <div className='col-span-1 w-[80%]  flex gap-10 flex-col'>
                 <p className='font-semibold text-lg '>בחרו אפשרות</p>
                 {/* show the types of inputs in the right in screen */}
@@ -181,6 +184,8 @@ function ChooseOption({ updateInput, setUpdateInput, chooseOption, setChooseOpti
                 <ShortInput setFunc={() => { setChooseOption("short_input_2"); setUpdateInput(null); }} chooseOption={chooseOption === "short_input_2"} title={"טקסט קצר"} defaultValue={"לדוגמא:שם פרטי, שם משפחה..."} />
 
             </div>
+
+
             {/* end */}
 
             {/* show the selected input */}
@@ -233,7 +238,7 @@ function ChooseOption({ updateInput, setUpdateInput, chooseOption, setChooseOpti
                     {chooseOption && (
                         <>
                             {updateInput ? (<>
-                              {updateInput?.label!=="יחידה מטפלת"?  <Button updateId={updateInput._id} onclickFunc={deleteInputFunc} color={"#E57373"} text={"מחיקה"} />:<Button  onclickFunc={()=>setChooseOption("")} color={"#5a6acf94"} text={"ביטול"} />}
+                                {(updateInput?.label !== "יחידה מטפלת" && updateInput?.label !== "SLA") ? <Button updateId={updateInput._id} onclickFunc={deleteInputFunc} color={"#E57373"} text={"מחיקה"} /> : <Button onclickFunc={() => setChooseOption("")} color={"#5a6acf94"} text={"ביטול"} />}
                                 <Button updateId={updateInput._id} onclickFunc={handeleCreateInput} color={"#FF8A65"} text={"עדכון"} />
                             </>) :
                                 <Button onclickFunc={handeleCreateInput} color={"#66BB6A"} text={"יצירה"} />
@@ -241,10 +246,11 @@ function ChooseOption({ updateInput, setUpdateInput, chooseOption, setChooseOpti
                         </>)
                     }
                 </div>
-                <div className='mt-auto'>
+                <div className=''>
                     <img src={setting} alt="" className="h-56 mr-1 object-contain" />
                 </div>
             </div>
+
         </div>
     )
 }

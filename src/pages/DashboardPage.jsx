@@ -1,18 +1,21 @@
-import React, { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react'
+import React, { lazy, Suspense, useCallback, useContext, useEffect, useRef, useState } from 'react'
 import TemplatePage from '../utils/TemplatePage'
 import CustomSelect from '../utils/CustomSelect'
 import { useSearchParams } from 'react-router-dom'
 import useContextStore from '../hooks/useContextStore'
 import useReports from '../hooks/useReport'
 import useUsers from '../hooks/useUsers'
-import { formatDataToChart, formatDay, formatHour, formatMonth, formatWeek, listOption } from '../utils/dashbordUtils'
+import { formatDataToChart, formatDataToChartForBar, formatDay, formatHour, formatMonth, formatWeek, hideDatesSelect, listOption, showDatesSelect } from '../utils/dashbordUtils'
 import { notify } from '../utils/Tastify/notify'
 import useSpaceWork from '../hooks/useSpaceWork'
+import { ContextStore } from '../context/contextStore'
+import "../pages/style.css"
 
 const DonutChart = lazy(() => import('../components/donutChart/DonutChart'));
 const ColumnChart = lazy(() => import('../components/columnChart/ColumnChart'));
 
 const DashboardPage = () => {
+    const { countRoomReports } = useContext(ContextStore)
 
     const { singleOptoin } = useContextStore()
     const [searchParams] = useSearchParams()
@@ -23,20 +26,23 @@ const DashboardPage = () => {
     const [ColumnChart1Select, setColumnChart1Select] = useState({ label: "יחידה מטפלת", dateFunc: null })
     const [ColumnChart2Select, setColumnChart2Select] = useState({ label: "יחידה מטפלת", dateFunc: null })
     // get the number of response of reports 
-    const [reportResponseRoom, setReportResponseRoom] = useState([])
 
 
     const [fromDate, setFromDate] = useState(new Date())
     const [toDate, setToDate] = useState(new Date())
 
-    const [selectOptions, setSelectOptions] = useState([])
+    const [dateToggle, setDateToggle] = useState(false)
 
     // convert time to hours,days,week to show them in dashbord axiosX
     const chartDatesConvert = useCallback(
         (label, setState, differenceInHours) => {
             if (label === "problemTimeStart" || label === "problemTimeEnd" || label === "deleteAt") {
+
+                if (!dateToggle) {
+                    setState((prev) => ({ ...prev, dateFunc: formatDay }))
+                    return
+                }
                 if (differenceInHours < 24) {
-                    console.log(formatHour);
                     setState((prev) => ({ ...prev, dateFunc: formatHour }))
                 }
                 else if (differenceInHours > 24 && differenceInHours < 168) {
@@ -50,10 +56,7 @@ const DashboardPage = () => {
                 }
             }
         }
-        , [])
-    useEffect(() => {
-        setReportResponseRoom(historyReports?.data?.filter((rep) => rep["יחידה מטפלת"] === searchParams.get("room")))
-    }, [historyReports])
+        , [dateToggle])
 
     useEffect(() => {
         if (currentUser?.userId) {
@@ -64,7 +67,8 @@ const DashboardPage = () => {
                     fromDate,
                     toDate
                 },
-                statusReport: "both",
+                getBetweenDates: dateToggle,
+                statusReport: dateToggle ? "both" : "open",
                 userId: currentUser?.userId,
                 spaceWorkName: searchParams.get('sw'),
                 subSpaceWorkName: searchParams.get('subSW'),
@@ -73,7 +77,8 @@ const DashboardPage = () => {
             getAllReports(getReportObj)
         }
 
-    }, [currentUser, toDate, fromDate])
+    }, [currentUser, toDate, fromDate, dateToggle])
+
 
     useEffect(() => {
 
@@ -93,14 +98,16 @@ const DashboardPage = () => {
             setColumnChart1Select((prev) => ({ ...prev, dateFunc: null }))
             setColumnChart2Select((prev) => ({ ...prev, dateFunc: null }))
         }
-    }, [fromDate, toDate, ColumnChart1Select?.label, ColumnChart2Select?.label])
+    }, [fromDate, toDate, ColumnChart1Select?.label, ColumnChart2Select?.label, dateToggle])
+
 
     const resetDates = () => {
         setFromDate(new Date())
         setToDate(new Date())
     }
     const str = `${searchParams.get('sw')} / ${searchParams.get('subSW')} / ${searchParams.get('room')}`
-
+    console.log(
+    );
     const options = singleOptoin?.subSpaceWork?.find((subSW) => subSW.name == searchParams.get("subSW"))?.lobbyOption
     return (
         <TemplatePage
@@ -117,50 +124,73 @@ const DashboardPage = () => {
             options={options}
             showSelectOption={true}
         >
-            <div className='justify-end  relative -top-10 left-10  flex gap-32 fixd '>
-                <div className=" bg-accent border-2 p-1 text-primary text-md font-semibold border-border shadow-md rounded-lg flex justify-between items-center hover:scale-110 duration-150">
-                    <button onClick={resetDates} className='px-3'>היום</button>
+            <div className='justify-end  relative -top-10 left-10  flex gap-20 fixd '>
+
+                <div className=" bg-accent border-2 p-1  gap-2 text-md font-semibold border-border shadow-md rounded-lg flex justify-between items-center">
+                    <p className={`text-text font-semibold `}>
+                        תקלות לפי תאריכים
+                    </p>
+                    <label className="switch">
+                        <input id='datesCheckBox' checked={dateToggle} onClick={(e) => dateToggle ? hideDatesSelect(e, setDateToggle) : showDatesSelect(e, setDateToggle)} type="checkbox" />
+                        <span className="slider round"></span>
+                    </label>
                 </div>
-                <div className=" bg-accent border-2 p-1 text-primary text-md font-semibold border-border shadow-md rounded-lg flex justify-between items-center hover:scale-110 duration-150">
-                    <button className='px-3'>מ-</button>
-                    {/* the value is fromDate state. and check if chosen fromDate is later than toDate so alert to user */}
-                    <input className='outline-none' value={fromDate?.toISOString()?.split('T')[0]} onChange={(e) => e?.target?.valueAsDate > toDate ? alert("תאריכים לא תקינים") : setFromDate(e?.target?.valueAsDate)
-                    } type="date" />
+                <div id='chooseDates' className=' hiddenDiv flex gap-10'>
+                    <div className=" bg-accent border-2 p-1 text-primary text-md font-semibold border-border shadow-md rounded-lg flex justify-between items-center hover:scale-110 duration-150">
+                        <button onClick={resetDates} className='px-3'>היום</button>
+                    </div>
+                    <div className=" bg-accent border-2 p-1 text-primary text-md font-semibold border-border shadow-md rounded-lg flex justify-between items-center hover:scale-110 duration-150">
+                        <button className='px-3'>מ-</button>
+                        {/* the value is fromDate state. and check if chosen fromDate is later than toDate so alert to user */}
+                        <input className='outline-none' value={fromDate?.toISOString()?.split('T')[0]} onChange={(e) => e?.target?.valueAsDate > toDate ? alert("תאריכים לא תקינים") : setFromDate(e?.target?.valueAsDate)
+                        } type="date" />
+                    </div>
+                    <div className=" bg-accent border-2 p-1 text-primary text-md font-semibold border-border shadow-md rounded-lg flex justify-between items-center hover:scale-110 duration-150">
+                        <button className='px-3'>עד</button>
+                        {/* the value is toDate state. and check if chosen toDate is earlier than fromDate so alert to user */}
+                        <input className='outline-none' value={toDate?.toISOString()?.split('T')[0]} onChange={(e) => e?.target?.valueAsDate.setHours(23, 59) < fromDate ? alert("תאריכים לא תקינים") : setToDate(e?.target?.valueAsDate)} type="date" />
+                    </div>
                 </div>
-                <div className=" bg-accent border-2 p-1 text-primary text-md font-semibold border-border shadow-md rounded-lg flex justify-between items-center hover:scale-110 duration-150">
-                    <button className='px-3'>עד</button>
-                    {/* the value is toDate state. and check if chosen toDate is earlier than fromDate so alert to user */}
-                    <input className='outline-none' value={toDate?.toISOString()?.split('T')[0]} onChange={(e) => e?.target?.valueAsDate.setHours(23, 59) < fromDate ? alert("תאריכים לא תקינים") : setToDate(e?.target?.valueAsDate)} type="date" />
-                </div>
+
             </div>
             <section className='mx-10 grid grid-cols-3 gap-[1px] bg-border'>
                 <div className="bg-background pl-10">
                     <Suspense fallback={<div>wait loading...</div>}>
-                        <DonutChart optionsSelect={listOption(historyReports?.data, inputs)} setColumnChartSelect={setColumnChart1Select} dataToChart={formatDataToChart(historyReports?.data, ColumnChart1Select?.label, ColumnChart1Select?.dateFunc, "name")} />
+                        <DonutChart optionsSelect={listOption(historyReports?.data, inputs)} setColumnChartSelect={setColumnChart1Select} dataToChart={formatDataToChartForBar(historyReports?.data, ColumnChart1Select?.label, ColumnChart1Select?.dateFunc, "label")} />
                     </Suspense>
 
                 </div>
                 <div className="col-span-2 bg-background pr-10">
                     <Suspense fallback={<div>wait loading...</div>}>
-                        <ColumnChart optionsSelect={listOption(historyReports?.data, inputs)} setColumnChartSelect={setColumnChart1Select} dataToChart={formatDataToChart(historyReports?.data, ColumnChart1Select?.label, ColumnChart1Select?.dateFunc, "label")} />
+                        <ColumnChart optionsSelect={listOption(historyReports?.data, inputs)} setColumnChartSelect={setColumnChart1Select} dataToChart={formatDataToChartForBar(historyReports?.data, ColumnChart1Select?.label, ColumnChart1Select?.dateFunc, "label")} />
                     </Suspense>
                 </div>
                 <div className="col-span-2 bg-background pl-10 pt-10">
                     <Suspense fallback={<div>wait loading...</div>}>
-                        <ColumnChart optionsSelect={listOption(historyReports?.data, inputs)} setColumnChartSelect={setColumnChart2Select} dataToChart={formatDataToChart(historyReports?.data, ColumnChart2Select?.label, ColumnChart2Select?.dateFunc, "label")} />
+                        <ColumnChart optionsSelect={listOption(historyReports?.data, inputs)} setColumnChartSelect={setColumnChart2Select} dataToChart={formatDataToChartForBar(historyReports?.data, ColumnChart2Select?.label, ColumnChart2Select?.dateFunc, "label")} />
                     </Suspense>
                 </div>
                 <div className="bg-background pr-10 pt-10">
-                    <div className="flex items-center justify-between h-full">
-                        <div className=' h-full'>
+                    <div className="flex flex-wrap items-center justify-between h-[40%]">
+                        <div className=' h-full flex flex-col gap-1'>
                             <button className="px-3 cursor-default py-1 bg-accent border-2 text-primary text-md font-semibold border-border shadow-md rounded-lg flex justify-center items-center hover:scale-110 duration-150">{`תקלות בטיפול ${searchParams.get('room')}`}</button>
-                            <div className=" text-6xl font-bold text-text text-center h-full flex items-center justify-center">{reportResponseRoom?.length}</div>
+                            <div className=" text-6xl font-bold text-text text-center h-full flex items-center justify-center">{countRoomReports?.roomResponse?.length}</div>
                         </div>
-                        <div className=' h-full'>
+                        <div className=' h-full flex flex-col'>
                             <button className="px-3  cursor-default py-1 bg-accent border-2 text-primary text-md font-semibold border-border shadow-md rounded-lg flex justify-center items-center hover:scale-110 duration-150">תקלה בטיפול רמ”מ</button>
-                            <div className=" text-6xl font-bold text-text text-center h-full flex items-center justify-center">{historyReports?.data?.length - reportResponseRoom?.length}</div>
+                            <div className=" text-6xl font-bold text-text text-center h-full flex items-center justify-center">{countRoomReports?.otherResponse?.length}</div>
                         </div>
+                        <div className={` h-full ${!dateToggle && "mx-auto"} flex flex-col`}>
+                            <button className="px-3 cursor-default py-1 bg-accent border-2 text-primary text-md font-semibold border-border shadow-md rounded-lg flex justify-center items-center hover:scale-110 duration-150">תקלות שנפתחו היום</button>
+                            <div className=" text-6xl font-bold text-text text-center h-full flex items-center justify-center">{countRoomReports?.todayOpenReports?.length}</div>
+                        </div>
+                        {dateToggle &&
+                            <div className=' h-full flex flex-col'>
+                                <button className="px-3  cursor-default py-1 bg-accent border-2 text-primary text-md font-semibold border-border shadow-md rounded-lg flex justify-center items-center hover:scale-110 duration-150">תקלות שנסגרו היום</button>
+                                <div className=" text-6xl font-bold text-text text-center h-full flex items-center justify-center">{countRoomReports?.todayCloseResponse?.length}</div>
+                            </div>
 
+                        }
                     </div>
                 </div>
             </section>

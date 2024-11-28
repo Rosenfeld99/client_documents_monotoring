@@ -14,10 +14,12 @@ function useSpaceWork() {
         spaceWorkName
       })
       console.log(newSpaceWork);
-      alert("הסביבה נוצרה בהצלחה")
+      notify("SUCCESS", "הסביבה נוצרה בהצלחה")
 
     } catch (error) {
       console.log(error);
+      notify("ERROR", "בעיה ביצירת הסביבה")
+
     }
   }
   const createSubSpaceWork = async ({ adminId, spaceWorkName, subSpaceWorkName }) => {
@@ -32,9 +34,9 @@ function useSpaceWork() {
       UpdateUser.subSpaceWorks[spaceWorkName] = { ...UpdateUser.subSpaceWorks[spaceWorkName], [subSpaceWorkName]: "admin" }
       // set the new subSpaceWork in current User and in singleOption
       setCurrentUser(UpdateUser)
-      alert("התת-סביבה נוצרה בהצלחה")
+      notify("SUCCESS", "התת-סביבה נוצרה בהצלחה")
     } catch (error) {
-      alert("בעיה ביצירת התת-סביבה")
+      notify("ERROR", "בעיה ביצירת התת-סביבה")
 
       console.log(error);
     }
@@ -56,9 +58,10 @@ function useSpaceWork() {
       const UpdateUser = { ...currentUser, rooms }
       // //saved it
       setCurrentUser(UpdateUser)
-      alert("החדר נוצר בהצלחה")
+      notify("SUCCESS", "החדר נוצר בהצלחה")
     } catch (error) {
-      alert("בעיה ביצירת חדר")
+
+      notify("ERROR", "בעיה ביצירת חדר")
 
       console.log(error);
     }
@@ -98,9 +101,10 @@ function useSpaceWork() {
       // setSingleOption(Object.keys(updateUser?.subSpaceWorks[spaceWorkName]))
       setCurrentUser(updateUser)
       console.log(newSubSp);
-      alert("התת-סביבה נמחקה בהצלחה")
+      notify("SUCCESS", "התת-סביבה נמחקה בהצלחה")
+
     } catch (error) {
-      alert("בעיה במחיקת התת-סביבה")
+      notify("ERROR", "בעיה במחיקת התת-סביבה")
 
       console.log(error);
     }
@@ -124,11 +128,12 @@ function useSpaceWork() {
       setCurrentUser(updateUser)
       // console.log(user?.data?.user);
       console.log(newRoom);
-      alert("החדר נמחק בהצלחה")
-    } catch (error) {
-      alert("בעיה במחיקת החדר")
+      notify("SUCCESS", "החדר נמחק בהצלחה")
 
-      console.log(error);
+
+    } catch (error) {
+      notify("ERROR", "בעיה במחיקת החדר")
+
     }
   }
 
@@ -165,10 +170,11 @@ function useSpaceWork() {
       delete updateUser?.subSpaceWorks[spaceWorkName][oldSubSpaceWorkName];
       //saved it
       setCurrentUser(updateUser)
+      notify("SUCCESS", "התת-סביבה עודכנה בהצלחה")
 
-      alert("התת-סביבה עודכנה בהצלחה")
     } catch (error) {
-      alert("בעיה בעדכון התת-סביבה")
+
+      notify("ERROR", "בעיה בעדכון התת-סביבה")
 
       console.log(error);
     }
@@ -194,10 +200,13 @@ function useSpaceWork() {
       // setSingleOption(Object.keys(updateUser?.subSpaceWorks[spaceWorkName]))
       setCurrentUser(updateUser)
       // console.log(newRoom);
-      alert("החדר עודכן בהצלחה")
+      notify("SUCCESS", "החדר עודכן בהצלחה")
+
     } catch (error) {
       console.log(error);
-      alert("בעיה בעדכון החדר")
+      notify("ERROR", "בעיה בעדכון החדר")
+
+
     }
   }
   const getRoomInputs = async ({ spaceWork, subSpaceWork, room, userId }) => {
@@ -229,7 +238,7 @@ function useSpaceWork() {
   }
 
 
-  return { createSpaceWork, getRoomHistory, getRoomInputs, deleteRoom, editRoom, createSubSpaceWork, createRoom, deleteSubSpaceWork,inputs, editSubSpaceWork }
+  return { createSpaceWork, getRoomHistory, getRoomInputs, deleteRoom, editRoom, createSubSpaceWork, createRoom, deleteSubSpaceWork, inputs, editSubSpaceWork }
 }
 
 export default useSpaceWork

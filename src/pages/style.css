@@ -1,0 +1,38 @@
+.animateHiddenDiv {
+    opacity: 0;
+    visibility: hidden;
+    animation: fadeOut 1s ease-in-out forwards; /* Slow animation over 3 seconds */
+
+  }
+  
+.hiddenDiv {
+    opacity: 0;
+    visibility: hidden;
+  }
+  
+  .visibleDiv {
+    animation: fadeIn 1s ease-in-out forwards; /* Slow animation over 3 seconds */
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      visibility: visible;
+    }
+    to {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+  
+  @keyframes fadeOut {
+    from {
+      opacity: 1;
+      visibility: visible;
+    }
+    to {
+      opacity: 0;
+      visibility: visible;
+    }
+  }
+  

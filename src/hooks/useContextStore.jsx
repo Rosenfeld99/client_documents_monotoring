@@ -3,10 +3,8 @@ import { ContextStore } from '../context/contextStore'
 import { useSearchParams } from 'react-router-dom'
 
 const useContextStore = () => {
-  const [searchParams] = useSearchParams()
-  const { currentUser } = useContext(ContextStore)
 
-  const { options, setOptions, singleOptoin, setSingleOption } = useContext(ContextStore)
+  const { options, setOptions, singleOptoin, setSingleOption, currentUser, historyReports, setHistoryReports, countRoomReports, setCountRoomReports } = useContext(ContextStore)
 
 
   const handleGetSingleOption = (value) => {
@@ -23,7 +21,7 @@ const useContextStore = () => {
 
 
 
-  return { options, setOptions, singleOptoin, setSingleOption, handleGetSingleOption }
+  return { options, setOptions, singleOptoin, setSingleOption, handleGetSingleOption, historyReports, setHistoryReports, countRoomReports, setCountRoomReports }
 }
 
 export default useContextStore

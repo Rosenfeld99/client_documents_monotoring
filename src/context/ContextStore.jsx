@@ -72,9 +72,9 @@ export const ContextStoreProvider = ({ children }) => {
     const [filteredData, setFilteredData] = useState([]);
     const [columns, setColumns] = useState([]);
     const [columnVisibility, setColumnVisibility] = useState(
-        columns?.reduce((acc, column) => ({ ...acc, [column.key]: true,_id:false }), {})
+        columns?.reduce((acc, column) => ({ ...acc, [column.key]: true, _id: false }), {})
     );
-    const [reportResponseRoom, setReportResponseRoom] = useState([])
+    const [countRoomReports, setCountRoomReports] = useState({})
 
 
     const contextValue = {
@@ -85,7 +85,7 @@ export const ContextStoreProvider = ({ children }) => {
         filteredData, setFilteredData,
         columns, setColumns,
         columnVisibility, setColumnVisibility,
-        reportResponseRoom, setReportResponseRoom
+        countRoomReports, setCountRoomReports
     }
 
 

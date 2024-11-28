@@ -3,6 +3,8 @@ import { FiChevronDown, FiChevronUp } from 'react-icons/fi'
 import { IoMdAdd } from 'react-icons/io'
 import { TiDeleteOutline } from 'react-icons/ti'
 import { useSearchParams } from 'react-router-dom'
+import { GoTrash } from 'react-icons/go'
+
 
 // selectValue=state that contain the data of the select input {options,label,placeholder,...}
 // updateInput=state that contain the update select if user update if not it is null
@@ -70,7 +72,7 @@ export default function SelectImplement({ selectValue, setSelectValue, updateInp
             {/* label for title  */}
             <span className={`absolute right-3  shadow-md  rounded-[4px] top-[-12px]  bg-[white] z-20  ${textChooseColor}`}>
                 {/* if the input is unit care the user cannt change the label */}
-                <input type="text" disabled={updateInput?.label === "יחידה מטפלת" ? true : false} autoFocus={true} onChange={(e) => setSelectValue((prev) => { return { ...prev, label: e.target.value } })} placeholder={updateInput ? updateInput?.label : 'בחר/י כותרת'} className='outline-none w-full px-2' />
+                <input type="text" disabled={(updateInput?.label === "יחידה מטפלת" || updateInput?.label === "SLA") ? true : false} autoFocus={true} onChange={(e) => setSelectValue((prev) => { return { ...prev, label: e.target.value } })} placeholder={updateInput ? updateInput?.label : 'בחר/י כותרת'} className='outline-none w-full px-2' />
             </span>
             {/* create input + select manualy */}
             <div className='relative flex  h-full'>
@@ -80,13 +82,13 @@ export default function SelectImplement({ selectValue, setSelectValue, updateInp
                         addOptionToSelect();
                     }
                 }}
-value={optionValue} onFocus={() => setOpenSelect(true)} onChange={(e) => setOptionValue(e?.target?.value)} placeholder={selectValue?.placeholder} className={`w-full h-full text-[#5A6ACF] px-5 pt-3  placeholder:text-[#5a6acf94]   border-2 outline-none rounded-[4px]  ${borderChooseColor + " " + textChooseColor}  `} />
-              
+                    value={optionValue} onFocus={() => setOpenSelect(true)} onChange={(e) => setOptionValue(e?.target?.value)} placeholder={selectValue?.placeholder} className={`w-full h-full text-[#5A6ACF] px-5 pt-3  placeholder:text-[#5a6acf94]   border-2 outline-none rounded-[4px]  ${borderChooseColor + " " + textChooseColor}  `} />
+
                 <div className="top-[20%] flex items-center left-2 absolute text-3xl justify-center mr-8 text-[#8e9ba5]">
-                
-                 <div className='cursor-pointer rounded-full  hover:scale-150 duration-150 shadow-lg text-[#5A6ACF] '>
-                    <IoMdAdd onClick={addOptionToSelect} className='' size={20} />
-                   </div>
+
+                    <div className='cursor-pointer rounded-full  hover:scale-150 duration-150 shadow-lg text-[#5A6ACF] '>
+                        <IoMdAdd onClick={addOptionToSelect} className='' size={20} />
+                    </div>
                     {openSelect ? (<FiChevronUp className='cursor-pointer' onClick={() => setOpenSelect(false)} />) : (<FiChevronDown className='cursor-pointer' onClick={() => setOpenSelect(true)} />)}
                 </div>
 
@@ -108,7 +110,7 @@ value={optionValue} onFocus={() => setOpenSelect(true)} onChange={(e) => setOpti
                                         <span>
                                             <ul className='flex gap-3'>
                                                 {/* check if the option is urgancy and the option is the name of the current room so dont delete it*/}
-                                                {!(updateInput?.label === "יחידה מטפלת" && option === searchParams?.get('room')) && <li onClick={() => removeOptionFromSelect(option)}><TiDeleteOutline size={20} /></li>}
+                                                {!(updateInput?.label === "יחידה מטפלת" && option === searchParams?.get('room')) && <li onClick={() => removeOptionFromSelect(option)}><GoTrash color='red' className='cursor-pointer' size={15} /></li>}
                                             </ul>
                                         </span>
                                     </div>
