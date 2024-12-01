@@ -100,6 +100,7 @@ export const formatDataToChartForBar = (historyReports, label, formatDateToDashb
     const openReportsData = [];
     const closeReportsData = [];
     const pieColors = [];
+    let totalPieReports = 0
     let index = 0;
 
     if (!historyReports || historyReports.length === 0) {
@@ -134,6 +135,7 @@ export const formatDataToChartForBar = (historyReports, label, formatDateToDashb
 
             }
             else openReportsData[openLabelsReports[reportLabel]]++;
+            totalPieReports++
             maxHeight = openReportsData[openLabelsReports[reportLabel]] && maxHeight < openReportsData[openLabelsReports[reportLabel]] ? openReportsData[openLabelsReports[reportLabel]] : maxHeight
         }
         else {
@@ -151,11 +153,14 @@ export const formatDataToChartForBar = (historyReports, label, formatDateToDashb
             }
             else closeReportsData[closeLabelsReports[reportLabel]]++
             maxHeight = closeReportsData[closeLabelsReports[reportLabel]] && maxHeight < closeReportsData[closeLabelsReports[reportLabel]] ? closeReportsData[closeLabelsReports[reportLabel]] : maxHeight
+            totalPieReports++
+
         }
 
     }
+    console.log(totalPieReports);
 
-    return { label: Object.keys(openLabelsReports), openReportsData, closeReportsData, maxHeight, pieColors };
+    return { label: Object.keys(openLabelsReports), openReportsData, closeReportsData, maxHeight, pieColors, totalPieReports };
 };
 
 export const formatDataToChart = (historyReports, label, formatDateToDashbord, field) => {

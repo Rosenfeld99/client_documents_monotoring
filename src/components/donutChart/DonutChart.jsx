@@ -6,14 +6,19 @@ import {
   Tooltip,
   Legend
 } from 'chart.js';
+import useContextStore from '../../hooks/useContextStore';
 
 // Register necessary components
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const DonutChart = ({ dataToChart }) => {
+
+  const { historyReports } = useContextStore()
+
   if (!dataToChart || !dataToChart.label || !dataToChart.label.length) {
     return <div>אין נתונים להצגה</div>;
   }
+
 
   const data = {
     labels: dataToChart.label,
@@ -41,9 +46,13 @@ const DonutChart = ({ dataToChart }) => {
       tooltip: {
         callbacks: {
           label: function (tooltipItem) {
+            console.log(tooltipItem);
             const label = tooltipItem.chart.data.labels[tooltipItem.dataIndex - dataToChart?.closeReportsData.length];
             const value = tooltipItem.raw;
-            return `${label || "תקלות סגורות"}: ${value}`;
+            const percentage = ((value / dataToChart?.totalPieReports) * 100).toFixed(2);
+            console.log(value, historyReports?.data?.length);
+
+            return `${label || "תקלות סגורות"}: ${value}, ${percentage}%`;
           },
         },
       },

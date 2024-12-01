@@ -16,6 +16,7 @@ const RootSWPage = () => {
     const [searchParams] = useSearchParams()
     const { handleGetSingleOption } = useContextStore()
     const { createSubSpaceWork, createSpaceWork, editSubSpaceWork, deleteSubSpaceWork } = useSpaceWork()
+    const Navigate = useNavigate()
 
     // toggleEdit: toggle between open and closed creation
     //toggleInput:toggle between open and closed input creation
@@ -28,9 +29,9 @@ const RootSWPage = () => {
             setSingleOption([])
         }
         else if (currentUser) {
-            console.log(currentUser);
-
             (searchParams.get('sw')) && handleGetSingleOption(searchParams.get('sw'))
+
+
         }
     }, [searchParams?.get('sw'), currentUser])
     console.log(singleOptoin);
@@ -130,7 +131,7 @@ const RootSWPage = () => {
         >
             <section className=' relative mx-10 flex-1 grid grid-cols-3 '>
                 {/* this is the edit icon. close? close all. open? open the edit */}
-                {havePermission && <div onClick={() => setToggleEdit((prev) => !prev)} className={`absolute cursor-pointer  -top-12 ${searchParams.get('sw') || singleOptoin?.name ? "right-32" : "right-60"}`}>{toggleEdit ? (<div className='flex rounded-full  text-[#5a6acf]  items-center py-2 px-4 shadow-md gap-2'> סיום עריכה<IoClose onClick={() => setToggleInput(false)} /></div> ) : (<div className='flex rounded-full  text-[#FF8A65]  items-center py-2 px-4 shadow-md gap-2'>{searchParams.get('sw') || singleOptoin?.name ? "עריכת תת-סביבה" : "עריכת סביבה"}<BiEdit onClick={() => setToggleInput(false)} />  </div> )}</div>}
+                {havePermission && <div onClick={() => setToggleEdit((prev) => !prev)} className={`absolute cursor-pointer  -top-12 ${searchParams.get('sw') || singleOptoin?.name ? "right-32" : "right-60"}`}>{toggleEdit ? (<div className='flex rounded-full  text-[#5a6acf]  items-center py-2 px-4 shadow-md gap-2'> סיום עריכה<IoClose onClick={() => setToggleInput(false)} /></div>) : (<div className='flex rounded-full  text-[#FF8A65]  items-center py-2 px-4 shadow-md gap-2'>{searchParams.get('sw') || singleOptoin?.name ? "עריכת תת-סביבה" : "עריכת סביבה"}<BiEdit onClick={() => setToggleInput(false)} />  </div>)}</div>}
                 {singleOptoin?.map((item, i) => (
                     <div key={item} className={`flex relative items-center justify-center h-80  ${i !== lobbyOption?.length && "border-l-[1px]"} border-b-[1px] border-border`}>
                         {/* if mode is edit, show delete icon */}
@@ -140,14 +141,14 @@ const RootSWPage = () => {
                         {/* if mode is edit, the option will be input to edit name else it will be btn */}
                         <div className='relative w-40 xl:w-56 bg-accent border-2 text-2xl font-semibold border-border shadow-md rounded-lg flex justify-center items-center hover:scale-110 duration-150'>
                             {toggleEdit ?
-                            (<>
-                            <BiEdit  size={15} className='absolute right-1 top-1 '/>
-                            <input onFocus={() => setToggleInput(false)} onChange={(e) => setInputValue(e.target.value)} onBlur={(e) => handleActions(e, "edit", item)} defaultValue={item} className='text-center p-4 px-5 xl:px-10 w-full rounded-lg outline-none' type="text" /> 
-                            </>
+                                (<>
+                                    <BiEdit size={15} className='absolute right-1 top-1 ' />
+                                    <input onFocus={() => setToggleInput(false)} onChange={(e) => setInputValue(e.target.value)} onBlur={(e) => handleActions(e, "edit", item)} defaultValue={item} className='text-center p-4 px-5 xl:px-10 w-full rounded-lg outline-none' type="text" />
+                                </>
 
-                            ):
+                                ) :
                                 // if user is editing the name than close the create input and after her click out from input update the name
-                                <button onClick={() => { navigate(`spaceWork?sw=${searchParams.get('sw')}&subSW=${item}`) }} className='p-4 px-5 xl:px-10 w-full' >{item}</button>
+                                <button onClick={() => { navigate(`spaceWork?sw=${searchParams.get('sw')}&subSW=${item}`); localStorage.setItem("subSW", item) }} className='p-4 px-5 xl:px-10 w-full' >{item}</button>
                             }
                         </div>
                     </div>

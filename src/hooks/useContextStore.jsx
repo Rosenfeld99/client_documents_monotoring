@@ -13,7 +13,6 @@ const useContextStore = () => {
 
     const mapObj = currentUser?.subSpaceWorks[value]
     // check if the single optin doesn't exist if not get the keys
-    // console.log(currentUser?.subSpaceWorks, value);
 
     const allKeys = mapObj ? Object.keys(currentUser?.subSpaceWorks[value]) : []
     setSingleOption(allKeys)
