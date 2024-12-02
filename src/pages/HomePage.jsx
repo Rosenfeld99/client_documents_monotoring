@@ -10,7 +10,7 @@ import useUsers from '../hooks/useUsers'
 import useSpaceWork from '../hooks/useSpaceWork'
 
 const HomePage = () => {
-    const { singleOptoin, options, setSingleOption } = useContextStore()
+    const { singleOptoin, options, setSingleOption, allUserRooms, setAllUserRooms } = useContextStore()
     const [searchParams] = useSearchParams()
     const { currentUser } = useUsers()
     const { createRoom, editRoom, deleteRoom, getRoomInputs } = useSpaceWork()
@@ -21,14 +21,8 @@ const HomePage = () => {
     const [toggleEdit, setToggleEdit] = useState(false)
     const [toggleInput, setToggleInput] = useState(false)
     const [inputValue, setInputValue] = useState("")
-    const [allRooms, setAllRooms] = useState([])
 
     const navigate = useNavigate()
-    useEffect(() => {
-        setAllRooms(getRooms())
-    }, [currentUser,])
-
-
 
     const getRooms = () => {
         const validRooms = []
@@ -43,6 +37,12 @@ const HomePage = () => {
         }
         return validRooms
     }
+    useEffect(() => {
+        setAllUserRooms(getRooms())
+    }, [currentUser])
+
+
+
 
     const accessOption = [
         { name: "מדגם", value: "מדגם" },
@@ -63,7 +63,7 @@ const HomePage = () => {
             oldRoomName
         }
         const duplicateName = (newName) => {
-            return allRooms.find((roomName) => roomName === newName)
+            return allUserRooms.find((roomName) => roomName === newName)
         }
         switch (actionType) {
             case "create":
@@ -117,7 +117,11 @@ const HomePage = () => {
             showHeader={true}
             showNav={true}
             showSidebar={true}
-            titleHeader={"חדר"}
+            titleHeader={<div className='flex'>
+                חדר
+                {havePermission && <div onClick={() => setToggleEdit((prev) => !prev)} className={`text-sm cursor-pointer mr-3`}>{toggleEdit ? (<div className='flex rounded-full  text-[#5a6acf]  items-center py-2 px-4 shadow-md gap-2'> סיום עריכה<IoClose onClick={() => setToggleInput(false)} /></div>) : (<div className='flex rounded-full  text-[#FF8A65]  items-center py-2 px-4 shadow-md gap-2'>{searchParams.get('sw') || singleOptoin?.name ? "עריכת תת-סביבה" : "עריכת סביבה"}<BiEdit onClick={() => setToggleInput(false)} />  </div>)}</div>}
+
+            </div>}
             navLeft={`${searchParams.get('sw')} / ${searchParams.get('subSW')} / בחירת חדר`}
             navRight={<CustomSelect labelText={"בחר קבוצה"} options={accessOption} placeholder="קבוצה..." keyToUpdate={"accessOption"} />}
             showExcel={false}
@@ -126,9 +130,9 @@ const HomePage = () => {
             options={["gfds"]}
         >
             <section className='mx-10 relative flex-1 grid grid-cols-3 '>
-                {havePermission && <div onClick={() => setToggleEdit((prev) => !prev)} className='absolute cursor-pointer -top-12 right-32'>{toggleEdit ? (<div className='flex rounded-full  text-[#5a6acf]  items-center py-2 px-4 shadow-md gap-2'> סיום עריכה<IoClose onClick={() => setToggleInput(false)} /></div>) : (<div className='flex rounded-full  text-[#FF8A65]  items-center py-2 px-4 shadow-md gap-2'>עריכת חדר<BiEdit onClick={() => setToggleInput(false)} />  </div>)}</div>}
+                {/* {havePermission && <div onClick={() => setToggleEdit((prev) => !prev)} className='absolute cursor-pointer -top-12 right-32'>{toggleEdit ? (<div className='flex rounded-full  text-[#5a6acf]  items-center py-2 px-4 shadow-md gap-2'> סיום עריכה<IoClose onClick={() => setToggleInput(false)} /></div>) : (<div className='flex rounded-full  text-[#FF8A65]  items-center py-2 px-4 shadow-md gap-2'>עריכת חדר<BiEdit onClick={() => setToggleInput(false)} />  </div>)}</div>} */}
 
-                {allRooms?.map((item, i) => (
+                {allUserRooms?.map((item, i) => (
                     <div key={item} className={`flex relative items-center justify-center h-80   border-l-[1px] border-b-[1px] border-border`}>
                         {/* if mode is edit, show delete icon */}
                         {toggleEdit && <span onClick={(e) => handleActions(e, "delete", item)} className='cursor-pointer absolute left-2 top-0' ><GoTrash color='red' /></span>}

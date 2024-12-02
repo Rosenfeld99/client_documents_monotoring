@@ -13,10 +13,12 @@ import useUsers from '../hooks/useUsers'
 import { ContextStore } from '../context/contextStore'
 import useSpaceWork from '../hooks/useSpaceWork'
 import ManageUserAccess from '../pages/ManageUserAccess'
+import useContextStore from '../hooks/useContextStore'
 
 const AppRoutes = () => {
     const { getUser, currentUser } = useUsers()
     const { inputs, setInputs, setCountRoomReports, historyReports } = useContext(ContextStore)
+    const { allUserRooms, setAllUserRooms } = useContextStore()
     const [searchParams] = useSearchParams()
     const { getRoomInputs, getRoomHistory } = useSpaceWork()
     const navigate = useNavigate()
@@ -37,7 +39,6 @@ const AppRoutes = () => {
             getRoomInputs(roomObj)
             getRoomHistory(roomObj)
             setCountRoomReports(historyReports?.data?.filter((rep) => rep["יחידה מטפלת"] === searchParams.get("room")))
-
         }
     }, [currentUser, searchParams.get('room')])
 

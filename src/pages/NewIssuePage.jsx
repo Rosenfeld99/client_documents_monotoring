@@ -71,7 +71,7 @@ const NewIssuePage = () => {
             navRight={<CustomSelect labelText={"בחר קבוצה"} options={[]} placeholder="קבוצה..." keyToUpdate={"accessOption"} />}
             navLeft={str}
         >
-            <section className='mx-10 flex-1 gap-10 flex items-center justify-center border-border bg-accent shadow-md border-2 rounded-xl '>
+            <section className='mx-10 flex-1 min-h-[80vh] gap-10 flex items-center justify-center border-border bg-accent shadow-md border-2 rounded-xl '>
                 <div className="flex justify-start flex-col px-10  h-full gap-6 w-2/3">
                     {/* just if inputs length more than 1 (urgancey) show new report */}
 
