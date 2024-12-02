@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react'
-import { Link, Route, Routes, useSearchParams } from 'react-router-dom'
+import { Link, Route, Routes, useNavigate, useSearchParams } from 'react-router-dom'
 import HomePage from '../pages/HomePage'
 import DashboardPage from '../pages/DashboardPage'
 import NewIssuePage from '../pages/NewIssuePage'
@@ -19,6 +19,7 @@ const AppRoutes = () => {
     const { inputs, setInputs, setCountRoomReports, historyReports } = useContext(ContextStore)
     const [searchParams] = useSearchParams()
     const { getRoomInputs, getRoomHistory } = useSpaceWork()
+    const navigate = useNavigate()
 
     useEffect(() => {
         getUser("doe01")
@@ -40,11 +41,28 @@ const AppRoutes = () => {
         }
     }, [currentUser, searchParams.get('room')])
 
-    // useEffect(() => {
-    //     console.log(historyReports?.data);
-    //     setCountRoomReports(historyReports?.data?.filter((rep) => rep["יחידה מטפלת"] === searchParams.get("room")))
+    useEffect(() => {
+        const localSW = localStorage.getItem("sw");
+        const localSubSP = localStorage.getItem("subSW");
+        const localRoom = localStorage.getItem("room");
 
-    // }, [historyReports])
+        if (localSW && localSubSP && localRoom) {
+            console.log("aa");
+
+            navigate(`dashboard/?sw=${localSW}&subSW=${localSubSP}&room=${localRoom}`)
+        }
+        else if (localSW && localSubSP) {
+            console.log("bb");
+
+            navigate(`/?sw=${localSW}&subSW=${localSubSP}`)
+        }
+        else if (localSW) {
+            console.log("cc");
+
+            navigate(`/?sw=${localSW}`)
+        }
+    }, [])
+
 
     return (
         <Routes>

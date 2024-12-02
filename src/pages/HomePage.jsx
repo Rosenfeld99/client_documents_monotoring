@@ -62,8 +62,8 @@ const HomePage = () => {
             newRoomName: inputValue,
             oldRoomName
         }
-        const duplicateName=(newName)=>{
-              return allRooms.find((roomName)=>roomName===newName)
+        const duplicateName = (newName) => {
+            return allRooms.find((roomName) => roomName === newName)
         }
         switch (actionType) {
             case "create":
@@ -105,6 +105,7 @@ const HomePage = () => {
         }
         getRoomInputs(roomObj)
         navigate(`/dashboard?sw=${searchParams.get('sw')}&subSW=${searchParams.get('subSW')}&room=${item}`)
+        localStorage.setItem("room", item)
 
     }
     // check if user is owner or he have permission of superAdmin or admin to manage the rooms
@@ -125,7 +126,7 @@ const HomePage = () => {
             options={["gfds"]}
         >
             <section className='mx-10 relative flex-1 grid grid-cols-3 '>
-                {havePermission && <div onClick={() => setToggleEdit((prev) => !prev)} className='absolute cursor-pointer -top-12 right-32'>{toggleEdit ? (<div className='flex rounded-full  text-[#5a6acf]  items-center py-2 px-4 shadow-md gap-2'> סיום עריכה<IoClose onClick={() => setToggleInput(false)} /></div> ) : (<div className='flex rounded-full  text-[#FF8A65]  items-center py-2 px-4 shadow-md gap-2'>עריכת חדר<BiEdit onClick={() => setToggleInput(false)} />  </div> )}</div>}
+                {havePermission && <div onClick={() => setToggleEdit((prev) => !prev)} className='absolute cursor-pointer -top-12 right-32'>{toggleEdit ? (<div className='flex rounded-full  text-[#5a6acf]  items-center py-2 px-4 shadow-md gap-2'> סיום עריכה<IoClose onClick={() => setToggleInput(false)} /></div>) : (<div className='flex rounded-full  text-[#FF8A65]  items-center py-2 px-4 shadow-md gap-2'>עריכת חדר<BiEdit onClick={() => setToggleInput(false)} />  </div>)}</div>}
 
                 {allRooms?.map((item, i) => (
                     <div key={item} className={`flex relative items-center justify-center h-80   border-l-[1px] border-b-[1px] border-border`}>
@@ -135,9 +136,9 @@ const HomePage = () => {
                         <div className='relative w-40 xl:w-56 bg-accent border-2 text-2xl font-semibold border-border shadow-md rounded-lg flex justify-center items-center hover:scale-110 duration-150'>
                             {toggleEdit ?
                                 (<>
-                                <BiEdit  size={15} className='absolute right-1 top-1 '/>
-                                <input onFocus={() => setToggleInput(false)} name={item} onChange={(e) => setInputValue(e.target.value)} onBlur={(e) => handleActions(e, "edit", item)} defaultValue={item} className='text-center p-4 px-5 xl:px-10 w-full rounded-lg outline-none' type="text" /> 
-                                </>):
+                                    <BiEdit size={15} className='absolute right-1 top-1 ' />
+                                    <input onFocus={() => setToggleInput(false)} name={item} onChange={(e) => setInputValue(e.target.value)} onBlur={(e) => handleActions(e, "edit", item)} defaultValue={item} className='text-center p-4 px-5 xl:px-10 w-full rounded-lg outline-none' type="text" />
+                                </>) :
                                 <button onClick={() => { handleNavigate(item) }} className='p-4 px-5 xl:px-10 w-full' >{item}</button>
                             }
                         </div>

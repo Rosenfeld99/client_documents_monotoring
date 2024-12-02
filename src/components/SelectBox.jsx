@@ -11,6 +11,7 @@ const SelectBox = ({ options, setState, optionDisaled }) => {
     const handleSelect = (e) => {
         // console.log(e.target);
         const val = e.target.value
+        localStorage.setItem("sw", val)
 
         // console.log(options?.find((item) => item?.name == val));
 
