@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import TemplatePage from '../utils/TemplatePage'
 import CustomSelect from '../utils/CustomSelect'
-import { useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { MdKeyboardArrowRight, MdKeyboardArrowLeft } from 'react-icons/md'
 import TableFilters from '../components/table/TableFilters'
 import Table from '../components/table/Table'
@@ -95,45 +95,47 @@ const UserManagementPage = () => {
     const HoverComps = (currUser) => {
         return (
             <div className=" hidden items-center gap-3 w-full h-full bg-border  text-text group-hover:flex duration-150 transition ease-in-out text-xl px-10 absolute top-0 right-0">
-                <button className=' flex items-center text-lg h-7 gap-2 justify-end border-2 rounded-lg px-2 hover:scale-105 duration-150 hover:text-primary hover:border-pritext-primary'>
-                    <BiEdit />
-                    <span >ניהול הרשאות</span>
-                </button>
+                <Link to={`/user-management/:id?sw=${searchParams.get('sw')}&subSW=${searchParams.get('subSW')}&room=${searchParams.get('room')}`}>
+                    <button className=' flex items-center text-lg h-7 gap-2 justify-end border-2 rounded-lg px-2 hover:scale-105 duration-150 hover:text-primary hover:border-pritext-primary'>
+                        <BiEdit />
+                        <span >ניהול הרשאות</span>
+                    </button>
+                </Link>
             </div>
         )
     }
 
-    const [steps, setSteps] = useState({
-        data: ["BBB", "AAA", "DDD", "FFF"],
-        prevData: ["DDD", "FFF"],
-        nextData: ["BBB", "AAA"],
-    })
+    // const [steps, setSteps] = useState({
+    //     data: ["BBB", "AAA", "DDD", "FFF"],
+    //     prevData: ["DDD", "FFF"],
+    //     nextData: ["BBB", "AAA"],
+    // })
 
-    const handleNext = (currItem) => {
-        console.log(currItem);
-    
-        setSteps((prev) => {
-            // Ensure immutability by creating new arrays
-            const newPrevData = prev?.prevData || [];
-            const newNextData = (prev?.nextData || []).filter((item) => item !== currItem);
-    
-            // Only add `currItem` to `prevData` if it doesn't already exist
-            if (!newPrevData.includes(currItem)) {
-                return {
-                    ...prev,
-                    prevData: [...newPrevData, currItem],
-                    nextData: newNextData
-                };
-            }
-    
-            return {
-                ...prev,
-                nextData: newNextData
-            };
-        });
-    };
-    
-    
+    // const handleNext = (currItem) => {
+    //     console.log(currItem);
+
+    //     setSteps((prev) => {
+    //         // Ensure immutability by creating new arrays
+    //         const newPrevData = prev?.prevData || [];
+    //         const newNextData = (prev?.nextData || []).filter((item) => item !== currItem);
+
+    //         // Only add `currItem` to `prevData` if it doesn't already exist
+    //         if (!newPrevData.includes(currItem)) {
+    //             return {
+    //                 ...prev,
+    //                 prevData: [...newPrevData, currItem],
+    //                 nextData: newNextData
+    //             };
+    //         }
+
+    //         return {
+    //             ...prev,
+    //             nextData: newNextData
+    //         };
+    //     });
+    // };
+
+
 
     return (
         <TemplatePage
@@ -151,7 +153,7 @@ const UserManagementPage = () => {
                     {loading ? <div>Loading...</div> :
                         <Table HoverComps={HoverComps} setOpenManageColumns={setOpenManageColumns} filters={filters} toggleColumn={toggleColumn} columnVisibility={columnVisibility} columns={columns} setColumns={setColumns} filteredData={filteredData} handleFilterChange={handleFilterChange} setFilteredData={setFilteredData} />
                     }
-                    <StepContainer steps={steps} handleNext={handleNext} />
+                    {/* <StepContainer steps={steps} handleNext={handleNext} /> */}
                 </div>
                 {/* paggintions */}
                 <div className=" flex flex-row-reverse w-full justify-center items-center gap-3 fixed bottom-0 p-3 pl-[330px] backdrop-blur-sm">
