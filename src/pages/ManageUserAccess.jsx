@@ -11,10 +11,88 @@ const ManageUserAccess = () => {
 
     const str = `${searchParams.get('sw')} / ${searchParams.get('subSW')} / ${searchParams.get('room')}`
     const [steps, setSteps] = useState({
-        data: ["דסק", "מנור", "תומר", "מקשאפ"],
-        prevData: ["מקשאפ", "תומר"],
-        nextData: [, "בחר חדר"],
+        prevData: [
+        ],
+        currentStep:
+            { name: "בחר סביבה", id: 3, value: "" },
+        nextData: [
+            { name: "תת סביבה", id: 2, value: "מנור" },
+            { name: "בחר חדר", id: 5, value: "בחר חדר" },
+        ],
+    });
+
+    const [userAccessList, setUserAccessList] = useState({
+        listOption: [
+            {
+                list: [
+                    { name: "מקשאפ", id: 4, value: "מקשאפ" },
+                    { name: "בהד 1", id: 12, value: "בהד 1" },
+                ]
+                , index: 0
+            }
+            ,
+            {
+                list: [
+                    { name: "תומר", id: 4786, value: "תומר" },
+                    { name: "מעבדה", id: 17682, value: "מעבדה" },
+                ],
+                index: 1
+            }
+            ,
+            {
+                list: [
+                    { name: "אלפא", id: 67674, value: "אלפא" },
+                    { name: "דסק", id: 188882, value: "דסק" },
+                ],
+                index: 2
+            }
+            ,
+
+        ],
+        currentStep: {
+            list: [
+                { name: "מקשאפ", id: 4, value: "מקשאפ" },
+                { name: "בהד 1", id: 12, value: "בהד 1" },
+            ],
+            index: 0
+        }
     })
+
+
+
+
+    const handleStepsChange = (option, index) => {
+        setSteps((prev) => {
+            const isPrev = prev.prevData.some((item) => item.id === option.id);
+
+            // Determine the new currentStep
+            const newCurrentStep = isPrev
+                ? prev.nextData[0] // Move forward in steps
+                : prev.prevData.length > 0
+                    ? prev.prevData[prev.prevData.length - 1] // Move backward
+                    : null;
+
+            // Update steps
+            return {
+                ...prev,
+                prevData: isPrev
+                    ? prev.prevData.filter((item) => item.id !== option.id)
+                    : [...prev.prevData, option],
+                nextData: isPrev
+                    ? [...prev.nextData, option]
+                    : prev.nextData.filter((item) => item.id !== option.id),
+                currentStep: newCurrentStep || prev.currentStep,
+            };
+        });
+
+        // Update userAccessList
+        setUserAccessList((prev) => ({
+            ...prev,
+            currentStep: userAccessList.listOption[index + 1] || prev.currentStep,
+        }));
+    };
+
+
     return (
         <TemplatePage
             showHeader={true}
@@ -42,14 +120,14 @@ const ManageUserAccess = () => {
                             <div className=" text-xl">
                                 ניהול הרשאות לפי סביבה
                             </div>
-                            <StepContainer steps={steps} />
+                            <StepContainer handleNext={handleStepsChange} steps={steps} />
                         </div>
                         <div className="">
                             <div className=" text-lg font-semibold underline">
                                 בחר חדר
                             </div>
                             <div className="pt-3 flex items-center gap-5">
-                                {["דסק", "מנור"]?.map((item, index) => (<button key={index} className="px-3  cursor-default py-1 bg-accent border-2 text-primary text-md font-semibold border-border shadow-md rounded-lg flex justify-center items-center hover:scale-110 duration-150">{item}</button>))}
+                                {userAccessList.currentStep?.list?.map((item, index) => (<button onClick={() => handleStepsChange(item, userAccessList.currentStep?.index)} key={index} className="px-3  cursor-default py-1 bg-accent border-2 text-primary text-md font-semibold border-border shadow-md rounded-lg flex justify-center items-center hover:scale-110 duration-150">{item?.name}</button>))}
                             </div>
                         </div>
                         <div className="">
@@ -57,7 +135,7 @@ const ManageUserAccess = () => {
                                 רמת הרשאה
                             </div>
                             <div className="pt-3 flex items-center gap-5">
-                                {["צופה","עורך", "מנהל"]?.map((item, index) => (<button key={index} className="px-3 cursor-default py-1 bg-accent border-2 text-primary text-md font-semibold border-border shadow-md rounded-lg flex justify-center items-center hover:scale-110 duration-150">{item}</button>))}
+                                {["צופה", "עורך", "מנהל"]?.map((item, index) => (<button key={index} className="px-3 cursor-default py-1 bg-accent border-2 text-primary text-md font-semibold border-border shadow-md rounded-lg flex justify-center items-center hover:scale-110 duration-150">{item}</button>))}
                             </div>
                         </div>
                         <div className=" flex flex-col gap-2">
