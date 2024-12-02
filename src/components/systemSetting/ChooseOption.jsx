@@ -248,7 +248,7 @@ function ChooseOption({ updateInput, setUpdateInput, chooseOption, setChooseOpti
                         }
                     </div>
                     <div className='mt-auto'>
-                        <img src={setting} alt="" className="h-56 mr-1 object-contain" />
+                        <img src={setting} alt="" className="max-h-80 mr-1 object-contain" />
                     </div>
                 </div>
 

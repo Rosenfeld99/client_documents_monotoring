@@ -120,7 +120,12 @@ const RootSWPage = () => {
             showHeader={true}
             showNav={true}
             showSidebar={true}
-            titleHeader={searchParams.get('sw') || singleOptoin?.name ? "תת סביבה" : "נדרש לבחור סביבה"}
+            titleHeader={<div className='flex gap-2'>
+                {searchParams.get('sw') || singleOptoin?.name ? "תת סביבה" : "נדרש לבחור סביבה"}
+                {havePermission && <div onClick={() => setToggleEdit((prev) => !prev)} className={`text-sm cursor-pointer `}>{toggleEdit ? (<div className='flex rounded-full  text-[#5a6acf]  items-center py-2 px-4 shadow-md gap-2'> סיום עריכה<IoClose onClick={() => setToggleInput(false)} /></div>) : (<div className='flex rounded-full  text-[#FF8A65]  items-center py-2 px-4 shadow-md gap-2'>{searchParams.get('sw') || singleOptoin?.name ? "עריכת תת-סביבה" : "עריכת סביבה"}<BiEdit onClick={() => setToggleInput(false)} />  </div>)}</div>}
+
+
+            </div>}
             navLeft={searchParams.get('sw') || singleOptoin?.name ? `${searchParams.get('sw') || singleOptoin?.name} / לובי כניסה` : null}
             navRight={<CustomSelect labelText={"בחר קבוצה"} options={accessOption} placeholder="קבוצה..." keyToUpdate={"accessOption"} />}
             showExcel={false}
@@ -131,7 +136,7 @@ const RootSWPage = () => {
         >
             <section className=' relative mx-10 flex-1 grid grid-cols-3 '>
                 {/* this is the edit icon. close? close all. open? open the edit */}
-                {havePermission && <div onClick={() => setToggleEdit((prev) => !prev)} className={`absolute cursor-pointer  -top-12 ${searchParams.get('sw') || singleOptoin?.name ? "right-32" : "right-60"}`}>{toggleEdit ? (<div className='flex rounded-full  text-[#5a6acf]  items-center py-2 px-4 shadow-md gap-2'> סיום עריכה<IoClose onClick={() => setToggleInput(false)} /></div>) : (<div className='flex rounded-full  text-[#FF8A65]  items-center py-2 px-4 shadow-md gap-2'>{searchParams.get('sw') || singleOptoin?.name ? "עריכת תת-סביבה" : "עריכת סביבה"}<BiEdit onClick={() => setToggleInput(false)} />  </div>)}</div>}
+                {/* {havePermission && <div onClick={() => setToggleEdit((prev) => !prev)} className={`absolute cursor-pointer  -top-12 ${searchParams.get('sw') || singleOptoin?.name ? "right-32" : "right-60"}`}>{toggleEdit ? (<div className='flex rounded-full  text-[#5a6acf]  items-center py-2 px-4 shadow-md gap-2'> סיום עריכה<IoClose onClick={() => setToggleInput(false)} /></div>) : (<div className='flex rounded-full  text-[#FF8A65]  items-center py-2 px-4 shadow-md gap-2'>{searchParams.get('sw') || singleOptoin?.name ? "עריכת תת-סביבה" : "עריכת סביבה"}<BiEdit onClick={() => setToggleInput(false)} />  </div>)}</div>} */}
                 {singleOptoin?.map((item, i) => (
                     <div key={item} className={`flex relative items-center justify-center h-80  ${i !== lobbyOption?.length && "border-l-[1px]"} border-b-[1px] border-border`}>
                         {/* if mode is edit, show delete icon */}

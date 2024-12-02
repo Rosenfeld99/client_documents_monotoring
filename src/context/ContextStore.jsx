@@ -66,6 +66,7 @@ export const ContextStoreProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState()
     const [inputs, setInputs] = useState([])
     const [historyReports, setHistoryReports] = useState([])
+    const [allUserRooms, setAllUserRooms] = useState([])
 
     // table issus
     const [filteredData, setFilteredData] = useState([]);
@@ -75,7 +76,6 @@ export const ContextStoreProvider = ({ children }) => {
     );
     const [countRoomReports, setCountRoomReports] = useState({})
 
-
     const contextValue = {
         options, setOptions,
         singleOptoin, setSingleOption,
@@ -84,7 +84,8 @@ export const ContextStoreProvider = ({ children }) => {
         filteredData, setFilteredData,
         columns, setColumns,
         columnVisibility, setColumnVisibility,
-        countRoomReports, setCountRoomReports
+        countRoomReports, setCountRoomReports,
+        allUserRooms, setAllUserRooms,
     }
 
 
