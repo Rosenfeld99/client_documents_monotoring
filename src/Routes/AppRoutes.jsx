@@ -48,6 +48,7 @@ const AppRoutes = () => {
             <Route path='/new-issue' element={<NewIssuePage />} />
             <Route path='/user-management' element={<UserManagementPage />} />
             <Route path='/user-management/:id' element={<ManageUserAccess />} />
+            <Route path='/register-user' element={<ManageUserAccess />} />
             <Route path='/issue-history' element={<IssueHistoryPage />} />
             <Route path='/open-issue' element={<OpenIssues />} />
             <Route path='/system-settings' element={<SystemSettingsPage />} />
