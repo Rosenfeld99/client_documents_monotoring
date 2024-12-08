@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { LiaEyeSlash, LiaEyeSolid } from 'react-icons/lia';
 
-export default function CustomTextarea({ required, placeholder, label, state, setState, minLen, maxLen, pattern, keyToUpdate }) {
+export default function CustomTextarea({ required, placeholder, disabled, label, state, setState, minLen, maxLen, pattern, keyToUpdate }) {
     const inputRef = useRef(null);
 
     const handleInputChange = (e) => {
@@ -31,6 +31,7 @@ export default function CustomTextarea({ required, placeholder, label, state, se
                 maxLength={maxLen}
                 onChange={handleInputChange}
                 placeholder={placeholder}
+                disabled={disabled ?? false}
             />
             {required &&
                 <div className='absolute  text-[10px]  -top-3 left-0 text-[#E57373]'>*שדה חובה </div>

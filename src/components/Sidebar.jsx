@@ -9,6 +9,7 @@ import { useNavigate, useLocation, useSearchParams } from 'react-router-dom'
 import useContextStore from '../hooks/useContextStore'
 import { BsClockHistory } from 'react-icons/bs'
 import Logo from "../../public/logo.png"
+import useSocket from '../hooks/useSocket'
 
 const Sidebar = () => {
     const navigateion = useNavigate()
@@ -16,10 +17,20 @@ const Sidebar = () => {
     const [searchParams] = useSearchParams()
     // console.log(searchParams.get('room'));
     const { options } = useContextStore()
+    const { changeRoom } = useSocket()
 
     const styleItem = "flex items-center gap-3 text-[#a4a5ac] hover:opacity-50 px-3 py-2 rounded-lg transition-all duration-150 cursor-pointer"
     const styleItemActive = "bg-primary text-background flex items-center gap-3 px-5 py-2 rounded-lg transition-all duration-150 " // active item style
     const styleIcon = "text-2xl"
+
+
+    const SocketAction = (page) => {
+        const localSW = localStorage.getItem("sw");
+        const localSubSP = localStorage.getItem("subSW");
+        const localRoom = localStorage.getItem("room");
+        changeRoom(localSW, localSubSP, localRoom, page)
+    }
+
 
     return (
         <div className="flex flex-col h-full justify-between fixed max-h-screen w-[250px] min-w-[210px] bg-secondary min-h-screen p-5">
@@ -44,28 +55,28 @@ const Sidebar = () => {
                         <PiBuildingsBold className={styleIcon} />
                         <span>לובי</span>
                     </div>
-                    {(searchParams.get('sw') && searchParams.get('subSW') && searchParams.get('room')) && <div onClick={() => navigateion(`/dashboard?sw=${searchParams.get('sw')}&subSW=${searchParams.get('subSW')}&room=${searchParams.get('room') || "דשבורד"}`)} className={`${location.pathname.includes("/dashboard") ? styleItemActive : styleItem}`}>
+                    {(searchParams.get('sw') && searchParams.get('subSW') && searchParams.get('room')) && <div onClick={() => { SocketAction("dashboard_open"); navigateion(`/dashboard?sw=${searchParams.get('sw')}&subSW=${searchParams.get('subSW')}&room=${searchParams.get('room') || "דשבורד"}`) }} className={`${location.pathname.includes("/dashboard") ? styleItemActive : styleItem}`}>
                         <FaChartBar className={styleIcon} />
                         <span>דשבורד</span>
                     </div>}
-                    {(searchParams.get('sw') && searchParams.get('subSW') && searchParams.get('room')) && <div onClick={() => navigateion(`/new-issue?sw=${searchParams.get('sw')}&subSW=${searchParams.get('subSW')}&room=${searchParams.get('room') || "תקלה חדשה"}`)} className={`${location.pathname === "/new-issue" ? styleItemActive : styleItem}`}>
+                    {(searchParams.get('sw') && searchParams.get('subSW') && searchParams.get('room')) && <div onClick={() => { SocketAction("new-issue"); navigateion(`/new-issue?sw=${searchParams.get('sw')}&subSW=${searchParams.get('subSW')}&room=${searchParams.get('room') || "תקלה חדשה"}`) }} className={`${location.pathname === "/new-issue" ? styleItemActive : styleItem}`}>
                         <CgLoadbarDoc className={styleIcon} />
                         <span>תקלה חדשה</span>
                     </div>}
-                    {(searchParams.get('sw') && searchParams.get('subSW') && searchParams.get('room')) && <div onClick={() => navigateion(`/user-management?sw=${searchParams.get('sw')}&subSW=${searchParams.get('subSW')}&room=${searchParams.get('room') || "ניהול משתמשים"}`)} className={`${location.pathname === "/user-management" ? styleItemActive : styleItem}`}>
+                    {(searchParams.get('sw') && searchParams.get('subSW') && searchParams.get('room')) && <div onClick={() => { SocketAction("user-management"); navigateion(`/user-management?sw=${searchParams.get('sw')}&subSW=${searchParams.get('subSW')}&room=${searchParams.get('room') || "ניהול משתמשים"}`) }} className={`${location.pathname === "/user-management" ? styleItemActive : styleItem}`}>
                         <FaUsers className={styleIcon} />
                         <span>ניהול משתמשים</span>
                     </div>}
 
-                    {(searchParams.get('sw') && searchParams.get('subSW') && searchParams.get('room')) && <div onClick={() => navigateion(`/open-issue?sw=${searchParams.get('sw')}&subSW=${searchParams.get('subSW')}&room=${searchParams.get('room') || "תקלות פתוחות"}`)} className={`${location.pathname === "/open-issue" ? styleItemActive : styleItem}`}>
+                    {(searchParams.get('sw') && searchParams.get('subSW') && searchParams.get('room')) && <div onClick={() => { SocketAction("open-issue"); navigateion(`/open-issue?sw=${searchParams.get('sw')}&subSW=${searchParams.get('subSW')}&room=${searchParams.get('room') || "תקלות פתוחות"}`) }} className={`${location.pathname === "/open-issue" ? styleItemActive : styleItem}`}>
                         <BsClockHistory className={styleIcon + " text-xl"} />
                         <span>תקלות פתוחות</span>
                     </div>}
-                    {(searchParams.get('sw') && searchParams.get('subSW') && searchParams.get('room')) && <div onClick={() => navigateion(`/issue-history?sw=${searchParams.get('sw')}&subSW=${searchParams.get('subSW')}&room=${searchParams.get('room') || "היסטורית תקלות"}`)} className={`${location.pathname === "/issue-history" ? styleItemActive : styleItem}`}>
+                    {(searchParams.get('sw') && searchParams.get('subSW') && searchParams.get('room')) && <div onClick={() => { SocketAction("issue-history"); navigateion(`/issue-history?sw=${searchParams.get('sw')}&subSW=${searchParams.get('subSW')}&room=${searchParams.get('room') || "היסטורית תקלות"}`) }} className={`${location.pathname === "/issue-history" ? styleItemActive : styleItem}`}>
                         <MdHistory className={styleIcon} />
                         <span>היסטורית תקלות</span>
                     </div>}
-                    {(searchParams.get('sw') && searchParams.get('subSW') && searchParams.get('room')) && <div onClick={() => navigateion(`/system-settings?sw=${searchParams.get('sw')}&subSW=${searchParams.get('subSW')}&room=${searchParams.get('room') || "הגדרות מערכת"}`)} className={`${location.pathname === "/system-settings" ? styleItemActive : styleItem}`}>
+                    {(searchParams.get('sw') && searchParams.get('subSW') && searchParams.get('room')) && <div onClick={() => { SocketAction("system-settings"); navigateion(`/system-settings?sw=${searchParams.get('sw')}&subSW=${searchParams.get('subSW')}&room=${searchParams.get('room') || "הגדרות מערכת"}`) }} className={`${location.pathname === "/system-settings" ? styleItemActive : styleItem}`}>
                         <IoMdSettings className={styleIcon} />
                         <span>הגדרות מערכת</span>
                     </div>}

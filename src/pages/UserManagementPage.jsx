@@ -149,7 +149,7 @@ const UserManagementPage = () => {
             <section className="p-10 flex flex-col gap-3 flex-1">
 
                 <TableFilters openManageColumns={openManageColumns} setOpenManageColumns={setOpenManageColumns} columnVisibility={columnVisibility} columns={columns} handleFilterChange={handleFilterChange} toggleColumn={toggleColumn} filters={filters} />
-                <div className="overflow-x-auto ml-[240px]">
+                <div className=" w-[85vw] overflow-x-auto ml-[240px]">
                     {loading ? <div>Loading...</div> :
                         <Table HoverComps={HoverComps} setOpenManageColumns={setOpenManageColumns} filters={filters} toggleColumn={toggleColumn} columnVisibility={columnVisibility} columns={columns} setColumns={setColumns} filteredData={filteredData} handleFilterChange={handleFilterChange} setFilteredData={setFilteredData} />
                     }

@@ -14,14 +14,17 @@ import { ContextStore } from '../context/contextStore'
 import useSpaceWork from '../hooks/useSpaceWork'
 import ManageUserAccess from '../pages/ManageUserAccess'
 import useContextStore from '../hooks/useContextStore'
+import socketHook from '../hooks/useSocket'
+
 
 const AppRoutes = () => {
     const { getUser, currentUser } = useUsers()
     const { inputs, setInputs, setCountRoomReports, historyReports } = useContext(ContextStore)
-    const { allUserRooms, setAllUserRooms } = useContextStore()
+    const { allUserRooms, setAllUserRooms, socketIo } = useContextStore()
     const [searchParams] = useSearchParams()
     const { getRoomInputs, getRoomHistory } = useSpaceWork()
     const navigate = useNavigate()
+    const { changeRoom } = socketHook()
 
     useEffect(() => {
         getUser("doe01")
@@ -43,26 +46,29 @@ const AppRoutes = () => {
     }, [currentUser, searchParams.get('room')])
 
     useEffect(() => {
-        const localSW = localStorage.getItem("sw");
-        const localSubSP = localStorage.getItem("subSW");
-        const localRoom = localStorage.getItem("room");
+        if (socketIo) {
 
-        if (localSW && localSubSP && localRoom) {
-            console.log("aa");
+            const localSW = localStorage.getItem("sw");
+            const localSubSP = localStorage.getItem("subSW");
+            const localRoom = localStorage.getItem("room");
 
-            navigate(`dashboard/?sw=${localSW}&subSW=${localSubSP}&room=${localRoom}`)
+            if (localSW && localSubSP && localRoom) {
+                changeRoom(localSW, localSubSP, localRoom, "dashboard_open")
+                navigate(`dashboard?sw=${localSW}&subSW=${localSubSP}&room=${localRoom}`)
+            }
+            else if (localSW && localSubSP) {
+                changeRoom(localSW, localSubSP)
+
+                navigate(`/?sw=${localSW}&subSW=${localSubSP}`)
+            }
+            else if (localSW) {
+                changeRoom(localSW)
+
+                navigate(`/?sw=${localSW}`)
+            }
         }
-        else if (localSW && localSubSP) {
-            console.log("bb");
 
-            navigate(`/?sw=${localSW}&subSW=${localSubSP}`)
-        }
-        else if (localSW) {
-            console.log("cc");
-
-            navigate(`/?sw=${localSW}`)
-        }
-    }, [])
+    }, [socketIo])
 
 
     return (
@@ -80,6 +86,9 @@ const AppRoutes = () => {
             <Route path='/*' element={<div className=' flex items-center justify-center w-full h-screen text-2xl font-semibold gap-5'>Not found 404 <Link to={'/'} className=' px-3 py-1 bg-success text-white '>Back Home</Link></div>} />
         </Routes>
     )
+
+
+
 }
 
 export default AppRoutes

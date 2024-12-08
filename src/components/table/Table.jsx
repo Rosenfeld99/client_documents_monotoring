@@ -30,6 +30,7 @@ const Table = ({ setOpenManageColumns, columns, columnVisibility, setColumns, fi
     };
     return (
         <React.Fragment>
+
             <table className="w-full border border-border shadow-md rounded-lg">
                 <thead className="bg-accent text-white border-b border-b-border">
                     <tr>

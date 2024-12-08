@@ -12,13 +12,11 @@ import useReport from '../hooks/useReport'
 const NewIssuePage = () => {
     const [searchParams] = useSearchParams()
     const str = `${searchParams.get('sw')} / ${searchParams.get('subSW')} / ${searchParams.get('room')}`
-    const { inputs, setInputs, currentUser, historyReports } = useContext(ContextStore)
+    const { inputs, setInputs, currentUser, newIdReport, historyReports } = useContext(ContextStore)
     const { addReport } = useReport()
     const [newReportData, setNewReportData] = useState({
         דחיפות: "נמוכה-3", "יחידה מטפלת": searchParams?.get('room'), "מ.א": currentUser?.userId
     })
-    const index = historyReports?.data?.length - 1;
-    // console.log(historyReports?.data[index]?.reportId ?? historyReports?.data[index][`מס"ד`]);
 
     const handleInputChange = useCallback((value, key) => {
         setNewReportData((prev) => ({ ...prev, [key]: value }))
@@ -75,7 +73,7 @@ const NewIssuePage = () => {
                 <div className="flex justify-start flex-col px-10  h-full gap-6 w-2/3">
                     {/* just if inputs length more than 1 (urgancey) show new report */}
 
-                    {inputs.length > 4 && <div className="mt-3">מספר תקלה {historyReports?.data[index]?.reportId + 1 ?? historyReports?.data[index][`מס"ד`] + 1 ?? 0}</div>}
+                    {inputs.length > 3 && <div className="mt-3">מספר תקלה {newIdReport}</div>}
                     <div className=" flex h-[29rem] gap-20 w-full">
                         {inputs.length > 4 ?
                             <div className=" flex flex-col flex-wrap h-full j w-full max-w-60 items-center gap-6">
@@ -86,7 +84,7 @@ const NewIssuePage = () => {
                                             return <CustomTextarea key={input?._id} state={newReportData} setState={handleInputChange} label={input?.label} keyToUpdate={input?.label} required={input?.require} placeholder={input?.placeholder} />
                                         case "select":
                                             // if the input is דחיפות  revers the array becuse the hebrew
-                                            return <CustomSelect key={input?._id} options={input.label === "דחיפות" ? reversString(input?.options) : input?.options} setState={handleInputChange} labelText={input?.label} keyToUpdate={input?.label} required={input?.require} placeholder={input?.placeholder} />
+                                            return <CustomSelect key={input?._id} options={input.label === "דחיפות" ? reversString(input?.options) : input?.options} setState={handleInputChange} labelText={input?.label} keyToUpdate={input?.label} required={input?.require} />
                                         case "short":
                                             return <CustomInput key={input?._id} state={newReportData} setState={handleInputChange} label={input?.label} keyToUpdate={input?.label} required={input?.require} placeholder={input?.placeholder} />
                                         default:
@@ -109,7 +107,7 @@ const NewIssuePage = () => {
                 </div>
                 <div className=" flex flex-col max-w-[600px] m-10 w-1/4">
                     <img src="/new-issuse.png" alt="new issuse" />
-                    {inputs.length > 4 && <button onClick={createReport} className={`px-6 text-[#66BB6A] border-[#66BB6A] hover:scale-110 duration-150  p-1 mt-10 font-bold border-2 rounded-md `}>
+                    {inputs.length > 3 && <button onClick={createReport} className={`px-6 text-[#66BB6A] border-[#66BB6A] hover:scale-110 duration-150  p-1 mt-10 font-bold border-2 rounded-md `}>
                         יצירת תקלה חדשה
                     </button>}
                 </div>

@@ -5,7 +5,7 @@ import { useSearchParams } from 'react-router-dom'
 import useContextStore from './useContextStore'
 
 function useSpaceWork() {
-  const { inputs, setInputs, historyReports, setHistoryReports, currentUser, setCurrentUser } = useContext(ContextStore)
+  const { inputs, setInputs, setNewIdReport, historyReports, setHistoryReports, currentUser, setCurrentUser } = useContext(ContextStore)
   const createSpaceWork = async ({ adminId, spaceWorkName, }) => {
 
     try {
@@ -216,9 +216,10 @@ function useSpaceWork() {
       const result = await axios.get(`http://localhost:3001/spaceWork/getRoom`, {
         params: { userId, spaceWork, subSpaceWork, room }
       })
-      console.log(result.data);
+      // lastReportId is the new reportId for new mission so i did -1 to understand the state name and function
+      setNewIdReport(result?.data?.newIdReport)
 
-      setInputs(result?.data)
+      setInputs(result?.data?.inputs)
     } catch (error) {
       console.log(error);
     }

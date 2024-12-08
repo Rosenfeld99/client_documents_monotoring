@@ -5,11 +5,11 @@ import { useSearchParams } from 'react-router-dom'
 import useContextStore from '../hooks/useContextStore'
 import useReports from '../hooks/useReport'
 import useUsers from '../hooks/useUsers'
-import { formatDataToChart, formatDataToChartForBar, formatDay, formatHour, formatMonth, formatWeek, hideDatesSelect, listOption, showDatesSelect } from '../utils/dashbordUtils'
-import { notify } from '../utils/Tastify/notify'
+import { formatDataToChartForBar, formatDay, formatHour, formatMonth, formatWeek, hideDatesSelect, listOption, showDatesSelect } from '../utils/dashbordUtils'
 import useSpaceWork from '../hooks/useSpaceWork'
 import { ContextStore } from '../context/contextStore'
 import "../pages/style.css"
+import useSocket from '../hooks/useSocket'
 
 const DonutChart = lazy(() => import('../components/donutChart/DonutChart'));
 const ColumnChart = lazy(() => import('../components/columnChart/ColumnChart'));
@@ -19,17 +19,19 @@ const DashboardPage = () => {
 
     const { singleOptoin } = useContextStore()
     const [searchParams] = useSearchParams()
-    const { getReportsByConditions, historyReports, getAllReports } = useReports()
+    const { historyReports, getAllReports } = useReports()
     const { currentUser } = useUsers()
     const { inputs } = useSpaceWork()
     // this states are to chart and they get what user want to show and if it is date also func date is need
     const [ColumnChart1Select, setColumnChart1Select] = useState({ label: "יחידה מטפלת", dateFunc: null })
     const [ColumnChart2Select, setColumnChart2Select] = useState({ label: "יחידה מטפלת", dateFunc: null })
     // get the number of response of reports 
+    console.log(historyReports);
 
 
     const [fromDate, setFromDate] = useState(new Date())
     const [toDate, setToDate] = useState(new Date())
+    const { changeRoom } = useSocket()
 
     const [dateToggle, setDateToggle] = useState(false)
 
@@ -58,10 +60,12 @@ const DashboardPage = () => {
         }
         , [dateToggle])
 
+
     useEffect(() => {
+        // 1. Report Fetching Logic
         if (currentUser?.userId) {
             const getReportObj = {
-                limitResultsIndex: -1,// -1 is get all reports 
+                limitResultsIndex: -1, // -1 is get all reports
                 indexToSkip: 0,
                 dates: {
                     fromDate,
@@ -73,32 +77,40 @@ const DashboardPage = () => {
                 spaceWorkName: searchParams.get('sw'),
                 subSpaceWorkName: searchParams.get('subSW'),
                 roomName: searchParams.get('room'),
-            }
-            getAllReports(getReportObj)
+            };
+            getAllReports(getReportObj); // Only runs when `currentUser`, `fromDate`, `toDate`, or `dateToggle` changes
         }
 
-    }, [currentUser, toDate, fromDate, dateToggle])
-
-
-    useEffect(() => {
-
+        // 2. Chart Date Conversion Logic
         const fromDateObj = new Date(fromDate?.setHours(2));
-        const toDateObj = new Date(toDate?.setHours(23))
+        const toDateObj = new Date(toDate?.setHours(23));
+
         // Calculate the difference in milliseconds
         const differenceInMs = Math.abs(toDateObj?.getTime() - fromDateObj?.getTime());
         // Convert milliseconds to hours
         const differenceInHours = differenceInMs / (1000 * 60 * 60);
-        if ((ColumnChart1Select?.label === "problemTimeStart" || ColumnChart1Select?.label === "problemTimeEnd" || ColumnChart1Select?.label === "deleteAt") ||
+
+        // This logic only runs when the labels for the charts change (or the `fromDate`/`toDate` change)
+        if (
+            (ColumnChart1Select?.label === "problemTimeStart" || ColumnChart1Select?.label === "problemTimeEnd" || ColumnChart1Select?.label === "deleteAt") ||
             (ColumnChart2Select?.label === "problemTimeStart" || ColumnChart2Select?.label === "problemTimeEnd" || ColumnChart2Select?.label === "deleteAt")
         ) {
-            chartDatesConvert(ColumnChart1Select?.label, setColumnChart1Select, differenceInHours)
-            chartDatesConvert(ColumnChart2Select?.label, setColumnChart2Select, differenceInHours)
+            chartDatesConvert(ColumnChart1Select?.label, setColumnChart1Select, differenceInHours);
+            chartDatesConvert(ColumnChart2Select?.label, setColumnChart2Select, differenceInHours);
+        } else {
+            setColumnChart1Select((prev) => ({ ...prev, dateFunc: null }));
+            setColumnChart2Select((prev) => ({ ...prev, dateFunc: null }));
         }
-        else {
-            setColumnChart1Select((prev) => ({ ...prev, dateFunc: null }))
-            setColumnChart2Select((prev) => ({ ...prev, dateFunc: null }))
-        }
-    }, [fromDate, toDate, ColumnChart1Select?.label, ColumnChart2Select?.label, dateToggle])
+    }, [currentUser, fromDate, toDate, dateToggle, ColumnChart1Select?.label, ColumnChart2Select?.label]);
+
+
+
+    useEffect(() => {
+        const localSW = localStorage.getItem("sw");
+        const localSubSP = localStorage.getItem("subSW");
+        const localRoom = localStorage.getItem("room");
+        changeRoom(localSW, localSubSP, localRoom, dateToggle ? "dashboard_both" : "dashboard_open")
+    }, [dateToggle])
 
 
     const resetDates = () => {
@@ -156,7 +168,7 @@ const DashboardPage = () => {
             <section className='mx-10 grid grid-cols-3 gap-[1px] bg-border'>
                 <div className="bg-background pl-10">
                     <Suspense fallback={<div>wait loading...</div>}>
-                        <DonutChart optionsSelect={listOption(historyReports?.data, inputs)} setColumnChartSelect={setColumnChart1Select} dataToChart={formatDataToChartForBar(historyReports?.data, ColumnChart1Select?.label, ColumnChart1Select?.dateFunc, "label")} />
+                        <DonutChart optionsSelect={listOption(historyReports?.data, inputs)} setColumnChartSelect={setColumnChart1Select} dataToChart={formatDataToChartForBar(historyReports?.data, ColumnChart1Select?.label, ColumnChart1Select?.dateFunc, "pie")} />
                     </Suspense>
 
                 </div>

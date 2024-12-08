@@ -4,7 +4,9 @@ import App from './App.jsx'
 import './index.css'
 import { BrowserRouter } from 'react-router-dom'
 import 'react-toastify/dist/ReactToastify.css';
-import { ToastContainer } from 'react-toastify'
+import { ToastContainer } from 'react-toastify';
+import { ContextStoreProvider } from './context/contextStore'
+
 
 
 createRoot(document.getElementById('root')).render(
@@ -23,7 +25,10 @@ createRoot(document.getElementById('root')).render(
         pauseOnHover
         theme="light"
       />
-      <App />
+      <ContextStoreProvider>
+        <App />
+
+      </ContextStoreProvider>
     </BrowserRouter>
   </React.Fragment>,
 )

@@ -8,11 +8,14 @@ import { BiEdit } from 'react-icons/bi'
 import { GoTrash } from 'react-icons/go'
 import useUsers from '../hooks/useUsers'
 import useSpaceWork from '../hooks/useSpaceWork'
+import useSocket from '../hooks/useSocket'
 
 const HomePage = () => {
     const { singleOptoin, options, setSingleOption, allUserRooms, setAllUserRooms } = useContextStore()
     const [searchParams] = useSearchParams()
     const { currentUser } = useUsers()
+    const { changeRoom } = useSocket()
+
     const { createRoom, editRoom, deleteRoom, getRoomInputs } = useSpaceWork()
 
     // toggleEdit: toggle between open and closed creation
@@ -104,6 +107,7 @@ const HomePage = () => {
             userId: currentUser.userId
         }
         getRoomInputs(roomObj)
+        changeRoom(searchParams.get('sw'), searchParams.get('subSW'), item)
         navigate(`/dashboard?sw=${searchParams.get('sw')}&subSW=${searchParams.get('subSW')}&room=${item}`)
         localStorage.setItem("room", item)
 

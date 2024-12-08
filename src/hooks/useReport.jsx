@@ -3,12 +3,14 @@ import { ContextStore } from '../context/contextStore'
 import axios from 'axios'
 import { notify } from '../utils/Tastify/notify'
 import { useSearchParams } from 'react-router-dom'
+import useSocket from './useSocket'
+import useContextStore from './useContextStore'
 
 function useReports() {
-    const { historyReports, setHistoryReports, columns, setColumns, filteredData, setFilteredData, columnVisibility, setColumnVisibility, setCountRoomReports } = useContext(ContextStore)
+    const { historyReports, currentUser, setHistoryReports, newIdReport, columns, setNewIdReport, setColumns, filteredData, setFilteredData, columnVisibility, setColumnVisibility, setCountRoomReports } = useContext(ContextStore)
     const [loading, setLoading] = useState(true)
     const [searchParams] = useSearchParams()
-
+    const { createReportSocket, deleteReportSocket, updateReportSocket, finishReportSocket } = useSocket()
 
     const addReport = async ({ spaceWorkName, subSpaceWorkName, roomName, userId, report }) => {
         try {
@@ -22,7 +24,12 @@ function useReports() {
                 userId
             })
 
+
             notify("SUCCESS", "תקלה נוצרה בהצלחה")
+
+            createReportSocket(newReport?.data?.newReport)
+            // setNewIdReport((prev) => prev + 1)
+
 
         } catch (error) {
             console.log(error);
@@ -33,30 +40,35 @@ function useReports() {
 
     const handleDeleteReport = async ({
         userId,
-        reportId,
+        MongoReportId,
         dateRequst,
         spaceWorkName,
         subSpaceWorkName,
-        roomName
+        roomName,
+        reportStatus,
+        reportOpen,
     }) => {
+
         console.log(userId,
-            reportId,
+            MongoReportId,
             dateRequst,
             spaceWorkName,
             subSpaceWorkName,
-            roomName);
+            roomName,
+        );
 
         try {
-            const deleteReport = await axios.post("http://localhost:3001/reports/deleteReport", {
+            const deletedReport = await axios.post("http://localhost:3001/reports/deleteReport", {
                 userId,
-                reportId,
+                MongoReportId,
                 dateRequst,
                 spaceWorkName,
                 subSpaceWorkName,
                 roomName,
+                reportOpen: reportStatus
             })
 
-            console.log(deleteReport);
+            deleteReportSocket(deletedReport?.data?.deletedReport)
             notify("SUCCESS", "תקלה נמחקה בהצלחה")
 
 
@@ -85,7 +97,36 @@ function useReports() {
             })
 
             console.log(closeReport);
+            finishReportSocket(closeReport?.data?.reportClose)
             notify("SUCCESS", "תקלה נסגרה בהצלחה")
+
+
+        } catch (error) {
+            console.log(error);
+
+        }
+
+    }
+    const handleUpdateReport = async ({
+        userId,
+        updateReport,
+        dateRequst,
+        spaceWorkName,
+        subSpaceWorkName,
+        roomName, }) => {
+        try {
+
+            const updatedReport = await axios.put("http://localhost:3001/reports/updateReport", {
+                userId,
+                dateRequst,
+                spaceWorkName,
+                subSpaceWorkName,
+                roomName,
+                updateReport
+            })
+
+            updateReportSocket(updatedReport?.data?.updateReport)
+            notify("SUCCESS", "תקלה עודכנה בהצלחה")
 
 
         } catch (error) {
@@ -156,6 +197,8 @@ function useReports() {
     }
     const getReportsByConditions = async ({ indexToSkip, statusReport, dates, limitResultsIndex, userId, spaceWorkName, subSpaceWorkName, roomName }) => {
         setLoading(true)
+        console.log(statusReport);
+
         try {
             const { data } = await axios.post("http://localhost:3001/reports/getReportsFormatToTable", {
                 spaceWorkName,
@@ -167,10 +210,14 @@ function useReports() {
                 userId,
                 dates
             })
+            console.log(statusReport);
+
             console.log(data);
             setHistoryReports(data);
             setColumns(data.columnsList)
-            setFilteredData(data.data)
+            setFilteredData(data?.data)
+
+
             setColumnVisibility(
                 data.columnsList?.reduce((acc, column) => ({
                     ...acc, [column.key]: true, _id: false,
@@ -189,7 +236,7 @@ function useReports() {
 
 
 
-    return { addReport, getReportsByConditions, handleCloseReport, handleDeleteReport, getAllReports, historyReports, columns, setColumns, filteredData, setFilteredData, columnVisibility, setColumnVisibility, loading, setLoading }
+    return { addReport, handleUpdateReport, getReportsByConditions, handleCloseReport, handleDeleteReport, getAllReports, historyReports, columns, setColumns, filteredData, setFilteredData, columnVisibility, setColumnVisibility, loading, setLoading }
 
 }
 
