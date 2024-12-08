@@ -1,16 +1,14 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import TemplatePage from '../utils/TemplatePage'
 import CustomSelect from '../utils/CustomSelect'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { MdKeyboardArrowRight, MdKeyboardArrowLeft } from 'react-icons/md'
 import TableFilters from '../components/table/TableFilters'
 import Table from '../components/table/Table'
 import { columnsList, soldiersData } from '../constant/USERS.demo'
 import useUsers from '../hooks/useUsers'
 import useReports from '../hooks/useReport'
-import { GoIssueClosed } from 'react-icons/go'
 import { BiEdit } from 'react-icons/bi'
-import StepContainer from '../utils/steps/StepContainer'
 
 const UserManagementPage = () => {
     const { getReportsByConditions, historyReports, loading } = useReports()
@@ -20,6 +18,7 @@ const UserManagementPage = () => {
     const [openManageColumns, setOpenManageColumns] = useState(false)
     const [pagenations, setPagenations] = useState({ prev: 0, curr: 1, next: 2 })
     const { currentUser } = useUsers()
+    const navigation = useNavigate()
 
     useEffect(() => {
         getReportsByConditions(
@@ -105,44 +104,16 @@ const UserManagementPage = () => {
         )
     }
 
-    // const [steps, setSteps] = useState({
-    //     data: ["BBB", "AAA", "DDD", "FFF"],
-    //     prevData: ["DDD", "FFF"],
-    //     nextData: ["BBB", "AAA"],
-    // })
-
-    // const handleNext = (currItem) => {
-    //     console.log(currItem);
-
-    //     setSteps((prev) => {
-    //         // Ensure immutability by creating new arrays
-    //         const newPrevData = prev?.prevData || [];
-    //         const newNextData = (prev?.nextData || []).filter((item) => item !== currItem);
-
-    //         // Only add `currItem` to `prevData` if it doesn't already exist
-    //         if (!newPrevData.includes(currItem)) {
-    //             return {
-    //                 ...prev,
-    //                 prevData: [...newPrevData, currItem],
-    //                 nextData: newNextData
-    //             };
-    //         }
-
-    //         return {
-    //             ...prev,
-    //             nextData: newNextData
-    //         };
-    //     });
-    // };
-
-
 
     return (
         <TemplatePage
             showHeader={true}
             showNav={true}
             showSidebar={true}
-            titleHeader={"ניהול משתמשים"}
+            titleHeader={<div className=' flex items-center justify-between'>
+                <span>ניהול משתמשים</span>
+                <button onClick={() => {navigation(`/register-user?sw=${searchParams.get('sw')}&subSW=${searchParams.get('subSW')}&room=${searchParams.get('room')}`)}} className={`px-3 cursor-pointer py-1 border-2 text-md font-semibold border-border shadow-md rounded-lg flex justify-center items-center text-sm hover:scale-110 duration-150 text-accent bg-primary`}>הוספת משתמש</button>
+            </div>}
             navRight={<CustomSelect labelText={"בחר קבוצה"} options={accessOption} placeholder="קבוצה..." keyToUpdate={"accessOption"} />}
             navLeft={str}
         >
