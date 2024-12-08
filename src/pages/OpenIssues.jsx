@@ -126,7 +126,7 @@ export default function OpenIssues() {
       ...prev,
       [key]: value,
     }));
-  };
+  }
 
 
   const handleClickOnPage = (arrowType) => {
