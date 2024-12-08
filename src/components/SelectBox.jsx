@@ -11,6 +11,7 @@ const SelectBox = ({ options, setState, optionDisaled }) => {
     const handleSelect = (e) => {
         // console.log(e.target);
         const val = e.target.value
+        localStorage.setItem("sw", val)
 
         // console.log(options?.find((item) => item?.name == val));
 
@@ -29,7 +30,7 @@ const SelectBox = ({ options, setState, optionDisaled }) => {
         <React.Fragment>
             {options?.length > 0 &&
                 <div className="w-auto flex items-center relative">
-                    {(!searchParams.get('sw') && !singleOptoin) && <div className="animate-ping w-2 h-2 bg-primary rounded-full absolute -top-1 right-0" />}
+                    {(!searchParams.get('sw')) && <div className="animate-ping w-2 h-2 bg-primary rounded-full absolute -top-1 right-0" />}
                     <select value={location == "/dashboard" ? searchParams.get("room") : searchParams.get('sw') || optionDisaled} onChange={handleSelect} name="box" id="box"
                         className={`px-5 block w-full border-blue-500 rounded-lg text-lg leading-tight focus:outline-none focus:border-blue-700 focus:ring-1 focus:ring-blue-700 hover:cursor-pointer p-1 ${(!searchParams.get('sw') && !singleOptoin) && "border-[1px] border-primary"}`}>
                         <option disabled>{optionDisaled}</option>

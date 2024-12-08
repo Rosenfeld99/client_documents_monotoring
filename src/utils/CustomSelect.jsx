@@ -88,7 +88,7 @@ const CustomSelect = ({ options, placeholder,required, labelText, setState, laye
                 </ul>
             )}
              {required &&
-                <div className='absolute -top-5 left-0 text-[#E57373]'>*שדה חובה </div>
+                <div className='absolute  text-[10px]  -top-3 left-0 text-[#E57373]'>*שדה חובה </div>
             }
         </div>
     );

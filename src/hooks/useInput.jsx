@@ -3,10 +3,10 @@ import { useSearchParams } from 'react-router-dom'
 import useContextStore from './useContextStore'
 import { ContextStore } from '../context/contextStore'
 import axios from 'axios'
+import { notify } from '../utils/Tastify/notify'
 
 function useInput() {
     const [searchParams] = useSearchParams()
-    const { handleGetSingleOption, setSingleOption } = useContextStore()
 
     const { inputs, setInputs, currentUser, setCurrentUser } = useContext(ContextStore)
 
@@ -24,9 +24,12 @@ function useInput() {
                 input
             })
             // console.log(newInput);
+            notify("SUCCESS", "שדה נוצר  בהצלחה")
 
         } catch (error) {
             console.log(error);
+            notify("ERROR", "בעיה ביצירת השדה")
+
 
         }
 
@@ -44,9 +47,12 @@ function useInput() {
                 inputId
             })
             // console.log(deletedInput);
+            notify("SUCCESS", "שדה נמחק בהצלחה")
 
         } catch (error) {
             console.log(error);
+            notify("ERROR", "בעיה במחיקת השדה")
+
 
         }
 
@@ -64,10 +70,13 @@ function useInput() {
                 inputId,
                 editInput
             })
-            console.log(result);
+            notify("SUCCESS", "השדה עודכן בהצלחה")
+
 
         } catch (error) {
             console.log(error);
+            notify("ERROR", "בעיה בעדכון השדה")
+
 
         }
 

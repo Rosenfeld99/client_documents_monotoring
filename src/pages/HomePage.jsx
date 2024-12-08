@@ -10,7 +10,7 @@ import useUsers from '../hooks/useUsers'
 import useSpaceWork from '../hooks/useSpaceWork'
 
 const HomePage = () => {
-    const { singleOptoin, options, setSingleOption } = useContextStore()
+    const { singleOptoin, options, setSingleOption, allUserRooms, setAllUserRooms } = useContextStore()
     const [searchParams] = useSearchParams()
     const { currentUser } = useUsers()
     const { createRoom, editRoom, deleteRoom, getRoomInputs } = useSpaceWork()
@@ -21,14 +21,8 @@ const HomePage = () => {
     const [toggleEdit, setToggleEdit] = useState(false)
     const [toggleInput, setToggleInput] = useState(false)
     const [inputValue, setInputValue] = useState("")
-    const [allRooms, setAllRooms] = useState([])
 
     const navigate = useNavigate()
-    useEffect(() => {
-        setAllRooms(getRooms())
-    }, [currentUser,])
-
-
 
     const getRooms = () => {
         const validRooms = []
@@ -43,6 +37,12 @@ const HomePage = () => {
         }
         return validRooms
     }
+    useEffect(() => {
+        setAllUserRooms(getRooms())
+    }, [currentUser])
+
+
+
 
     const accessOption = [
         { name: "מדגם", value: "מדגם" },
@@ -62,8 +62,15 @@ const HomePage = () => {
             newRoomName: inputValue,
             oldRoomName
         }
+        const duplicateName = (newName) => {
+            return allUserRooms.find((roomName) => roomName === newName)
+        }
         switch (actionType) {
             case "create":
+                if (duplicateName(roomObj.newRoomName)) {
+                    alert("יש כבר סביבה עם אותו שם")
+                    return;
+                }
                 createRoom(
                     roomObj
                 )
@@ -71,6 +78,10 @@ const HomePage = () => {
             case "edit":
                 //check if has new name for room, and the new name is not equal to oldest name,after than do func
                 if (roomObj?.newRoomName && roomObj?.newRoomName !== roomObj?.oldRoomName) {
+                    if (duplicateName(roomObj.newRoomName)) {
+                        alert("יש כבר סביבה עם אותו שם")
+                        return;
+                    }
                     editRoom(roomObj)
                 }
                 break;
@@ -94,6 +105,7 @@ const HomePage = () => {
         }
         getRoomInputs(roomObj)
         navigate(`/dashboard?sw=${searchParams.get('sw')}&subSW=${searchParams.get('subSW')}&room=${item}`)
+        localStorage.setItem("room", item)
 
     }
     // check if user is owner or he have permission of superAdmin or admin to manage the rooms
@@ -105,7 +117,11 @@ const HomePage = () => {
             showHeader={true}
             showNav={true}
             showSidebar={true}
-            titleHeader={"חדר"}
+            titleHeader={<div className='flex'>
+                חדר
+                {havePermission && <div onClick={() => setToggleEdit((prev) => !prev)} className={`text-sm cursor-pointer mr-3`}>{toggleEdit ? (<div className='flex rounded-full  text-[#5a6acf]  items-center py-2 px-4 shadow-md gap-2'> סיום עריכה<IoClose onClick={() => setToggleInput(false)} /></div>) : (<div className='flex rounded-full  text-[#FF8A65]  items-center py-2 px-4 shadow-md gap-2'>{searchParams.get('sw') || singleOptoin?.name ? "עריכת תת-סביבה" : "עריכת סביבה"}<BiEdit onClick={() => setToggleInput(false)} />  </div>)}</div>}
+
+            </div>}
             navLeft={`${searchParams.get('sw')} / ${searchParams.get('subSW')} / בחירת חדר`}
             navRight={<CustomSelect labelText={"בחר קבוצה"} options={accessOption} placeholder="קבוצה..." keyToUpdate={"accessOption"} />}
             showExcel={false}
@@ -114,15 +130,19 @@ const HomePage = () => {
             options={["gfds"]}
         >
             <section className='mx-10 relative flex-1 grid grid-cols-3 '>
-                {havePermission && <div onClick={() => setToggleEdit((prev) => !prev)} className='absolute cursor-pointer -top-11 right-32'>{toggleEdit ? <IoClose onClick={() => setToggleInput(false)} /> : <BiEdit />}</div>}
-                {allRooms?.map((item, i) => (
+                {/* {havePermission && <div onClick={() => setToggleEdit((prev) => !prev)} className='absolute cursor-pointer -top-12 right-32'>{toggleEdit ? (<div className='flex rounded-full  text-[#5a6acf]  items-center py-2 px-4 shadow-md gap-2'> סיום עריכה<IoClose onClick={() => setToggleInput(false)} /></div>) : (<div className='flex rounded-full  text-[#FF8A65]  items-center py-2 px-4 shadow-md gap-2'>עריכת חדר<BiEdit onClick={() => setToggleInput(false)} />  </div>)}</div>} */}
+
+                {allUserRooms?.map((item, i) => (
                     <div key={item} className={`flex relative items-center justify-center h-80   border-l-[1px] border-b-[1px] border-border`}>
                         {/* if mode is edit, show delete icon */}
                         {toggleEdit && <span onClick={(e) => handleActions(e, "delete", item)} className='cursor-pointer absolute left-2 top-0' ><GoTrash color='red' /></span>}
                         {/* if mode is edit, the option will be input to edit name else it will be btn */}
-                        <div className=' w-40 xl:w-56 bg-accent border-2 text-2xl font-semibold border-border shadow-md rounded-lg flex justify-center items-center hover:scale-110 duration-150'>
+                        <div className='relative w-40 xl:w-56 bg-accent border-2 text-2xl font-semibold border-border shadow-md rounded-lg flex justify-center items-center hover:scale-110 duration-150'>
                             {toggleEdit ?
-                                <input onFocus={() => setToggleInput(false)} name={item} onChange={(e) => setInputValue(e.target.value)} onBlur={(e) => handleActions(e, "edit", item)} defaultValue={item} className='text-center p-4 px-5 xl:px-10 w-full rounded-lg outline-none' type="text" /> :
+                                (<>
+                                    <BiEdit size={15} className='absolute right-1 top-1 ' />
+                                    <input onFocus={() => setToggleInput(false)} name={item} onChange={(e) => setInputValue(e.target.value)} onBlur={(e) => handleActions(e, "edit", item)} defaultValue={item} className='text-center p-4 px-5 xl:px-10 w-full rounded-lg outline-none' type="text" />
+                                </>) :
                                 <button onClick={() => { handleNavigate(item) }} className='p-4 px-5 xl:px-10 w-full' >{item}</button>
                             }
                         </div>

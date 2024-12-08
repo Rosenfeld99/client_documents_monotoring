@@ -66,13 +66,15 @@ export const ContextStoreProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState()
     const [inputs, setInputs] = useState([])
     const [historyReports, setHistoryReports] = useState([])
+    const [allUserRooms, setAllUserRooms] = useState([])
 
     // table issus
     const [filteredData, setFilteredData] = useState([]);
     const [columns, setColumns] = useState([]);
     const [columnVisibility, setColumnVisibility] = useState(
-        columns?.reduce((acc, column) => ({ ...acc, [column.key]: true,_id:false }), {})
+        columns?.reduce((acc, column) => ({ ...acc, [column.key]: true, _id: false }), {})
     );
+    const [countRoomReports, setCountRoomReports] = useState({})
 
     const contextValue = {
         options, setOptions,
@@ -81,7 +83,9 @@ export const ContextStoreProvider = ({ children }) => {
         historyReports, setHistoryReports,
         filteredData, setFilteredData,
         columns, setColumns,
-        columnVisibility, setColumnVisibility
+        columnVisibility, setColumnVisibility,
+        countRoomReports, setCountRoomReports,
+        allUserRooms, setAllUserRooms,
     }
 
 

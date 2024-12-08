@@ -21,6 +21,7 @@ const Navbar = ({ navLeft, showBall, showExcel, showSelectOption, options, setSt
     const handleClickRoot = () => {
         handleGetSingleOption(searchParams.get('sw'))
         navigate(searchParams.get('sw') ? `/?sw=${searchParams.get('sw')}` : '/')
+
     }
 
     return (

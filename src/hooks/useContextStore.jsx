@@ -3,10 +3,8 @@ import { ContextStore } from '../context/contextStore'
 import { useSearchParams } from 'react-router-dom'
 
 const useContextStore = () => {
-  const [searchParams] = useSearchParams()
-  const { currentUser } = useContext(ContextStore)
 
-  const { options, setOptions, singleOptoin, setSingleOption } = useContext(ContextStore)
+  const { options, setOptions, singleOptoin, allUserRooms, setAllUserRooms, setSingleOption, currentUser, historyReports, setHistoryReports, socketConnection, countRoomReports, setCountRoomReports } = useContext(ContextStore)
 
 
   const handleGetSingleOption = (value) => {
@@ -15,7 +13,6 @@ const useContextStore = () => {
 
     const mapObj = currentUser?.subSpaceWorks[value]
     // check if the single optin doesn't exist if not get the keys
-    // console.log(currentUser?.subSpaceWorks, value);
 
     const allKeys = mapObj ? Object.keys(currentUser?.subSpaceWorks[value]) : []
     setSingleOption(allKeys)
@@ -23,7 +20,7 @@ const useContextStore = () => {
 
 
 
-  return { options, setOptions, singleOptoin, setSingleOption, handleGetSingleOption }
+  return { options, setOptions, singleOptoin, setSingleOption, allUserRooms, setAllUserRooms, handleGetSingleOption, historyReports, setHistoryReports, countRoomReports, socketConnection, setCountRoomReports }
 }
 
 export default useContextStore

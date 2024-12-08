@@ -12,11 +12,13 @@ import useReport from '../hooks/useReport'
 const NewIssuePage = () => {
     const [searchParams] = useSearchParams()
     const str = `${searchParams.get('sw')} / ${searchParams.get('subSW')} / ${searchParams.get('room')}`
-    const { inputs, setInputs, currentUser } = useContext(ContextStore)
+    const { inputs, setInputs, currentUser, historyReports } = useContext(ContextStore)
     const { addReport } = useReport()
     const [newReportData, setNewReportData] = useState({
         דחיפות: "נמוכה-3", "יחידה מטפלת": searchParams?.get('room'), "מ.א": currentUser?.userId
     })
+    const index = historyReports?.data?.length - 1;
+    // console.log(historyReports?.data[index]?.reportId ?? historyReports?.data[index][`מס"ד`]);
 
     const handleInputChange = useCallback((value, key) => {
         setNewReportData((prev) => ({ ...prev, [key]: value }))
@@ -58,6 +60,7 @@ const NewIssuePage = () => {
         return arrayInputs
     }
 
+    console.log(currentUser);
 
     return (
         <TemplatePage
@@ -68,15 +71,15 @@ const NewIssuePage = () => {
             navRight={<CustomSelect labelText={"בחר קבוצה"} options={[]} placeholder="קבוצה..." keyToUpdate={"accessOption"} />}
             navLeft={str}
         >
-            <section className='mx-10 flex-1 gap-10 flex items-center justify-center border-border bg-accent shadow-md border-2 rounded-xl '>
+            <section className='mx-10 flex-1 min-h-[80vh] gap-10 flex items-center justify-center border-border bg-accent shadow-md border-2 rounded-xl '>
                 <div className="flex justify-start flex-col px-10  h-full gap-6 w-2/3">
                     {/* just if inputs length more than 1 (urgancey) show new report */}
 
-                    {inputs.length > 2 && <div className="mt-3">מספר תקלה 0012</div>}
+                    {inputs.length > 4 && <div className="mt-3">מספר תקלה {historyReports?.data[index]?.reportId + 1 ?? historyReports?.data[index][`מס"ד`] + 1 ?? 0}</div>}
                     <div className=" flex h-[29rem] gap-20 w-full">
-                        {inputs.length > 2 ?
+                        {inputs.length > 4 ?
                             <div className=" flex flex-col flex-wrap h-full j w-full max-w-60 items-center gap-6">
-                                <CustomInput state={newReportData} keyToUpdate={"מ.א"} label={"מ.א"} disabeld={true} required={false} placeholder={currentUser?.userId} />
+                                <CustomInput state={newReportData} label={"שם פותח תקלה"} disabeld={true} required={false} placeholder={currentUser?.firstName + currentUser?.lastName} />
                                 {inputs.map((input, i) => {
                                     switch (input?.type) {
                                         case "textarea":
@@ -96,7 +99,7 @@ const NewIssuePage = () => {
                                 <Link to={`/system-settings?sw=${searchParams.get('sw')}&subSW=${searchParams.get('subSW')}&room=${searchParams.get('room')}`} >
                                     <button className='text-2xl flex hover:opacity-50'>
                                         <IoMdSettings className="text-2xl ml-2 mt-1 " />
-                                        לא הוגדת תבנית תקלה, <br />
+                                        לא הוגדרה תבנית תקלה, <br />
                                         להגדרות מערכת
                                         ←
                                     </button>
@@ -106,7 +109,7 @@ const NewIssuePage = () => {
                 </div>
                 <div className=" flex flex-col max-w-[600px] m-10 w-1/4">
                     <img src="/new-issuse.png" alt="new issuse" />
-                    {inputs.length > 1 && <button onClick={createReport} className={`px-6 text-[#66BB6A] border-[#66BB6A] p-1 mt-10 font-bold border-2 rounded-md `}>
+                    {inputs.length > 4 && <button onClick={createReport} className={`px-6 text-[#66BB6A] border-[#66BB6A] hover:scale-110 duration-150  p-1 mt-10 font-bold border-2 rounded-md `}>
                         יצירת תקלה חדשה
                     </button>}
                 </div>
