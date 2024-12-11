@@ -68,6 +68,10 @@ export default function OpenIssues() {
 
   const handleDeleteReportClick = (currReport) => {
 
+    const result = confirm("היי! זהירות, פעולה זו תמחק את התקלה. להמשיך?")
+    if (!result) {
+      return
+    }
     const reqBody = {
       userId: currentUser?.userId,
       MongoReportId: currReport?._id,
@@ -103,7 +107,7 @@ export default function OpenIssues() {
       </button>|
       <button onClick={() => { handleDeleteReportClick(currReport) }} className=' flex items-center  text-lg h-7 gap-2 justify-end border-2 rounded-lg px-2 hover:scale-105 duration-150 hover:text-error hover:border-errtext-error '>
         <IoCloseCircleOutline className='text-2xl' />
-        <span >מחיקת בתקלה</span>
+        <span >מחיקת תקלה</span>
       </button>
     </div>
   }
@@ -113,8 +117,8 @@ export default function OpenIssues() {
   useEffect(() => {
     if (currentUser?.userId) {
       const getReportObj = {
-        limitResultsIndex: -1,// -1 is get all reports 
-        indexToSkip: 0,
+        limitResultsIndex: 15,// -1 is get all reports 
+        indexToSkip: pagenations.curr * 15,
         "dates": {
           "fromDate": "2024-11-07T14:56:23.456+00:00",
           "toDate": "2024-11-27T14:56:23.456+00:00"
@@ -129,7 +133,7 @@ export default function OpenIssues() {
     }
 
 
-  }, [currentUser])
+  }, [currentUser, pagenations])
 
 
   useMemo(() => {
@@ -203,7 +207,9 @@ export default function OpenIssues() {
             <span className=' select-none px-2 underline text-text'>
               {pagenations.curr}
             </span>
-            {pagenations.next <= (Math.ceil(historyReports?.totalCount / 15)) && <button onClick={() => handleClickOnPage("RIGHT")} className="px-3 py-1 bg-accent border-2 text-primary text-md font-semibold border-border shadow-md rounded-lg flex justify-center gap-1 items-center hover:scale-110 duration-150">
+            {console.log(historyReports?.totalCount)
+            }
+            {pagenations.next <= (Math.ceil(historyReports?.totalCount?.[0]?.total / 15)) && <button onClick={() => handleClickOnPage("RIGHT")} className="px-3 py-1 bg-accent border-2 text-primary text-md font-semibold border-border shadow-md rounded-lg flex justify-center gap-1 items-center hover:scale-110 duration-150">
               <MdKeyboardArrowRight className=' text-2xl' />
               {pagenations.next}
             </button>}

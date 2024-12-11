@@ -79,6 +79,7 @@ export default function ReportModal({ currReport, mode, setOpenModal }) {
             roomName: searchParams?.get('room'),
         })
     }
+
     return (
         <>
 
@@ -89,7 +90,7 @@ export default function ReportModal({ currReport, mode, setOpenModal }) {
                     <div className='flex w-full  h-[90%]'>
                         <div className=' h-full w-2/3 gap-5  flex-col pt-5 relative flex-wrap flex '>
                             {inputs?.map((input, i) => {
-                                console.log(reportData);
+                                console.log(mode === "watch");
 
                                 switch (input?.type) {
                                     case "textarea":

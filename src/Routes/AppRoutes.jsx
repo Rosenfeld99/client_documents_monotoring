@@ -31,44 +31,47 @@ const AppRoutes = () => {
     }, [])
 
     useEffect(() => {
+
         // check every time if user refreshe the page so call get room inputs just if have params
         if (!inputs[0] && searchParams?.get('sw') && searchParams?.get('subSW') && searchParams?.get('room') && currentUser) {
+
             const roomObj = {
                 spaceWork: searchParams?.get('sw'),
                 subSpaceWork: searchParams?.get('subSW'),
                 room: searchParams?.get('room'),
                 userId: currentUser?.userId
             }
+
             getRoomInputs(roomObj)
             getRoomHistory(roomObj)
             setCountRoomReports(historyReports?.data?.filter((rep) => rep["יחידה מטפלת"] === searchParams.get("room")))
         }
     }, [currentUser, searchParams.get('room')])
 
-    useEffect(() => {
-        if (socketIo) {
+    // useEffect(() => {
+    //     if (socketIo) {
 
-            const localSW = localStorage.getItem("sw");
-            const localSubSP = localStorage.getItem("subSW");
-            const localRoom = localStorage.getItem("room");
+    //         const localSW = localStorage.getItem("sw");
+    //         const localSubSP = localStorage.getItem("subSW");
+    //         const localRoom = localStorage.getItem("room");
 
-            if (localSW && localSubSP && localRoom) {
-                changeRoom(localSW, localSubSP, localRoom, "dashboard_open")
-                navigate(`dashboard?sw=${localSW}&subSW=${localSubSP}&room=${localRoom}`)
-            }
-            else if (localSW && localSubSP) {
-                changeRoom(localSW, localSubSP)
+    //         if (localSW && localSubSP && localRoom) {
+    //             changeRoom(localSW, localSubSP, localRoom, "dashboard_open")
+    //             navigate(`dashboard?sw=${localSW}&subSW=${localSubSP}&room=${localRoom}`)
+    //         }
+    //         else if (localSW && localSubSP) {
+    //             changeRoom(localSW, localSubSP)
 
-                navigate(`/?sw=${localSW}&subSW=${localSubSP}`)
-            }
-            else if (localSW) {
-                changeRoom(localSW)
+    //             navigate(`/?sw=${localSW}&subSW=${localSubSP}`)
+    //         }
+    //         else if (localSW) {
+    //             changeRoom(localSW)
 
-                navigate(`/?sw=${localSW}`)
-            }
-        }
+    //             navigate(`/?sw=${localSW}`)
+    //         }
+    //     }
 
-    }, [socketIo])
+    // }, [socketIo])
 
 
     return (

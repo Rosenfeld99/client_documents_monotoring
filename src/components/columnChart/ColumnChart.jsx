@@ -75,7 +75,7 @@ const ColumnChart = ({ dataToChart, optionsSelect, setColumnChartSelect }) => {
       <div className="flex items-center justify-between">
         <div>
           <div className="text-text font-semibold">פילוח תקלות</div>
-          <div className="text-[#8c8c8c]">תקלות פתוחות בחתך נושאים</div>
+          <div className="text-[#8c8c8c]">  תקלות פתוחות בחתך נושאים (לחצו על הכותרות לסינון)</div>
         </div>
         {/* <div className="px-7 py-1 bg-accent border-2 text-primary text-md font-semibold border-border shadow-md rounded-lg flex justify-center items-center hover:scale-110 duration-150">
            <button>היום</button>

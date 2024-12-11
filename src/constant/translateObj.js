@@ -1,5 +1,14 @@
 
 
+export const urgancyColors = {
+    "נמוכה-3": "#FFD700 ",
+    "בינונית-2": " #FF5E00",
+    "גבוהה-1": "  #ff0000",
+    // Red: (Bright Orange- Red)
+    // Yellow: (Gold Yellow)
+    // Orange: (Dark Orange)
+}
+
 export const translateFieldsToHebrow = {
     problemTimeStart: "זמן פתיחת תקלה",
 

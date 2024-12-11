@@ -99,7 +99,10 @@ const IssueHistoryPage = () => {
 
     const handleDeleteReportClick = (currReport) => {
         console.log(currReport);
-
+        const result = confirm("היי! זהירות, פעולה זו תמחק את התקלה. להמשיך?")
+        if (!result) {
+            return
+        }
         const reqBody = {
             userId: currentUser?.userId,
             MongoReportId: currReport?._id,
@@ -139,7 +142,7 @@ const IssueHistoryPage = () => {
             </button>|
             <button onClick={() => handleDeleteReportClick(currReport)} className=' flex items-center  text-lg h-7 gap-2 justify-end border-2 rounded-lg px-2 hover:scale-105 duration-150 hover:text-error hover:border-errtext-error '>
                 <IoCloseCircleOutline className='text-2xl' />
-                <span >מחיקת בתקלה</span>
+                <span >מחיקת תקלה</span>
             </button>
 
         </div>)
@@ -154,7 +157,7 @@ const IssueHistoryPage = () => {
                 showHeader={true}
                 showNav={true}
                 showSidebar={true}
-                titleHeader={"היסטורית תקלות"}
+                titleHeader={"היסטוריית תקלות"}
                 navRight={<CustomSelect labelText={"בחר קבוצה"} options={accessOption} placeholder="קבוצה..." keyToUpdate={"accessOption"} />}
                 navLeft={str}
             >

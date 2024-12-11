@@ -89,6 +89,10 @@ const HomePage = () => {
                 }
                 break;
             case "delete":
+                const result = confirm("היי! זהירות, פעולה זו תמחק את החדר. להמשיך?")
+                if (!result) {
+                    break
+                }
                 deleteRoom(
                     { ...roomObj, roomName: oldRoomName }
                 )

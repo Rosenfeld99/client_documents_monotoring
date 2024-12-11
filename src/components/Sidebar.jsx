@@ -43,7 +43,7 @@ const Sidebar = () => {
                         <div className="text-[20px]">
                             תמ"ר
                         </div>
-                        <div className="text-[12px]">
+                        <div className="text-[11px]">
                             תפעול מערכות רשתיות
                         </div>
                     </div>
@@ -72,9 +72,9 @@ const Sidebar = () => {
                         <BsClockHistory className={styleIcon + " text-xl"} />
                         <span>תקלות פתוחות</span>
                     </div>}
-                    {(searchParams.get('sw') && searchParams.get('subSW') && searchParams.get('room')) && <div onClick={() => { SocketAction("issue-history"); navigateion(`/issue-history?sw=${searchParams.get('sw')}&subSW=${searchParams.get('subSW')}&room=${searchParams.get('room') || "היסטורית תקלות"}`) }} className={`${location.pathname === "/issue-history" ? styleItemActive : styleItem}`}>
+                    {(searchParams.get('sw') && searchParams.get('subSW') && searchParams.get('room')) && <div onClick={() => { SocketAction("issue-history"); navigateion(`/issue-history?sw=${searchParams.get('sw')}&subSW=${searchParams.get('subSW')}&room=${searchParams.get('room') || "היסטוריית תקלות"}`) }} className={`${location.pathname === "/issue-history" ? styleItemActive : styleItem}`}>
                         <MdHistory className={styleIcon} />
-                        <span>היסטורית תקלות</span>
+                        <span>היסטוריית תקלות</span>
                     </div>}
                     {(searchParams.get('sw') && searchParams.get('subSW') && searchParams.get('room')) && <div onClick={() => { SocketAction("system-settings"); navigateion(`/system-settings?sw=${searchParams.get('sw')}&subSW=${searchParams.get('subSW')}&room=${searchParams.get('room') || "הגדרות מערכת"}`) }} className={`${location.pathname === "/system-settings" ? styleItemActive : styleItem}`}>
                         <IoMdSettings className={styleIcon} />

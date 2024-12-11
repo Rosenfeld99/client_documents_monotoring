@@ -58,9 +58,7 @@ const CustomSelect = ({ options,state, placeholder,required, labelText,disabeld,
                 tabIndex={0}
                 className={`border border-border ${isOpen && "border border-[#1298ff]"} rounded-md p-2 cursor-pointer text-black font-medium ${isOpen && "border-2 border-primary"}`}
                 onClick={disabeld!=true&& toggleDropdown}
-            >
-              { console.log(placeholder)}
-               
+            >               
                 {selectedOption || placeholder||"בחרו אופצייה"}
                 <span className="float-left flex items-center text-3xl justify-center mr-8 text-border">
                     {isOpen ? (

@@ -49,13 +49,6 @@ function useReports() {
         reportOpen,
     }) => {
 
-        console.log(userId,
-            MongoReportId,
-            dateRequst,
-            spaceWorkName,
-            subSpaceWorkName,
-            roomName,
-        );
 
         try {
             const deletedReport = await axios.post("http://localhost:3001/reports/deleteReport", {
@@ -153,38 +146,69 @@ function useReports() {
             console.log(data);
             setHistoryReports(data);
             console.log(data);
-            const roomResponse = []
-            const otherResponse = []
-            const todayCloseResponse = []
-            const todayOpenReports = []
+            const roomResponseOpen = []
+            const otherResponseOpen = []
+            const roomResponseClose = []
+            const otherResponseClose = []
+
 
             for (let index = 0; index < data?.data?.length; index++) {
                 if (data?.data[index]["יחידה מטפלת"] === searchParams.get("room")) {
-                    roomResponse.push(data?.data[index])
+                    if (data?.data[index]?.reportOpen) {
+                        roomResponseOpen.push(data?.data[index])
+                    }
+                    else if (data?.data[index]?.reportOpen == false) {
+                        roomResponseClose.push(data?.data[index])
+                    }
                 }
                 else {
-                    otherResponse.push(data?.data[index])
-                }
-                const currentDate = new Date()
-                const reportDate = new Date(data?.data[index].problemTimeStart)
-                const dateCurrentStr = currentDate.toISOString().split('T')[0];
-                const dateReportStr = reportDate.toISOString().split('T')[0];
+                    if (data?.data[index]?.reportOpen) {
+                        otherResponseOpen.push(data?.data[index])
+                    }
+                    else if (data?.data[index]?.reportOpen == false) {
+                        otherResponseClose.push(data?.data[index])
+                    }
 
-                if (dateCurrentStr === dateReportStr) {
-                    if (data?.data[index].problemTimeEnd) {
-                        todayCloseResponse.push(data?.data[index])
-                    }
-                    else {
-                        todayOpenReports.push(data?.data[index])
-                    }
                 }
             }
             setCountRoomReports({
-                roomResponse,
-                otherResponse,
-                todayCloseResponse,
-                todayOpenReports
+                roomResponseOpen,
+                roomResponseClose,
+                otherResponseOpen,
+                otherResponseClose
             })
+            // const roomResponse = []
+            // const otherResponse = []
+            // const todayCloseResponse = []
+            // const todayOpenReports = []
+
+            // for (let index = 0; index < data?.data?.length; index++) {
+            //     if (data?.data[index]["יחידה מטפלת"] === searchParams.get("room")) {
+            //         roomResponse.push(data?.data[index])
+            //     }
+            //     else {
+            //         otherResponse.push(data?.data[index])
+            //     }
+            //     const currentDate = new Date()
+            //     const reportDate = new Date(data?.data[index].problemTimeStart)
+            //     const dateCurrentStr = currentDate.toISOString().split('T')[0];
+            //     const dateReportStr = reportDate.toISOString().split('T')[0];
+
+            //     if (dateCurrentStr === dateReportStr) {
+            //         if (data?.data[index].problemTimeEnd) {
+            //             todayCloseResponse.push(data?.data[index])
+            //         }
+            //         else {
+            //             todayOpenReports.push(data?.data[index])
+            //         }
+            //     }
+            // }
+            // setCountRoomReports({
+            //     roomResponse,
+            //     otherResponse,
+            //     todayCloseResponse,
+            //     todayOpenReports
+            // })
 
 
         } catch (error) {

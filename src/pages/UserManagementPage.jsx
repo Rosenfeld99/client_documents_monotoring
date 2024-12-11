@@ -5,61 +5,57 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { MdKeyboardArrowRight, MdKeyboardArrowLeft } from 'react-icons/md'
 import TableFilters from '../components/table/TableFilters'
 import Table from '../components/table/Table'
-import { columnsList, soldiersData } from '../constant/USERS.demo'
+import { soldiersData } from '../constant/USERS.demo'
 import useUsers from '../hooks/useUsers'
-import useReports from '../hooks/useReport'
 import { BiEdit } from 'react-icons/bi'
 
 const UserManagementPage = () => {
-    const { getReportsByConditions, historyReports, loading } = useReports()
+    const { getAllUsers, loading, columns, setColumns, historyReports, filteredData, setFilteredData } = useUsers()
     const [searchParams] = useSearchParams()
-    const [filteredData, setFilteredData] = useState(soldiersData);
-    const [columns, setColumns] = useState(columnsList);
+    // const [filteredData, setFilteredData] = useState(soldiersData);
+    // const [columns, setColumns] = useState(columnsList);
     const [openManageColumns, setOpenManageColumns] = useState(false)
     const [pagenations, setPagenations] = useState({ prev: 0, curr: 1, next: 2 })
     const { currentUser } = useUsers()
     const navigation = useNavigate()
+    const [filters, setFilters] = useState({});
+    const [columnVisibility, setColumnVisibility] = useState({});
 
     useEffect(() => {
-        getReportsByConditions(
-            {
-                "spaceWorkName": searchParams.get('sw'),
-                "subSpaceWorkName": searchParams.get('subSW'),
-                "roomName": searchParams.get('room'),
-                "indexToSkip": 0,
-                limitResultsIndex: 15,// -1 is get all reports 
-                "dates": {
-                    "fromDate": "2024-11-07T14:56:23.456+00:00",
-                    "toDate": "2024-11-16T14:56:23.456+00:00"
-                },
-                statusReport: "open",
-                userId: currentUser?.userId,
-            }
-        )
-        console.log(historyReports);
 
-    }, [currentUser])
+        if (currentUser?.userId) {
+
+            getAllUsers(
+                {
+                    spaceWorkName: searchParams.get('sw'),
+                    subSpaceWorkName: searchParams.get('subSW'),
+                    roomName: searchParams.get('room'),
+                    adminId: currentUser?.userId,
+                }, setColumnVisibility
+
+            )
+        }
+
+    }, [currentUser?.userId, searchParams])
+
     const accessOption = [
         { name: "מדגם", value: "מדגם" },
         { name: "מחלקה", value: "מחלקה" },
     ]
 
     const str = `${searchParams.get('sw')} / ${searchParams.get('subSW')} / ${searchParams.get('room')}`
-    const [columnVisibility, setColumnVisibility] = useState(
-        columns.reduce((acc, column) => ({ ...acc, [column.key]: true }), {})
-    );
-    const [filters, setFilters] = useState({});
+
 
     useMemo(() => {
         const temp = () => {
-            return soldiersData.filter((row) =>
+            return filteredData?.filter((row) =>
                 Object.entries(filters).every(([key, value]) =>
                     row[key]?.toLowerCase().includes(value.toLowerCase())
                 )
             );
         }
         setFilteredData(temp())
-    }, [filters]);
+    }, [filters,]);
 
     const toggleColumn = (key) => {
         setColumnVisibility((prev) => ({
@@ -94,7 +90,7 @@ const UserManagementPage = () => {
     const HoverComps = (currUser) => {
         return (
             <div className=" hidden items-center gap-3 w-full h-full bg-border  text-text group-hover:flex duration-150 transition ease-in-out text-xl px-10 absolute top-0 right-0">
-                <Link to={`/user-management/:id?sw=${searchParams.get('sw')}&subSW=${searchParams.get('subSW')}&room=${searchParams.get('room')}`}>
+                <Link state={currUser} to={`/user-management/:id?sw=${searchParams.get('sw')}&subSW=${searchParams.get('subSW')}&room=${searchParams.get('room')}`}>
                     <button className=' flex items-center text-lg h-7 gap-2 justify-end border-2 rounded-lg px-2 hover:scale-105 duration-150 hover:text-primary hover:border-pritext-primary'>
                         <BiEdit />
                         <span >ניהול הרשאות</span>
@@ -112,18 +108,19 @@ const UserManagementPage = () => {
             showSidebar={true}
             titleHeader={<div className=' flex items-center justify-between'>
                 <span>ניהול משתמשים</span>
-                <button onClick={() => {navigation(`/register-user?sw=${searchParams.get('sw')}&subSW=${searchParams.get('subSW')}&room=${searchParams.get('room')}`)}} className={`px-3 cursor-pointer py-1 border-2 text-md font-semibold border-border shadow-md rounded-lg flex justify-center items-center text-sm hover:scale-110 duration-150 text-accent bg-primary`}>הוספת משתמש</button>
+                <button onClick={() => { navigation(`/register-user?sw=${searchParams.get('sw')}&subSW=${searchParams.get('subSW')}&room=${searchParams.get('room')}`) }} className={`px-3 cursor-pointer py-1 border-2 text-md font-semibold border-border shadow-md rounded-lg flex justify-center items-center text-sm hover:scale-110 duration-150 text-accent bg-primary`}>הוספת משתמש</button>
             </div>}
             navRight={<CustomSelect labelText={"בחר קבוצה"} options={accessOption} placeholder="קבוצה..." keyToUpdate={"accessOption"} />}
             navLeft={str}
         >
-            <section className="p-10 flex flex-col gap-3 flex-1">
+            <section className="p-10 w-[85vw] flex flex-col gap-3 flex-1">
 
                 <TableFilters openManageColumns={openManageColumns} setOpenManageColumns={setOpenManageColumns} columnVisibility={columnVisibility} columns={columns} handleFilterChange={handleFilterChange} toggleColumn={toggleColumn} filters={filters} />
-                <div className=" w-[85vw] overflow-x-auto ml-[240px]">
+                <div className=" w-full overflow-x-auto ml-[240px]">
                     {loading ? <div>Loading...</div> :
-                        <Table HoverComps={HoverComps} setOpenManageColumns={setOpenManageColumns} filters={filters} toggleColumn={toggleColumn} columnVisibility={columnVisibility} columns={columns} setColumns={setColumns} filteredData={filteredData} handleFilterChange={handleFilterChange} setFilteredData={setFilteredData} />
+                        columns[0] && <Table HoverComps={HoverComps} setOpenManageColumns={setOpenManageColumns} filters={filters} toggleColumn={toggleColumn} columnVisibility={columnVisibility} columns={columns} setColumns={setColumns} filteredData={filteredData} handleFilterChange={handleFilterChange} setFilteredData={setFilteredData} />
                     }
+
                     {/* <StepContainer steps={steps} handleNext={handleNext} /> */}
                 </div>
                 {/* paggintions */}

@@ -13,8 +13,6 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 const DonutChart = ({ dataToChart }) => {
 
-  const { historyReports } = useContextStore()
-
   if (!dataToChart || !dataToChart.label || !dataToChart.label.length) {
     return <div>אין נתונים להצגה</div>;
   }
@@ -44,6 +42,7 @@ const DonutChart = ({ dataToChart }) => {
     plugins: {
       legend: {
         position: 'top',
+
       },
       tooltip: {
         callbacks: {

@@ -55,7 +55,6 @@ const RootSWPage = () => {
         }
         // if it is for subSpaceWork, do this 
         if (searchParams?.get("sw")) {
-            console.log(oldSubSpaceWorkName);
             //In this object, I insert all possible fields, but the hook destructures only what it needs
             const subSpaceWorkObj = {
                 adminId: currentUser.userId,
@@ -82,6 +81,10 @@ const RootSWPage = () => {
 
                     break;
                 case "delete":
+                    const result = confirm("היי! זהירות, פעולה זו תמחק את התת-סביבה. להמשיך?")
+                    if (!result) {
+                        break
+                    }
                     deleteSubSpaceWork(
                         { ...subSpaceWorkObj, subSpaceWorkName: oldSubSpaceWorkName }
                     )

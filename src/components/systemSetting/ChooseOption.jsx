@@ -27,6 +27,12 @@ function ChooseOption({ updateInput, setUpdateInput, chooseOption, setChooseOpti
     // delete input
     const deleteInputFunc = (e, id) => {
 
+        const result = confirm("היי! זהירות, פעולה זו תמחק את השדה. להמשיך?")
+        if (!result) {
+            return
+        }
+
+
         const spaceDeatiles = {
             spaceWorkName: searchParams?.get('sw'),
             adminId: currentUser?.userId,
