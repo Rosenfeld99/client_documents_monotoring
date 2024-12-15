@@ -20,17 +20,18 @@ const IssueHistoryPage = () => {
     const { currentUser } = useUsers()
     const [openModal, setOpenModal] = useState(false);
     const [reportModalData, setReportModalData] = useState({});
+    console.log(columnVisibility);
 
 
     useEffect(() => {
         if (currentUser?.userId) {
             const getReportObj = {
-                limitResultsIndex: -1,// -1 is get all reports 
-                indexToSkip: 0,
-                "dates": {
-                    "fromDate": "2024-11-07T14:56:23.456+00:00",
-                    "toDate": "2024-11-27T14:56:23.456+00:00"
-                },
+                limitResultsIndex: 14,// -1 is get all reports 
+                indexToSkip: pagenations.prev * 14,
+                // "dates": {
+                //     "fromDate": "2024-11-07T14:56:23.456+00:00",
+                //     "toDate": "2024-11-27T14:56:23.456+00:00"
+                // },
                 statusReport: "close",
                 userId: currentUser?.userId,
                 spaceWorkName: searchParams.get('sw'),
@@ -41,9 +42,8 @@ const IssueHistoryPage = () => {
         }
 
 
-    }, [currentUser])
+    }, [currentUser, pagenations])
 
-    console.log(columnVisibility)
 
 
     const accessOption = [{ name: "מדגם", value: "מדגם" }, { name: "מחלקה", value: "מחלקה" },];
@@ -72,6 +72,7 @@ const IssueHistoryPage = () => {
             [key]: !prev[key],
         }));
     };
+    console.log(filters);
 
     const handleFilterChange = (key, value) => {
         setFilters((prev) => ({

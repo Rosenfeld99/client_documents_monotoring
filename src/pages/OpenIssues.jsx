@@ -24,6 +24,7 @@ export default function OpenIssues() {
   const [reportModalData, setReportModalData] = useState({});
   const [openModal, setOpenModal] = useState(false);
 
+  console.log(columnVisibility);
 
 
   const str = `${searchParams.get('sw')} / ${searchParams.get('subSW')} / ${searchParams.get('room')}`
@@ -117,12 +118,12 @@ export default function OpenIssues() {
   useEffect(() => {
     if (currentUser?.userId) {
       const getReportObj = {
-        limitResultsIndex: 15,// -1 is get all reports 
-        indexToSkip: pagenations.curr * 15,
-        "dates": {
-          "fromDate": "2024-11-07T14:56:23.456+00:00",
-          "toDate": "2024-11-27T14:56:23.456+00:00"
-        },
+        limitResultsIndex: 14,// -1 is get all reports 
+        indexToSkip: pagenations.prev * 14,
+        // "dates": {
+        //   "fromDate": "2024-11-07T14:56:23.456+00:00",
+        //   "toDate": "2024-11-27T14:56:23.456+00:00"
+        // },
         statusReport: "open",
         userId: currentUser?.userId,
         spaceWorkName: searchParams.get('sw'),
@@ -209,7 +210,7 @@ export default function OpenIssues() {
             </span>
             {console.log(historyReports?.totalCount)
             }
-            {pagenations.next <= (Math.ceil(historyReports?.totalCount?.[0]?.total / 15)) && <button onClick={() => handleClickOnPage("RIGHT")} className="px-3 py-1 bg-accent border-2 text-primary text-md font-semibold border-border shadow-md rounded-lg flex justify-center gap-1 items-center hover:scale-110 duration-150">
+            {pagenations.next <= (Math.ceil(historyReports?.totalCount / 15)) && <button onClick={() => handleClickOnPage("RIGHT")} className="px-3 py-1 bg-accent border-2 text-primary text-md font-semibold border-border shadow-md rounded-lg flex justify-center gap-1 items-center hover:scale-110 duration-150">
               <MdKeyboardArrowRight className=' text-2xl' />
               {pagenations.next}
             </button>}

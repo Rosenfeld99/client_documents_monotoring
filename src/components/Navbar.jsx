@@ -42,8 +42,7 @@ const Navbar = ({ navLeft, showBall, showExcel, showSelectOption, options, setSt
                 <button onClick={handleClickRoot}>
                     <FaHome className=' text-primary cursor-pointer' />
                 </button>
-                {console.log(parts)
-                }
+
                 {parts?.slice(0, parts?.length - 1).map((part, index) => (
                     <span className=' hover:opacity-50 hover:scale-105 duration-150 cursor-pointer' onClick={() => { moveRoomSocket(); navigate(`/${index == 0 ? "" : "spaceWork"}?sw=${searchParams.get('sw')}&subSW=${searchParams.get('subSW')}`) }} key={index}>{part} / </span>
                 ))}

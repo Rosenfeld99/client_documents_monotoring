@@ -234,13 +234,14 @@ function useReports() {
                 userId,
                 dates
             })
-            console.log(statusReport);
+            console.log(data);
 
             console.log(data);
             setHistoryReports(data);
             setColumns(data.columnsList)
             setFilteredData(data?.data)
 
+            console.log(data.columnsList);
 
             setColumnVisibility(
                 data.columnsList?.reduce((acc, column) => ({

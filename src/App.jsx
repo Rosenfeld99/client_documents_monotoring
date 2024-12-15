@@ -53,6 +53,14 @@ const App = () => {
         const currentPage = window?.location?.pathname?.split("/")[1]
         console.log(hebrewReport);
 
+        if (currentPage === "dashboard") {
+          if (newReport["יחידה מטפךת"] === searchParams.get('room')) {
+            setCountRoomReports((prev) => ({ ...prev, roomResponseClose: [...prev.roomResponseClose, newReport] }))
+          }
+          else setCountRoomReports((prev) => ({ ...prev, otherResponseClose: [...prev.otherResponseClose, newReport] }))
+
+        }
+
         if (currentPage === "issue-history") {
           setFilteredData((prev) => [...prev, hebrewReport])
         }
@@ -75,6 +83,24 @@ const App = () => {
       socketIo.on("recive_delete_report", ({ deletedReport }) => {
         const currentPage = window?.location?.pathname?.split("/")[1]
         console.log(deletedReport);
+
+        // if (data?.data[index]["יחידה מטפלת"] === searchParams.get("room")) {
+        //   if (data?.data[index]?.reportOpen) {
+        //     roomResponseOpen.push(data?.data[index])
+        //   }
+        //   else if (data?.data[index]?.reportOpen == false) {
+        //     roomResponseClose.push(data?.data[index])
+        //   }
+        // }
+        // else {
+        //   if (data?.data[index]?.reportOpen) {
+        //     otherResponseOpen.push(data?.data[index])
+        //   }
+        //   else if (data?.data[index]?.reportOpen == false) {
+        //     otherResponseClose.push(data?.data[index])
+        //   }
+
+        // }
 
         setFilteredData((prev) => prev?.filter((report) => report._id != deletedReport?._id))
         setHistoryReports((prev) => prev?.data?.filter((report) => report._id != deletedReport?._id))
@@ -99,9 +125,13 @@ const App = () => {
 
         // get the current page to know wich state need to update
         const currentPage = window?.location?.pathname?.split("/")[1]
+        console.log(newReport.reportOpen);
 
         if (currentPage === "dashboard") {
-          console.log("dashbord");
+          if (newReport["יחידה מטפךת"] === searchParams.get('room')) {
+            setCountRoomReports((prev) => ({ ...prev, roomResponseOpen: [...prev.roomResponseOpen, newReport] }))
+          }
+          else setCountRoomReports((prev) => ({ ...prev, otherResponseOpen: [...prev.otherResponseOpen, newReport] }))
           setHistoryReports((prev) => ({
             totalCount: [{ total: (prev?.totalCount?.[0]?.total || 0) + 1 }],
             data: [...(prev?.data || []), newReport],
