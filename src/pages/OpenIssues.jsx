@@ -18,7 +18,7 @@ export default function OpenIssues() {
   const [searchParams] = useSearchParams();
   const [openManageColumns, setOpenManageColumns] = useState(false)
   const [pagenations, setPagenations] = useState({ prev: 0, curr: 1, next: 2 })
-  const { getReportsByConditions, historyReports, handleCloseReport, handleDeleteReport, columns, setColumns, filteredData, setFilteredData, columnVisibility, setColumnVisibility, loading, setLoading } = useReports()
+  const { getReportsByConditions, historyReports, handleSearchReport, handleCloseReport, handleDeleteReport, columns, setColumns, filteredData, setFilteredData, columnVisibility, setColumnVisibility, loading, setLoading } = useReports()
   const { currentUser } = useUsers()
   const [filters, setFilters] = useState({});
   const [reportModalData, setReportModalData] = useState({});
@@ -112,40 +112,82 @@ export default function OpenIssues() {
       </button>
     </div>
   }
-
-
-
   useEffect(() => {
-    if (currentUser?.userId) {
-      const getReportObj = {
+
+    if (Object.keys(filters) == 0) {
+      return
+    }
+    const handler = setTimeout(() => {
+      let convertFilters = [];
+      for (const key in filters) {
+        convertFilters.push({ name: key, value: filters[key] })
+      }
+      handleSearchReport({
         limitResultsIndex: 14,// -1 is get all reports 
         indexToSkip: pagenations.prev * 14,
-        // "dates": {
-        //   "fromDate": "2024-11-07T14:56:23.456+00:00",
-        //   "toDate": "2024-11-27T14:56:23.456+00:00"
-        // },
         statusReport: "open",
+        arrayOfConditions: convertFilters,
         userId: currentUser?.userId,
         spaceWorkName: searchParams.get('sw'),
         subSpaceWorkName: searchParams.get('subSW'),
         roomName: searchParams.get('room'),
+      })
+    }, 1000);
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [filters]);
+
+
+  useEffect(() => {
+    if (Object.keys(filters).length === 0) { // Correct check for empty object
+      if (currentUser?.userId) {
+        const getReportObj = {
+          limitResultsIndex: 14, // -1 is get all reports
+          indexToSkip: pagenations.prev * 14,
+          statusReport: "open",
+          userId: currentUser?.userId,
+          spaceWorkName: searchParams.get('sw'),
+          subSpaceWorkName: searchParams.get('subSW'),
+          roomName: searchParams.get('room'),
+        };
+        getReportsByConditions(getReportObj);
       }
-      getReportsByConditions(getReportObj)
+    } else {
+      const handler = setTimeout(() => {
+        const convertFilters = Object.entries(filters).map(([key, value]) => ({
+          name: key,
+          value,
+        }));
+
+        handleSearchReport({
+          limitResultsIndex: 14, // -1 is get all reports
+          indexToSkip: pagenations.prev * 14,
+          statusReport: "open",
+          arrayOfConditions: convertFilters,
+          userId: currentUser?.userId,
+          spaceWorkName: searchParams.get('sw'),
+          subSpaceWorkName: searchParams.get('subSW'),
+          roomName: searchParams.get('room'),
+        });
+      }, 1000);
+
+      return () => {
+        clearTimeout(handler);
+      };
     }
-
-
-  }, [currentUser, pagenations])
+  }, [currentUser, pagenations, filters]);
 
 
   useMemo(() => {
     const temp = () => {
-      return filteredData.filter((row) =>
-        Object.entries(filters).every(([key, value]) =>
-          row[key]?.toLowerCase().includes(value.toLowerCase())
-        )
-      );
+      // return filteredData.filter((row) =>
+      //   Object.entries(filters).every(([key, value]) =>
+      //     row[key]?.toLowerCase().includes(value.toLowerCase())
+      //   )
+      // );
     }
-    setFilteredData(temp())
+    // setFilteredData(temp())
   }, [filters]);
 
   const toggleColumn = (key) => {
@@ -154,12 +196,28 @@ export default function OpenIssues() {
       [key]: !prev[key],
     }));
   };
+  console.log(filters);
 
   const handleFilterChange = (key, value) => {
-    setFilters((prev) => ({
-      ...prev,
-      [key]: value,
-    }));
+    console.log(key, value);
+    setFilters((prev) => {
+      const updatedFilters = { ...prev };
+
+      if (value) {
+        // Update the key if the value is not empty
+        updatedFilters[key] = value;
+      } else {
+        // Delete the key if the value is empty
+        delete updatedFilters[key];
+      }
+
+      return updatedFilters;
+    });
+
+    // setFilters((prev) => ({
+    //   ...prev,
+    //   [key]: value,
+    // }));
   }
 
 

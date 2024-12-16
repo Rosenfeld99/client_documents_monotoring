@@ -28,7 +28,6 @@ function useReports() {
             notify("SUCCESS", "תקלה נוצרה בהצלחה")
 
             createReportSocket(newReport?.data?.newReport)
-            // setNewIdReport((prev) => prev + 1)
 
 
         } catch (error) {
@@ -100,6 +99,38 @@ function useReports() {
         }
 
     }
+    const handleSearchReport = async ({
+        userId,
+        spaceWorkName,
+        subSpaceWorkName,
+        roomName,
+        limitResultsIndex,
+        indexToSkip, statusReport, arrayOfConditions
+
+
+    }) => {
+        try {
+
+            const search = await axios.post("http://localhost:3001/reports/search", {
+                userId,
+                spaceWorkName,
+                subSpaceWorkName,
+                roomName,
+                limitResultsIndex,
+                indexToSkip, statusReport, arrayOfConditions
+            })
+
+            console.log(search);
+            // notify("SUCCESS", "תקלה נסגרה בהצלחה")
+            setFilteredData(search?.data?.data)
+
+
+        } catch (error) {
+            console.log(error);
+
+        }
+
+    }
     const handleUpdateReport = async ({
         userId,
         updateReport,
@@ -117,8 +148,9 @@ function useReports() {
                 roomName,
                 updateReport
             })
+            console.log(updatedReport?.data);
 
-            updateReportSocket(updatedReport?.data?.updateReport)
+            updateReportSocket(updatedReport?.data?.updateReport, updatedReport?.data?.oldReport)
             notify("SUCCESS", "תקלה עודכנה בהצלחה")
 
 
@@ -261,7 +293,7 @@ function useReports() {
 
 
 
-    return { addReport, handleUpdateReport, getReportsByConditions, handleCloseReport, handleDeleteReport, getAllReports, historyReports, columns, setColumns, filteredData, setFilteredData, columnVisibility, setColumnVisibility, loading, setLoading }
+    return { addReport, handleUpdateReport, handleSearchReport, getReportsByConditions, handleCloseReport, handleDeleteReport, getAllReports, historyReports, columns, setColumns, filteredData, setFilteredData, columnVisibility, setColumnVisibility, loading, setLoading }
 
 }
 

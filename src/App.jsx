@@ -15,7 +15,7 @@ const App = () => {
   const { pathname } = useLocation()
 
   // const { setSocketIo, socketIo, setInputs, historyReports, setHistoryReports, setNewIdReport, columns, setColumns, setFilteredData } = useContextStore()
-  const { setSocketIo, socketIo, setInputs, inputs, historyReports, setHistoryReports, setNewIdReport, columns, setColumns, filteredData, setFilteredData } = useContext(ContextStore)
+  const { setSocketIo, socketIo, setInputs, inputs, setCountRoomReports, historyReports, setHistoryReports, setNewIdReport, columns, setColumns, filteredData, setFilteredData } = useContext(ContextStore)
   const localSW = localStorage.getItem("sw");
   const localSubSP = localStorage.getItem("subSW");
   const localRoom = localStorage.getItem("room");
@@ -47,18 +47,14 @@ const App = () => {
       socketIo.on("recive_update_inputs", (data) => {
         setInputs(data?.inputsArray)
       });
-
-
       socketIo.on("recive_close_report", ({ hebrewReport }) => {
         const currentPage = window?.location?.pathname?.split("/")[1]
         console.log(hebrewReport);
-
         if (currentPage === "dashboard") {
-          if (newReport["יחידה מטפךת"] === searchParams.get('room')) {
-            setCountRoomReports((prev) => ({ ...prev, roomResponseClose: [...prev.roomResponseClose, newReport] }))
+          if (hebrewReport["יחידה מטפלת"] === searchParams.get('room')) {
+            setCountRoomReports((prev) => ({ ...prev, roomResponseClose: [...prev.roomResponseClose, hebrewReport], roomResponseOpen: prev.roomResponseOpen.filter((report) => report._id !== hebrewReport._id) }))
           }
-          else setCountRoomReports((prev) => ({ ...prev, otherResponseClose: [...prev.otherResponseClose, newReport] }))
-
+          else setCountRoomReports((prev) => ({ ...prev, otherResponseClose: [...prev.otherResponseClose, hebrewReport], otherResponseOpen: prev.otherResponseOpen.filter((report) => report._id !== hebrewReport._id) }))
         }
 
         if (currentPage === "issue-history") {
@@ -84,30 +80,68 @@ const App = () => {
         const currentPage = window?.location?.pathname?.split("/")[1]
         console.log(deletedReport);
 
-        // if (data?.data[index]["יחידה מטפלת"] === searchParams.get("room")) {
-        //   if (data?.data[index]?.reportOpen) {
-        //     roomResponseOpen.push(data?.data[index])
-        //   }
-        //   else if (data?.data[index]?.reportOpen == false) {
-        //     roomResponseClose.push(data?.data[index])
-        //   }
-        // }
-        // else {
-        //   if (data?.data[index]?.reportOpen) {
-        //     otherResponseOpen.push(data?.data[index])
-        //   }
-        //   else if (data?.data[index]?.reportOpen == false) {
-        //     otherResponseClose.push(data?.data[index])
-        //   }
+        const unitResponse = deletedReport.inputs.find((input) => input.name === "יחידה מטפלת")
+        if (currentPage === "dashboard") {
+          if (unitResponse.value === searchParams.get("room")) {
+            if (deletedReport?.reportOpen) {
+              setCountRoomReports((prev) => ({ ...prev, roomResponseOpen: prev?.roomResponseOpen?.filter((report) => report._id !== deletedReport._id) }))
+            }
+            else if (deletedReport?.reportOpen == false) {
+              setCountRoomReports((prev) => ({ ...prev, roomResponseClose: prev.roomResponseClose.filter((report) => report._id !== deletedReport._id) }))
+            }
+          }
+          else {
+            if (deletedReport?.reportOpen) {
+              setCountRoomReports((prev) => ({ ...prev, otherResponseOpen: prev.otherResponseOpen.filter((report) => report._id !== deletedReport._id) }))
+            }
+            else if (deletedReport?.reportOpen == false) {
+              setCountRoomReports((prev) => ({ ...prev, otherResponseClose: prev?.otherResponseClose?.filter((report) => report._id !== deletedReport._id) }))
 
-        // }
+            }
+
+          }
+        }
+
 
         setFilteredData((prev) => prev?.filter((report) => report._id != deletedReport?._id))
         setHistoryReports((prev) => prev?.data?.filter((report) => report._id != deletedReport?._id))
       });
-      socketIo.on("recive_update_report", ({ hebrewReport }) => {
-        console.log(hebrewReport);
+      socketIo.on("recive_update_report", ({ hebrewReport, oldReport }) => {
+        console.log(hebrewReport, oldReport);
+        const currentPage = window?.location?.pathname?.split("/")[1]
 
+        if (currentPage === "dashboard") {
+
+          const oldResponse = oldReport.inputs.find((input) => input.name === "יחידה מטפלת")
+          const newResponse = hebrewReport["יחידה מטפלת"]
+          const reportStatus = hebrewReport["סטאטוס תקלה"]
+
+          // check if update room response and update the count
+          if (oldResponse !== newResponse) {
+            // if the response removed from this room response
+
+            // delete the report from old array and push it to new array
+            if (oldResponse === searchParams.get("room")) {
+              if (reportStatus) {
+                setCountRoomReports((prev) => ({ ...prev, roomResponseOpen: prev?.roomResponseOpen?.filter((report) => report._id !== deletedReport._id), otherResponseOpen: [...prev.otherResponseOpen, hebrewReport] }))
+              }
+              else if (reportStatus == false) {
+                setCountRoomReports((prev) => ({ ...prev, roomResponseClose: prev.roomResponseClose.filter((report) => report._id !== deletedReport._id), otherResponseClose: [...prev.otherResponseClose, hebrewReport] }))
+              }
+            }
+            else {
+              if (reportStatus) {
+                setCountRoomReports((prev) => ({ ...prev, otherResponseOpen: prev.otherResponseOpen.filter((report) => report._id !== deletedReport._id), roomResponseOpen: [...prev.roomResponseOpen, hebrewReport] }))
+              }
+              else if (deletedReport?.reportOpen == false) {
+                setCountRoomReports((prev) => ({ ...prev, otherResponseClose: prev?.otherResponseClose?.filter((report) => report._id !== deletedReport._id), roomResponseClose: [...prev.roomResponseClose, hebrewReport] }))
+
+              }
+
+            }
+          }
+
+        }
         setFilteredData((prev) => {
           for (let index = 0; index < prev?.length; index++) {
             if (prev[index]?._id == hebrewReport?._id) {

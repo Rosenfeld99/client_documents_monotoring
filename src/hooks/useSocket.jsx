@@ -49,9 +49,9 @@ function useSocket() {
             spaceWork, subSpaceWork, room, deletedReport
         });
     }
-    const updateReportSocket = (updateReport) => {
+    const updateReportSocket = (updateReport, oldReport) => {
         socketIo && socketIo?.emit("update_report", {
-            spaceWork, subSpaceWork, room, updateReport
+            spaceWork, subSpaceWork, room, updateReport, oldReport
         });
     }
 
