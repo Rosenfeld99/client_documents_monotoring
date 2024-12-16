@@ -13,8 +13,6 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 const DonutChart = ({ dataToChart }) => {
 
-  const { historyReports } = useContextStore()
-
   if (!dataToChart || !dataToChart.label || !dataToChart.label.length) {
     return <div>אין נתונים להצגה</div>;
   }
@@ -22,12 +20,14 @@ const DonutChart = ({ dataToChart }) => {
 
   const data = {
     labels: dataToChart.label,
+    // labels: dataToChart.label,
 
     datasets: [
       {
         label: 'תקלות ',
-        data: [...dataToChart?.closeReportsData, ...dataToChart.openReportsData],
+        data: [...dataToChart?.openReportsData, ...dataToChart.closeReportsData],
         backgroundColor: dataToChart?.pieColors,
+        // backgroundColor: ["red", "blue"],
         borderColor: 'rgba(90, 106, 207, 0)',
         // borderWidth: 2,
 
@@ -42,17 +42,18 @@ const DonutChart = ({ dataToChart }) => {
     plugins: {
       legend: {
         position: 'top',
+
       },
       tooltip: {
         callbacks: {
           label: function (tooltipItem) {
-            console.log(tooltipItem);
             const label = tooltipItem.chart.data.labels[tooltipItem.dataIndex - dataToChart?.closeReportsData.length];
             const value = tooltipItem.raw;
-            const percentage = ((value / dataToChart?.totalPieReports) * 100).toFixed(2);
-            console.log(value, historyReports?.data?.length);
+            console.log(dataToChart?.totalPieReports);
 
-            return `${label || "תקלות סגורות"}: ${value}, ${percentage}%`;
+            const percentage = ((value / dataToChart?.totalPieReports) * 100).toFixed(2);
+
+            return `תקלות:${value},  אחוזים :${percentage}%`;
           },
         },
       },
@@ -67,7 +68,7 @@ const DonutChart = ({ dataToChart }) => {
           <div className="text-[#8c8c8c]">תקלות פתוחות בחתך נושאים</div>
         </div>
       </div>
-      <div className="relative">
+      <div className="relative w-5/6 h-5/6">
         <Pie data={data} options={options} />
       </div>
     </div>

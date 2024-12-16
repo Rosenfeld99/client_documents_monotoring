@@ -8,10 +8,13 @@ import { IoClose } from "react-icons/io5";
 import { GoTrash } from "react-icons/go";
 import useUsers from '../hooks/useUsers'
 import useSpaceWork from '../hooks/useSpaceWork'
+import useSocket from '../hooks/useSocket'
 
 const RootSWPage = () => {
     const { options, setOptions, singleOptoin, setSingleOption } = useContextStore()
     const navigate = useNavigate()
+    const { changeRoom } = useSocket()
+
     const { currentUser, getUser } = useUsers()
     const [searchParams] = useSearchParams()
     const { handleGetSingleOption } = useContextStore()
@@ -52,7 +55,6 @@ const RootSWPage = () => {
         }
         // if it is for subSpaceWork, do this 
         if (searchParams?.get("sw")) {
-            console.log(oldSubSpaceWorkName);
             //In this object, I insert all possible fields, but the hook destructures only what it needs
             const subSpaceWorkObj = {
                 adminId: currentUser.userId,
@@ -79,6 +81,10 @@ const RootSWPage = () => {
 
                     break;
                 case "delete":
+                    const result = confirm("היי! זהירות, פעולה זו תמחק את התת-סביבה. להמשיך?")
+                    if (!result) {
+                        break
+                    }
                     deleteSubSpaceWork(
                         { ...subSpaceWorkObj, subSpaceWorkName: oldSubSpaceWorkName }
                     )
@@ -124,7 +130,6 @@ const RootSWPage = () => {
                 {searchParams.get('sw') || singleOptoin?.name ? "תת סביבה" : "נדרש לבחור סביבה"}
                 {havePermission && <div onClick={() => setToggleEdit((prev) => !prev)} className={`text-sm cursor-pointer `}>{toggleEdit ? (<div className='flex rounded-full  text-[#5a6acf]  items-center py-2 px-4 shadow-md gap-2'> סיום עריכה<IoClose onClick={() => setToggleInput(false)} /></div>) : (<div className='flex rounded-full  text-[#FF8A65]  items-center py-2 px-4 shadow-md gap-2'>{searchParams.get('sw') || singleOptoin?.name ? "עריכת תת-סביבה" : "עריכת סביבה"}<BiEdit onClick={() => setToggleInput(false)} />  </div>)}</div>}
 
-
             </div>}
             navLeft={searchParams.get('sw') || singleOptoin?.name ? `${searchParams.get('sw') || singleOptoin?.name} / לובי כניסה` : null}
             navRight={<CustomSelect labelText={"בחר קבוצה"} options={accessOption} placeholder="קבוצה..." keyToUpdate={"accessOption"} />}
@@ -153,7 +158,7 @@ const RootSWPage = () => {
 
                                 ) :
                                 // if user is editing the name than close the create input and after her click out from input update the name
-                                <button onClick={() => { navigate(`spaceWork?sw=${searchParams.get('sw')}&subSW=${item}`); localStorage.setItem("subSW", item) }} className='p-4 px-5 xl:px-10 w-full' >{item}</button>
+                                <button onClick={() => { changeRoom(searchParams.get('sw'), item); localStorage.setItem("subSW", item); navigate(`spaceWork?sw=${searchParams.get('sw')}&subSW=${item}`) }} className='p-4 px-5 xl:px-10 w-full' >{item}</button>
                             }
                         </div>
                     </div>

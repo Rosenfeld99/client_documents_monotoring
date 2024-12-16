@@ -81,97 +81,97 @@ export const soldiersData = [
   },
 ];
 
-  
 
-export const columnsList = [
-  {
-    key: "id",
-    label: "מספר אישי",
-    selectOption: [
-      { id: "1", name: "1234567" },
-      { id: "2", name: "2345678" },
-      { id: "3", name: "3456789" },
-      { id: "4", name: "4567890" },
-    ],
-  },
-  {
-    key: "name",
-    label: "שם חייל",
-    selectOption: [
-      { id: "1", name: "יוסי כהן" },
-      { id: "2", name: "דוד לוי" },
-      { id: "3", name: "שרה לוי" },
-      { id: "4", name: "נועה ישראלי" },
-    ],
-  },
-  {
-    key: "rank",
-    label: "דרגה",
-    selectOption: [
-      { id: "1", name: "סמל" },
-      { id: "2", name: "סמל ראשון" },
-      { id: "3", name: "רב-סמל" },
-      { id: "4", name: "רב-סרן" },
-    ],
-  },
-  {
-    key: "unit",
-    label: "יחידה",
-    selectOption: [
-      { id: "1", name: '8200' },
-      { id: "2", name: "669" },
-      { id: "3", name: "שלדג" },
-      { id: "4", name: "סיירת מטכ'ל" },
-    ],
-  },
-  {
-    key: "role",
-    label: "תפקיד",
-    selectOption: [
-      { id: "1", name: "לוחם" },
-      { id: "2", name: "נהג" },
-      { id: "3", name: "חובש" },
-      { id: "4", name: "קצין מודיעין" },
-    ],
-  },
-  {
-    key: "status",
-    label: "סטטוס שירות",
-    selectOption: [
-      { id: "1", name: "פעיל" },
-      { id: "2", name: "חופשה" },
-      { id: "3", name: "בכוננות" },
-      { id: "4", name: "משוחרר" },
-    ],
-  },
-  {
-    key: "email",
-    label: "אימייל",
-    selectOption: [
-      { id: "1", name: "פעיל" },
-      { id: "2", name: "חופשה" },
-      { id: "3", name: "בכוננות" },
-      { id: "4", name: "משוחרר" },
-    ],
-  },
-  {
-    key: "phone",
-    label: "נייד",
-    selectOption: [
-      { id: "1", name: "פעיל" },
-      { id: "2", name: "חופשה" },
-      { id: "3", name: "בכוננות" },
-      { id: "4", name: "משוחרר" },
-    ],
-  },
-  {
-    key: "note",
-    label: "הערות",
-    selectOption: [
-      { id: "1", name: "מצטיין" },
-      { id: "2", name: "דורש חידוש ציוד" },
-      { id: "3", name: "במעקב רפואי" },
-      { id: "4", name: "מיועד לקורס פיקוד" },
-    ],
-  },
-];
+
+// export const columnsList = [
+//   {
+//     key: "id",
+//     label: "מספר אישי",
+//     selectOption: [
+//       { id: "1", name: "1234567" },
+//       { id: "2", name: "2345678" },
+//       { id: "3", name: "3456789" },
+//       { id: "4", name: "4567890" },
+//     ],
+//   },
+//   {
+//     key: "name",
+//     label: "שם חייל",
+//     selectOption: [
+//       { id: "1", name: "יוסי כהן" },
+//       { id: "2", name: "דוד לוי" },
+//       { id: "3", name: "שרה לוי" },
+//       { id: "4", name: "נועה ישראלי" },
+//     ],
+//   },
+//   {
+//     key: "rank",
+//     label: "דרגה",
+//     selectOption: [
+//       { id: "1", name: "סמל" },
+//       { id: "2", name: "סמל ראשון" },
+//       { id: "3", name: "רב-סמל" },
+//       { id: "4", name: "רב-סרן" },
+//     ],
+//   },
+//   {
+//     key: "unit",
+//     label: "יחידה",
+//     selectOption: [
+//       { id: "1", name: '8200' },
+//       { id: "2", name: "669" },
+//       { id: "3", name: "שלדג" },
+//       { id: "4", name: "סיירת מטכ'ל" },
+//     ],
+//   },
+//   {
+//     key: "role",
+//     label: "תפקיד",
+//     selectOption: [
+//       { id: "1", name: "לוחם" },
+//       { id: "2", name: "נהג" },
+//       { id: "3", name: "חובש" },
+//       { id: "4", name: "קצין מודיעין" },
+//     ],
+//   },
+//   {
+//     key: "status",
+//     label: "סטטוס שירות",
+//     selectOption: [
+//       { id: "1", name: "פעיל" },
+//       { id: "2", name: "חופשה" },
+//       { id: "3", name: "בכוננות" },
+//       { id: "4", name: "משוחרר" },
+//     ],
+//   },
+//   {
+//     key: "email",
+//     label: "אימייל",
+//     selectOption: [
+//       { id: "1", name: "פעיל" },
+//       { id: "2", name: "חופשה" },
+//       { id: "3", name: "בכוננות" },
+//       { id: "4", name: "משוחרר" },
+//     ],
+//   },
+//   {
+//     key: "phone",
+//     label: "נייד",
+//     selectOption: [
+//       { id: "1", name: "פעיל" },
+//       { id: "2", name: "חופשה" },
+//       { id: "3", name: "בכוננות" },
+//       { id: "4", name: "משוחרר" },
+//     ],
+//   },
+//   {
+//     key: "note",
+//     label: "הערות",
+//     selectOption: [
+//       { id: "1", name: "מצטיין" },
+//       { id: "2", name: "דורש חידוש ציוד" },
+//       { id: "3", name: "במעקב רפואי" },
+//       { id: "4", name: "מיועד לקורס פיקוד" },
+//     ],
+//   },
+// ];

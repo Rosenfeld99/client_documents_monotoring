@@ -1,35 +1,11 @@
+import { translateFieldsToHebrow } from "../constant/translateObj";
+
 const monthNames = [
     "ינואר", "פברואר", "מרץ", "אפריל", "מאי", "יוני",
     "יולי", "אוגוסט", "ספטמבר", "אוקטובר", "נובמבר", "דצמבר"
 ];
 
-
-
-
-
-export const translateFieldsToHebrow = {
-    problemTimeStart: "זמן פתיחת תקלה",
-
-    problemTimeEnd: "זמן סגירת תקלה",
-
-    userOpenId: "מ.א",
-
-    userOpenName: "שם פותח תקלה",
-    deleteAt: "תאריך מחיקה"
-
-}
-export const translateFieldsToEnglish = {
-    "זמן פתיחת תקלה": "problemTimeStart",
-
-    "זמן סגירת תקלה": "problemTimeEnd",
-
-    "מ.א": "userOpenId",
-
-    "שם פותח תקלה": "userOpenName",
-    "תאריך מחיקה": "deleteAt"
-
-}
-const colors = [
+export const colors = [
     "#36A2EB", // Light Blue
     "#FF6384", // Soft Red
     "#FF9F40", // Orange
@@ -46,6 +22,25 @@ const colors = [
     "#A0E3E5", // Light Mint
     "#F0E68C"  // Khaki Yellow
 ];
+
+export const closeColors = [
+    "rgba(54, 162, 235, 0.5)", // Light Blue
+    "rgba(255, 99, 132, 0.5)", // Soft Red
+    "rgba(255, 159, 64, 0.5)", // Orange
+    "rgba(255, 205, 86, 0.5)", // Yellow
+    "rgba(75, 192, 192, 0.5)", // Teal
+    "rgba(54, 177, 164, 0.5)", // Teal Green
+    "rgba(255, 123, 148, 0.5)", // Pale Pink
+    "rgba(255, 145, 77, 0.5)", // Coral
+    "rgba(255, 204, 77, 0.5)", // Golden Yellow
+    "rgba(51, 181, 229, 0.5)", // Bright Sky Blue
+    "rgba(255, 94, 87, 0.5)", // Deep Coral
+    "rgba(255, 191, 105, 0.5)", // Peach
+    "rgba(255, 165, 0, 0.5)", // Orange
+    "rgba(160, 227, 229, 0.5)", // Light Mint
+    "rgba(240, 230, 140, 0.5)"  // Khaki Yellow
+];
+
 
 
 export const formatHour = (timestamp) => {
@@ -85,14 +80,9 @@ export const formatMonth = (timestamp) => {
 
 
 
-
-// historyReports->all reports
-// label->the label to show in dashbord in x direction
-// formatDateToDashbord->if the user want to show by date so nwwd to get func to conver it to hours or day or week...
-export const formatDataToChartForBar = (historyReports, label, formatDateToDashboard) => {
+export const formatDataToChartForBar = (historyReports, label, formatDateToDashboard, mode) => {
 
     // this is map by the filter that user want to show in dashbord
-    const mapObjBySearchType = {}
 
     let maxHeight = 1
     const openLabelsReports = {};
@@ -102,6 +92,8 @@ export const formatDataToChartForBar = (historyReports, label, formatDateToDashb
     const pieColors = [];
     let totalPieReports = 0
     let index = 0;
+    const pieMode = mode === "pie" ? "_סגורות" : ""
+    console.log(pieMode);
 
     if (!historyReports || historyReports.length === 0) {
         return []; // Return empty arrays if no data
@@ -112,6 +104,7 @@ export const formatDataToChartForBar = (historyReports, label, formatDateToDashb
         if (!historyReportsItem[label]) {
             continue;
         }
+
 
         // Format the label if needed
         const reportLabel = formatDateToDashboard
@@ -127,10 +120,12 @@ export const formatDataToChartForBar = (historyReports, label, formatDateToDashb
                 openReportsData[index] = 1,
                     pieColors.push(colors[index % colors.length])
 
-                if (!closeLabelsReports?.hasOwnProperty(reportLabel)) {
-                    closeLabelsReports[reportLabel] = index;
-                    closeReportsData[index] = 0
-                }
+                // if (!closeLabelsReports?.hasOwnProperty(`${reportLabel}${pieMode}`)) {
+                //     // closeLabelsReports[reportLabel] = index;
+                //     // closeReportsData[index] = 0
+                //     // pieColors.push(closeColors[index % closeColors.length])
+
+                // }
                 index++
 
             }
@@ -139,82 +134,35 @@ export const formatDataToChartForBar = (historyReports, label, formatDateToDashb
             maxHeight = openReportsData[openLabelsReports[reportLabel]] && maxHeight < openReportsData[openLabelsReports[reportLabel]] ? openReportsData[openLabelsReports[reportLabel]] : maxHeight
         }
         else {
-            if (!closeLabelsReports?.hasOwnProperty(reportLabel)) {
-                closeLabelsReports[reportLabel] = index;
+            if (!closeLabelsReports?.hasOwnProperty(`${reportLabel}${pieMode}`)) {
+                closeLabelsReports[`${reportLabel}${pieMode}`] = index;
                 closeReportsData[index] = 1
-
-                pieColors.push(colors[index % colors.length])
 
                 if (!openLabelsReports?.hasOwnProperty(reportLabel)) {
                     openLabelsReports[reportLabel] = index;
                     openReportsData[index] = 0
+                    pieColors.push(colors[index % colors.length])
+
                 }
                 index++
             }
-            else closeReportsData[closeLabelsReports[reportLabel]]++
+            else closeReportsData[closeLabelsReports[`${reportLabel}${pieMode}`]]++
             maxHeight = closeReportsData[closeLabelsReports[reportLabel]] && maxHeight < closeReportsData[closeLabelsReports[reportLabel]] ? closeReportsData[closeLabelsReports[reportLabel]] : maxHeight
             totalPieReports++
-
         }
-
     }
-    console.log(totalPieReports);
+    if (mode === "pie") {
+        // the colors index go with label index so: color[1] will be on chartLabels[1]
+        // so here i insert the close label at the end so color array will be end
+        for (let index = 0; index < Object.keys(closeLabelsReports)?.length; index++) {
+            pieColors.push(closeColors[index % colors.length])
+        }
+    }
+    const chartLabels = mode === "pie" ? [...Object.keys(openLabelsReports), ...Object.keys(closeLabelsReports)] : Object.keys(openLabelsReports)
 
-    return { label: Object.keys(openLabelsReports), openReportsData, closeReportsData, maxHeight, pieColors, totalPieReports };
+    return { label: chartLabels, openReportsData, closeReportsData, maxHeight, pieColors, totalPieReports };
 };
 
-export const formatDataToChart = (historyReports, label, formatDateToDashbord, field) => {
-    const arrayData = [];
-
-    // for donut dashbord there is name key instead label
-    const donatDashbord = field === "name" ? true : false;
-
-    if (historyReports?.length == 0) {
-        return
-    }
-
-    let closeColor = "red"
-    let openColor = "#5a6acf"
-
-    // iterate through all reports(historyReports)
-    for (let index = 0; index < historyReports?.length; index++) {
-        // get the report data
-        const historyReportsItem = historyReports[index];
-
-        if (!historyReportsItem[label]) {
-            continue
-        }
-        // historyReportsItem[label]
-        // convert all inputs from array to fields in historyReportsItem object
-        // (inputs are array)
-
-        // remove unnecessary fields
-
-        //now historyReportsItem is only object with key and value
-        console.log(historyReportsItem[label]);
-
-        // if the field is date so convert it to wanted format to dashbord label
-        const reportLabel = formatDateToDashbord ? formatDateToDashbord(historyReportsItem[label]) : historyReportsItem[label] || "שדה  לא קיים";
-
-        // check if the report open or close and set colors
-        const reportStatusColor = historyReportsItem?.reportOpen ? openColor : closeColor;
-
-        // check if the func is to donat dashbord so get random colos
-        const partDonatDashbord = historyReportsItem[label] ? colors[index % colors?.length] : "white"
-        const color = donatDashbord ? partDonatDashbord : reportStatusColor
-
-        // find if there is data with the same label and color if not create one else add 1
-        const indexData = arrayData?.findIndex((obj) => (obj[field] === reportLabel && obj?.openReport === historyReportsItem?.reportOpen))
-        if (indexData == -1) {
-            arrayData.push({ [field]: reportLabel, y: 1, openReport: historyReportsItem?.reportOpen, percent: (1 / historyReports?.length) * 100, color })
-
-        } else {
-            arrayData[indexData].y++
-            arrayData[indexData].percent = ((arrayData[indexData]?.y / historyReports?.length) * 100)
-        }
-    }
-    return arrayData
-}
 
 export const listOption = (historyReports, roomInputs) => {
     // if there is no historyReports return 
@@ -223,38 +171,75 @@ export const listOption = (historyReports, roomInputs) => {
         return
     }
     //copy first report 
-    const list = { ...historyReports[0] }
+    const list = []
+    console.log(roomInputs);
 
-    // remove unnecessary fields
-    delete list.reportId
-    delete list._id
-    delete list.reportOpen
-    delete list.inputs
 
     // iterate through all fields and translate them to hebrew
-    for (const key in list) {
-        // if the key is in the translateFieldsToHebrow object remove it and add the translated key to the object
-        if (translateFieldsToHebrow[key]) {
+    // for (const key in list) {
+    //     // if the key is in the translateFieldsToHebrow object remove it and add the translated key to the object
+    //     if (translateFieldsToHebrow[key]) {
 
-            list[translateFieldsToHebrow[key]] = list[key]
-            delete list[key]
-        }
-    }
+    //         list[translateFieldsToHebrow[key]] = list[key]
+    //         delete list[key]
+    //     }
+    // }
+
 
     // iterate through all inputs and isert them to the object
     roomInputs?.forEach((item) => {
         if (item.type !== "textarea") {
-            list[item?.label] = item?.label;
+            list.push(item?.label);
         }
-
     });
-    // console.log(list);
-    delete list.SLA
-    delete list["מ.א של לקוח"]
-    delete list["תאריך מחיקה"]
-    delete list["זמן סגירת תקלה"]
-    return list ? Object.keys(list) : [];
+    list.push("זמן פתיחת תקלה")
+    list.push("זמן סגירת תקלה")
+    list.push("שם פותח תקלה")
+    list.push("מ.א")
+
+    return list ? list : [];
 }
+// export const listOption = (historyReports, roomInputs) => {
+//     // if there is no historyReports return 
+
+//     if (!historyReports) {
+//         return
+//     }
+//     //copy first report 
+//     const list = { ...historyReports[0] }
+
+//     // remove unnecessary fields
+//     delete list.reportId
+//     delete list._id
+//     delete list.reportOpen
+//     delete list.inputs
+
+//     // iterate through all fields and translate them to hebrew
+//     for (const key in list) {
+//         // if the key is in the translateFieldsToHebrow object remove it and add the translated key to the object
+//         if (translateFieldsToHebrow[key]) {
+
+//             list[translateFieldsToHebrow[key]] = list[key]
+//             delete list[key]
+//         }
+//     }
+
+//     console.log(list);
+//     // iterate through all inputs and isert them to the object
+//     roomInputs?.forEach((item) => {
+
+//         if (item.type !== "textarea") {
+//             list[item?.label] = item?.label;
+//         }
+
+//     });
+//     console.log(list);
+//     delete list.SLA
+//     delete list["מ.א של לקוח"]
+//     delete list["תאריך מחיקה"]
+//     delete list["זמן סגירת תקלה"]
+//     return list ? Object.keys(list) : [];
+// }
 
 
 

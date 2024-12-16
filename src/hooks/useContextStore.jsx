@@ -4,7 +4,7 @@ import { useSearchParams } from 'react-router-dom'
 
 const useContextStore = () => {
 
-  const { options, setOptions, singleOptoin, allUserRooms, setAllUserRooms, setSingleOption, currentUser, historyReports, setHistoryReports, socketConnection, countRoomReports, setCountRoomReports } = useContext(ContextStore)
+  const { options, inputs, setInputs, newIdReport, setNewIdReport, setOptions, singleOptoin, allUserRooms, socketIo, setSocketIo, setAllUserRooms, setSingleOption, currentUser, historyReports, setHistoryReports, socketConnection, countRoomReports, setCountRoomReports } = useContext(ContextStore)
 
 
   const handleGetSingleOption = (value) => {
@@ -20,7 +20,7 @@ const useContextStore = () => {
 
 
 
-  return { options, setOptions, singleOptoin, setSingleOption, allUserRooms, setAllUserRooms, handleGetSingleOption, historyReports, setHistoryReports, countRoomReports, socketConnection, setCountRoomReports }
+  return { options, setOptions, inputs, setInputs, singleOptoin, newIdReport, setNewIdReport, setSingleOption, socketIo, setSocketIo, allUserRooms, setAllUserRooms, handleGetSingleOption, historyReports, setHistoryReports, countRoomReports, socketConnection, currentUser, setCountRoomReports }
 }
 
 export default useContextStore

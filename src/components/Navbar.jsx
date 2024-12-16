@@ -6,10 +6,12 @@ import { IoMdNotifications } from 'react-icons/io'
 import { RiFileExcel2Fill } from 'react-icons/ri'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import useContextStore from '../hooks/useContextStore'
+import useSocket from '../hooks/useSocket'
 
 const Navbar = ({ navLeft, showBall, showExcel, showSelectOption, options, setState, optionDisaled }) => {
     const { handleGetSingleOption } = useContextStore()
     const navigate = useNavigate()
+    const { changeRoom } = useSocket()
     // console.log(navLeft);
     const hasNotifications = true;
     const [searchParams] = useSearchParams()
@@ -19,8 +21,17 @@ const Navbar = ({ navLeft, showBall, showExcel, showSelectOption, options, setSt
     const parts = navLeft?.split(' / ') || [];
 
     const handleClickRoot = () => {
-        handleGetSingleOption(searchParams.get('sw'))
-        navigate(searchParams.get('sw') ? `/?sw=${searchParams.get('sw')}` : '/')
+        const swParams = searchParams.get('sw')
+        handleGetSingleOption(swParams)
+        swParams && changeRoom(swParams)
+        navigate(swParams ? `/?sw=${swParams}` : '/')
+
+    }
+    const moveRoomSocket = () => {
+        const pathArray = parts?.slice(0, parts?.length - 1)
+        if (pathArray?.length == 3) {
+            changeRoom(searchParams.get('sw'), searchParams.get('subSW'))
+        }
 
     }
 
@@ -33,7 +44,7 @@ const Navbar = ({ navLeft, showBall, showExcel, showSelectOption, options, setSt
                 </button>
 
                 {parts?.slice(0, parts?.length - 1).map((part, index) => (
-                    <span className=' hover:opacity-50 hover:scale-105 duration-150 cursor-pointer' onClick={() => navigate(`/${index == 0 ? "" : "spaceWork"}?sw=${searchParams.get('sw')}&subSW=${searchParams.get('subSW')}`)} key={index}>{part} / </span>
+                    <span className=' hover:opacity-50 hover:scale-105 duration-150 cursor-pointer' onClick={() => { moveRoomSocket(); navigate(`/${index == 0 ? "" : "spaceWork"}?sw=${searchParams.get('sw')}&subSW=${searchParams.get('subSW')}`) }} key={index}>{part} / </span>
                 ))}
                 <span className='text-primary'>{parts[parts?.length - 1]}</span>
             </div>

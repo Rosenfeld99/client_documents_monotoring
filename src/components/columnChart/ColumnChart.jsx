@@ -2,7 +2,7 @@ import React from 'react';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend, scales } from 'chart.js';
 import CustomSelect from '../../utils/CustomSelect';
-import { translateFieldsToEnglish } from '../../utils/dashbordUtils';
+import { translateFieldsToEnglish } from '../../constant/translateObj';
 
 // Register necessary Chart.js components
 ChartJS.register(BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend);
@@ -61,7 +61,7 @@ const ColumnChart = ({ dataToChart, optionsSelect, setColumnChartSelect }) => {
       y: {
         stacked: true,
 
-        max: dataToChart?.maxHeight + (5 - dataToChart?.maxHeight % 5),
+        // max: dataToChart?.maxHeight + (5 - dataToChart?.maxHeight % 5),
 
         ticks: {
           stepSize: dataToChart?.maxHeight > 20 ? 5 : 10, // Optional: Set step size between ticks
@@ -75,7 +75,7 @@ const ColumnChart = ({ dataToChart, optionsSelect, setColumnChartSelect }) => {
       <div className="flex items-center justify-between">
         <div>
           <div className="text-text font-semibold">פילוח תקלות</div>
-          <div className="text-[#8c8c8c]">תקלות פתוחות בחתך נושאים</div>
+          <div className="text-[#8c8c8c]">  תקלות פתוחות בחתך נושאים (לחצו על הכותרות לסינון)</div>
         </div>
         {/* <div className="px-7 py-1 bg-accent border-2 text-primary text-md font-semibold border-border shadow-md rounded-lg flex justify-center items-center hover:scale-110 duration-150">
            <button>היום</button>
