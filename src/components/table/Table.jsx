@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import DropDownOption from './DropDownOption';
 import useReports from '../../hooks/useReport';
+import { urgancyColors } from '../../constant/translateObj';
 
 const Table = ({ setOpenManageColumns, columns, columnVisibility, setColumns, filteredData, handleFilterChange, setFilteredData, toggleColumn, filters, HoverComps }) => {
     const { loading } = useReports()
@@ -8,6 +9,9 @@ const Table = ({ setOpenManageColumns, columns, columnVisibility, setColumns, fi
     const [showOptionSelect, setShowOptionSelect] = useState(false);
     const [showIconDots, setShowIconDots] = useState(false);
     const [draggedColumnIndex, setDraggedColumnIndex] = useState(null);
+
+
+
 
     const handleDragStart = (index) => (event) => {
         event.dataTransfer.setData("colIndex", index);
@@ -30,6 +34,7 @@ const Table = ({ setOpenManageColumns, columns, columnVisibility, setColumns, fi
     };
     return (
         <React.Fragment>
+
             <table className="w-full border border-border shadow-md rounded-lg">
                 <thead className="bg-accent text-white border-b border-b-border">
                     <tr>
@@ -61,7 +66,13 @@ const Table = ({ setOpenManageColumns, columns, columnVisibility, setColumns, fi
                                 (column) =>
                                     columnVisibility[column?.key] && (
                                         <td key={column.key} className="py-2 px-4 text-center border-r border-r-border">
-                                            {row[column.key] && typeof String ? String(row[column.key])?.substring(0, 30) : typeof Date ? row[column.key] : (row[column.key])}
+                                            {column.key === "דחיפות" ? <span style={{ backgroundColor: urgancyColors[row[column.key]] }} className="text-[white] px-3 rounded-full py-1"  >
+                                                {row[column.key] && typeof String ? String(row[column.key])?.substring(0, 30) : typeof Date ? row[column.key] : (row[column.key])}
+                                            </span> :
+                                                row[column.key] && typeof String ? String(row[column.key])?.substring(0, 30) : typeof Date ? row[column.key] : (row[column.key])}
+
+
+
                                             {HoverComps && HoverComps(row)}
                                         </td>
                                     )

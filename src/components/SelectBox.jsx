@@ -1,10 +1,12 @@
 import React from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import useContextStore from '../hooks/useContextStore';
+import useSocket from '../hooks/useSocket';
 
 const SelectBox = ({ options, setState, optionDisaled }) => {
     const [searchParams] = useSearchParams()
     const location = useLocation().pathname
+    const { changeRoom } = useSocket()
 
     const navigate = useNavigate()
     const { handleGetSingleOption, singleOptoin } = useContextStore()
@@ -19,8 +21,8 @@ const SelectBox = ({ options, setState, optionDisaled }) => {
         // setState && setState(options?.find((item) => item?.name == val))
 
         location == "/dashboard"
-            ? navigate(`?sw=${searchParams.get('sw')}&subSW=${searchParams.get('subSW')}&room=${val}`)
-            : navigate(`?sw=${val}`)
+            ? (changeRoom(searchParams.get('sw'), searchParams.get('subSW'), val), navigate(`?sw=${searchParams.get('sw')}&subSW=${searchParams.get('subSW')}&room=${val}`))
+            : (changeRoom(val), navigate(`?sw=${val}`))
     }
 
     // console.log(searchParams.get("room"), options);

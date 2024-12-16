@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 
-const CustomInput = ({ placeholder, required, disabeld, label, state, setState, inputType, minLen, maxLen, pattern, keyToUpdate }) => {
+const CustomInput = ({ placeholder, required, disabled, label, state, setState, inputType, minLen, maxLen, pattern, keyToUpdate }) => {
     const inputRef = useRef(null);
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
@@ -16,6 +16,7 @@ const CustomInput = ({ placeholder, required, disabeld, label, state, setState, 
         }
     };
 
+    console.log(disabled);
 
     return (
         <div className={`relative ${label === "שם פותח תקלה" && "opacity-30"} w-full`}>
@@ -37,7 +38,7 @@ const CustomInput = ({ placeholder, required, disabeld, label, state, setState, 
                 onChange={handleInputChange}
                 placeholder={placeholder}
                 required={required}
-                disabled={disabeld ?? false}
+                disabled={disabled ?? false}
             />
             {required &&
                 <div className='absolute -top-5 text-sm left-0 text-[#E57373]'>*שדה חובה </div>

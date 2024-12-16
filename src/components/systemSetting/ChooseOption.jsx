@@ -27,6 +27,12 @@ function ChooseOption({ updateInput, setUpdateInput, chooseOption, setChooseOpti
     // delete input
     const deleteInputFunc = (e, id) => {
 
+        const result = confirm("היי! זהירות, פעולה זו תמחק את השדה. להמשיך?")
+        if (!result) {
+            return
+        }
+
+
         const spaceDeatiles = {
             spaceWorkName: searchParams?.get('sw'),
             adminId: currentUser?.userId,
@@ -35,8 +41,9 @@ function ChooseOption({ updateInput, setUpdateInput, chooseOption, setChooseOpti
             inputId: id
 
         }
-        deleteInput(spaceDeatiles)
         const inputsTemp = inputs.filter((input) => input?._id != updateInput?._id)
+        deleteInput({ ...spaceDeatiles, updateInputsArray: inputsTemp })
+
         setUpdateInput(null)
         setChooseOption("")
         setInputs(inputsTemp)
@@ -81,7 +88,7 @@ function ChooseOption({ updateInput, setUpdateInput, chooseOption, setChooseOpti
                 if (inputIdUpdate) {
                     const newArray = inputs.map((input) => input._id == inputIdUpdate ? newTextArea : input)
 
-                    updateInputFields({ ...spaceDeatiles, editInput: newTextArea, inputId: newTextArea._id })
+                    updateInputFields({ ...spaceDeatiles, editInput: newTextArea, inputId: newTextArea._id, newArray })
                     setInputs(() => newArray)
 
 
@@ -92,6 +99,7 @@ function ChooseOption({ updateInput, setUpdateInput, chooseOption, setChooseOpti
                         return
                     }
                     createInput({ ...spaceDeatiles, input: { ...newTextArea } })
+
                     setInputs((prev) => [newTextArea, ...prev])
                 }
                 setTextAreaValue({})
@@ -105,7 +113,7 @@ function ChooseOption({ updateInput, setUpdateInput, chooseOption, setChooseOpti
                 const newSelect = createInputObj(selectValue?.label, "בחר/י אפשרות", "select", selectValue?.options ? selectValue?.options : [], require, inputIdUpdate)
                 if (inputIdUpdate) {
                     const newArray = inputs.map((input) => input._id == inputIdUpdate ? newSelect : input)
-                    updateInputFields({ ...spaceDeatiles, editInput: newSelect, inputId: newSelect._id })
+                    updateInputFields({ ...spaceDeatiles, editInput: newSelect, inputId: newSelect._id, newArray })
 
                     setInputs(newArray)
                 } else {
@@ -129,7 +137,7 @@ function ChooseOption({ updateInput, setUpdateInput, chooseOption, setChooseOpti
                 const newInput = createInputObj(inputValue?.label, inputValue?.placeholder, "short", [], require, inputIdUpdate)
                 if (inputIdUpdate) {
                     const newArray = inputs.map((input) => input._id == inputIdUpdate ? newInput : input)
-                    updateInputFields({ ...spaceDeatiles, editInput: newInput, inputId: newInput._id })
+                    updateInputFields({ ...spaceDeatiles, editInput: newInput, inputId: newInput._id, newArray })
                     setInputs(newArray)
                 } else {
                     const duplicateLabel = inputs.findIndex((input) => input?.label === inputValue?.label)
@@ -165,8 +173,6 @@ function ChooseOption({ updateInput, setUpdateInput, chooseOption, setChooseOpti
         }
         setRequire(updateInput ? updateInput?.require : false)
     }, [chooseOption, updateInput])
-
-
 
     const borderChooseColor = "border-[#5A6ACF]"
     const textChooseColor = "text-[#5A6ACF]"

@@ -65,8 +65,12 @@ export const ContextStoreProvider = ({ children }) => {
     const [singleOptoin, setSingleOption] = useState(null)
     const [currentUser, setCurrentUser] = useState()
     const [inputs, setInputs] = useState([])
-    const [historyReports, setHistoryReports] = useState([])
+    const [historyReports, setHistoryReports] = useState(({ totalCount: [{ total: 0 }], data: [] }))
     const [allUserRooms, setAllUserRooms] = useState([])
+    const [socketIo, setSocketIo] = useState()
+    const [newIdReport, setNewIdReport] = useState(0)
+
+
 
     // table issus
     const [filteredData, setFilteredData] = useState([]);
@@ -86,6 +90,7 @@ export const ContextStoreProvider = ({ children }) => {
         columnVisibility, setColumnVisibility,
         countRoomReports, setCountRoomReports,
         allUserRooms, setAllUserRooms,
+        socketIo, setSocketIo, newIdReport, setNewIdReport
     }
 
 

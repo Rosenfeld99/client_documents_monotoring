@@ -1,12 +1,13 @@
-const StepContainer = ({ addingCustomStyele, steps, handleNext }) => {
-  
+const StepContainer = ({ addingCustomStyele, steps, handleNext, handleClick }) => {
+
   return (
-    <div className="items-center w-full pt-3 flex select-none cursor-not-allowed">
+    <div className="items-center w-full pt-3 flex select-none cursor-pointer" >
       {/* Previous Steps */}
       {steps?.prevData?.map((option, index) => (
         <div
           key={index}
           className={`flex items-center w-full ${addingCustomStyele}`}
+          onClick={(e) => handleClick && handleClick(e, option, index)}
         >
           <div className="flex items-center bg-success justify-center h-8 px-5 border-2 rounded-lg border-success shadow-sm">
             <span className="text-background font-semibold text-sm text-nowrap">{option?.name}</span>
