@@ -39,7 +39,7 @@ const CustomInput = ({ placeholder, required, disabeld, label, state, setState, 
                 required={required}
                 disabled={disabeld ?? false}
             />
-            {required 
+            {required &&
                 <div className='absolute -top-5 text-sm left-0 text-[#E57373]'>*שדה חובה </div>
 
             }
