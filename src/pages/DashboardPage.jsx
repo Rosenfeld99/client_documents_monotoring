@@ -168,18 +168,18 @@ const DashboardPage = () => {
             <section className='mx-10 grid grid-cols-3 gap-[1px] bg-border'>
                 <div className="bg-background pl-10">
                     <Suspense fallback={<div>wait loading...</div>}>
-                        <DonutChart optionsSelect={listOption(historyReports?.data, inputs)} setColumnChartSelect={setColumnChart1Select} dataToChart={formatDataToChartForBar(historyReports?.data, ColumnChart1Select?.label, ColumnChart1Select?.dateFunc, "pie")} />
+                        <DonutChart optionsSelect={listOption(historyReports?.data, inputs)} isAllReportsVisible={dateToggle} setColumnChartSelect={setColumnChart1Select} dataToChart={formatDataToChartForBar(historyReports?.data, ColumnChart1Select?.label, ColumnChart1Select?.dateFunc, "pie")} />
                     </Suspense>
 
                 </div>
                 <div className="col-span-2 bg-background pr-10">
                     <Suspense fallback={<div>wait loading...</div>}>
-                        <ColumnChart optionsSelect={listOption(historyReports?.data, inputs)} setColumnChartSelect={setColumnChart1Select} dataToChart={formatDataToChartForBar(historyReports?.data, ColumnChart1Select?.label, ColumnChart1Select?.dateFunc, "label")} />
+                        <ColumnChart optionsSelect={listOption(historyReports?.data, inputs)} isAllReportsVisible={dateToggle} setColumnChartSelect={setColumnChart1Select} dataToChart={formatDataToChartForBar(historyReports?.data, ColumnChart1Select?.label, ColumnChart1Select?.dateFunc, "label")} />
                     </Suspense>
                 </div>
                 <div className="col-span-2 bg-background pl-10 pt-10">
                     <Suspense fallback={<div>wait loading...</div>}>
-                        <ColumnChart optionsSelect={listOption(historyReports?.data, inputs)} setColumnChartSelect={setColumnChart2Select} dataToChart={formatDataToChartForBar(historyReports?.data, ColumnChart2Select?.label, ColumnChart2Select?.dateFunc, "label")} />
+                        <ColumnChart optionsSelect={listOption(historyReports?.data, inputs)} isAllReportsVisible={dateToggle} setColumnChartSelect={setColumnChart2Select} dataToChart={formatDataToChartForBar(historyReports?.data, ColumnChart2Select?.label, ColumnChart2Select?.dateFunc, "label")} />
                     </Suspense>
                 </div>
 

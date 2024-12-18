@@ -50,7 +50,7 @@ function useUsers() {
                 userToCreate: userObj.userToCreate, adminId: userObj.adminId
             })
             console.log(user);
-            notify("SUCCESS", "המשתמש נוצר  בהצלחה")
+            notify("SUCCESS", "המשתמש נוצר / עודכן  בהצלחה")
 
 
         } catch (error) {
@@ -59,9 +59,28 @@ function useUsers() {
 
         }
     }
+    const handleSearchUsers = async ({
+        limitResultsIndex = -1, adminId, indexToSkip, arrayOfConditions = [], spaceWorkName, subSpaceWorkName, roomName, setSearchLoading
+    }) => {
+
+        try {
+            const users = await axios.post(`http://localhost:3001/users/searchUser`, {
+                limitResultsIndex, adminId, indexToSkip, arrayOfConditions, spaceWorkName, subSpaceWorkName, roomName
+
+            })
+            console.log(users);
+            setFilteredData(users?.data?.data)
+
+            setSearchLoading(false)
+        } catch (error) {
+            console.log(error);
+            notify("ERROR", "בעיה ביצירת המשתמש")
+
+        }
+    }
 
     return (
-        { getUser, currentUser, createUser, getAllUsers, loading, historyReports, columns, setColumns, filteredData, setFilteredData }
+        { getUser, currentUser, createUser, handleSearchUsers, getAllUsers, loading, historyReports, columns, setColumns, filteredData, setFilteredData }
     )
 }
 

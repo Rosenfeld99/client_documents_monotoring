@@ -15,7 +15,7 @@ const App = () => {
   const { pathname } = useLocation()
 
   // const { setSocketIo, socketIo, setInputs, historyReports, setHistoryReports, setNewIdReport, columns, setColumns, setFilteredData } = useContextStore()
-  const { setSocketIo, socketIo, setInputs, inputs, setCountRoomReports, historyReports, setHistoryReports, setNewIdReport, columns, setColumns, filteredData, setFilteredData } = useContext(ContextStore)
+  const { setSocketIo, socketIo, setCurrentUser, setInputs, inputs, setCountRoomReports, historyReports, setHistoryReports, setNewIdReport, columns, setColumns, filteredData, setFilteredData } = useContext(ContextStore)
   const localSW = localStorage.getItem("sw");
   const localSubSP = localStorage.getItem("subSW");
   const localRoom = localStorage.getItem("room");
@@ -38,6 +38,37 @@ const App = () => {
       // create input socket
       socketIo.on("recive_new_inputs", (data) => {
         setInputs(data?.newInputsArray)
+      });
+      // create input socket
+      socketIo.on("recive_create_room", ({ spaceWork, subSpaceWork, newRoomObj }) => {
+        const key = `${spaceWork}_${subSpaceWork}_${newRoomObj?.name}`
+        if (currentUser && currentUser.subSpaceWorks[spaceWork][subSpaceWork] === "admin") {
+          setCurrentUser((prev) => {
+            const rooms = { ...prev.rooms, [key]: "editor" }
+            const UpdateUser = { ...prev, rooms }
+            return UpdateUser
+          })
+        }
+      });
+      // create input socket
+      socketIo.on("recive_delete_room", ({ spaceWork, subSpaceWork, newRoomObj }) => {
+        const key = `${spaceWork}_${subSpaceWork}_${roomName}`
+        // //saved it
+        setCurrentUser((prev) => {
+          delete prev?.rooms[key]
+          return prev
+        })
+      });
+      // create input socket
+      socketIo.on("recive_update_room", ({ spaceWork, subSpaceWork, newRoomName }) => {
+        const key = `${spaceWork}_${subSpaceWork}_${newRoomObj?.name}`
+        if (currentUser && currentUser.subSpaceWorks[spaceWork][subSpaceWork] === "admin") {
+          setCurrentUser((prev) => {
+            const rooms = { ...prev.rooms, [key]: "editor" }
+            const UpdateUser = { ...prev, rooms }
+            return UpdateUser
+          })
+        }
       });
 
       // delete input socket
@@ -162,7 +193,7 @@ const App = () => {
         console.log(newReport.reportOpen);
 
         if (currentPage === "dashboard") {
-          if (newReport["יחידה מטפךת"] === searchParams.get('room')) {
+          if (newReport["יחידה מטפלת"] === searchParams.get('room')) {
             setCountRoomReports((prev) => ({ ...prev, roomResponseOpen: [...prev.roomResponseOpen, newReport] }))
           }
           else setCountRoomReports((prev) => ({ ...prev, otherResponseOpen: [...prev.otherResponseOpen, newReport] }))

@@ -11,7 +11,7 @@ import useContextStore from '../../hooks/useContextStore';
 // Register necessary components
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const DonutChart = ({ dataToChart }) => {
+const DonutChart = ({ dataToChart, isAllReportsVisible }) => {
 
   if (!dataToChart || !dataToChart.label || !dataToChart.label.length) {
     return <div>אין נתונים להצגה</div>;
@@ -65,10 +65,11 @@ const DonutChart = ({ dataToChart }) => {
       <div className="flex items-center justify-between">
         <div>
           <div className="text-text font-semibold">פילוח תקלות</div>
-          <div className="text-[#8c8c8c]">תקלות פתוחות בחתך נושאים</div>
+          <div className="text-[#8c8c8c]">             {isAllReportsVisible ? "תקלות פתוחות וסגורות בחתך נושאים" : "תקלות פתוחות בחתך נושאים"} (לחצו על הכותרות לסינון)
+          </div>
         </div>
       </div>
-      <div className="relative w-5/6 h-5/6">
+      <div className="mt-3 w-[90%] h-[90%]">
         <Pie data={data} options={options} />
       </div>
     </div>

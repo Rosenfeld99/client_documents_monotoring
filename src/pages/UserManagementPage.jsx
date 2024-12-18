@@ -10,7 +10,7 @@ import useUsers from '../hooks/useUsers'
 import { BiEdit } from 'react-icons/bi'
 
 const UserManagementPage = () => {
-    const { getAllUsers, loading, columns, setColumns, historyReports, filteredData, setFilteredData } = useUsers()
+    const { getAllUsers, loading, searchUsers, handleSearchUsers, columns, setColumns, historyReports, filteredData, setFilteredData } = useUsers()
     const [searchParams] = useSearchParams()
     // const [filteredData, setFilteredData] = useState(soldiersData);
     // const [columns, setColumns] = useState(columnsList);
@@ -19,24 +19,54 @@ const UserManagementPage = () => {
     const { currentUser } = useUsers()
     const navigation = useNavigate()
     const [filters, setFilters] = useState({});
+
     const [columnVisibility, setColumnVisibility] = useState({});
+    const [searchLoading, setSearchLoading] = useState(false);
 
     useEffect(() => {
+        if (Object.keys(filters).length === 0) { // Correct check for empty object
+            setSearchLoading(false)
 
-        if (currentUser?.userId) {
+            if (currentUser?.userId) {
 
-            getAllUsers(
-                {
+                getAllUsers(
+                    {
+                        spaceWorkName: searchParams.get('sw'),
+                        subSpaceWorkName: searchParams.get('subSW'),
+                        roomName: searchParams.get('room'),
+                        adminId: currentUser?.userId,
+                    }, setColumnVisibility
+
+                )
+            }
+
+        } else {
+            // if filters is not empty so return the search 
+            setSearchLoading(true)
+            const handler = setTimeout(() => {
+                const convertFilters = Object.entries(filters).map(([key, value]) => ({
+                    name: key,
+                    value,
+                }));
+
+                handleSearchUsers({
+                    limitResultsIndex: 14, // -1 is get all reports
+                    indexToSkip: pagenations.prev * 14,
+                    arrayOfConditions: convertFilters,
+                    adminId: currentUser?.userId,
                     spaceWorkName: searchParams.get('sw'),
                     subSpaceWorkName: searchParams.get('subSW'),
-                    roomName: searchParams.get('room'),
-                    adminId: currentUser?.userId,
-                }, setColumnVisibility
+                    roomName: searchParams.get('room'), setSearchLoading
+                });
 
-            )
+            }, 800);
+
+            return () => {
+                clearTimeout(handler);
+            };
         }
+    }, [currentUser, pagenations, filters]);
 
-    }, [currentUser?.userId, searchParams])
 
     const accessOption = [
         { name: "מדגם", value: "מדגם" },
@@ -46,16 +76,16 @@ const UserManagementPage = () => {
     const str = `${searchParams.get('sw')} / ${searchParams.get('subSW')} / ${searchParams.get('room')}`
 
 
-    useMemo(() => {
-        const temp = () => {
-            return filteredData?.filter((row) =>
-                Object.entries(filters).every(([key, value]) =>
-                    row[key]?.toLowerCase().includes(value.toLowerCase())
-                )
-            );
-        }
-        setFilteredData(temp())
-    }, [filters,]);
+    // useMemo(() => {
+    //     const temp = () => {
+    //         return filteredData?.filter((row) =>
+    //             Object.entries(filters).every(([key, value]) =>
+    //                 row[key]?.toLowerCase().includes(value.toLowerCase())
+    //             )
+    //         );
+    //     }
+    //     setFilteredData(temp())
+    // }, [filters,]);
 
     const toggleColumn = (key) => {
         setColumnVisibility((prev) => ({
@@ -65,10 +95,19 @@ const UserManagementPage = () => {
     };
 
     const handleFilterChange = (key, value) => {
-        setFilters((prev) => ({
-            ...prev,
-            [key]: value,
-        }));
+        setFilters((prev) => {
+            const updatedFilters = { ...prev };
+
+            if (value) {
+                // Update the key if the value is not empty
+                updatedFilters[key] = value;
+            } else {
+                // Delete the key if the value is empty
+                delete updatedFilters[key];
+            }
+
+            return updatedFilters;
+        });
     };
 
 
@@ -99,6 +138,9 @@ const UserManagementPage = () => {
             </div>
         )
     }
+    const resetFilters = () => {
+        setFilters({})
+    }
 
 
     return (
@@ -115,7 +157,7 @@ const UserManagementPage = () => {
         >
             <section className="p-10 w-[85vw] flex flex-col gap-3 flex-1">
 
-                <TableFilters openManageColumns={openManageColumns} setOpenManageColumns={setOpenManageColumns} columnVisibility={columnVisibility} columns={columns} handleFilterChange={handleFilterChange} toggleColumn={toggleColumn} filters={filters} />
+                <TableFilters resetFilters={resetFilters} openManageColumns={openManageColumns} setOpenManageColumns={setOpenManageColumns} columnVisibility={columnVisibility} columns={columns} handleFilterChange={handleFilterChange} toggleColumn={toggleColumn} filters={filters} />
                 <div className=" w-full overflow-x-auto ml-[240px]">
                     {loading ? <div>Loading...</div> :
                         columns[0] && <Table HoverComps={HoverComps} setOpenManageColumns={setOpenManageColumns} filters={filters} toggleColumn={toggleColumn} columnVisibility={columnVisibility} columns={columns} setColumns={setColumns} filteredData={filteredData} handleFilterChange={handleFilterChange} setFilteredData={setFilteredData} />

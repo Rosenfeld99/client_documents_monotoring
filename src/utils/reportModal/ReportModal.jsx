@@ -78,6 +78,7 @@ export default function ReportModal({ currReport, mode, setOpenModal }) {
             subSpaceWorkName: searchParams?.get('subSW'),
             roomName: searchParams?.get('room'),
         })
+        setOpenModal(false)
     }
 
     return (

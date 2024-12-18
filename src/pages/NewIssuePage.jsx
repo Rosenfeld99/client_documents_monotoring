@@ -76,7 +76,7 @@ const NewIssuePage = () => {
                     {inputs.length > 3 && <div className="mt-3">מספר תקלה {newIdReport}</div>}
                     <div className=" flex h-[29rem] gap-20 w-full">
                         {inputs.length > 3 ?
-                            <div className=" flex flex-col flex-wrap h-full j w-full max-w-60 items-center gap-6">
+                            <div className=" flex flex-col flex-wrap h-full j w-full max-w-64 items-center gap-8">
                                 <CustomInput state={newReportData} label={"שם פותח תקלה"} disabeld={true} required={false} placeholder={currentUser?.firstName + currentUser?.lastName} />
                                 {inputs.map((input, i) => {
                                     switch (input?.type) {
@@ -86,7 +86,7 @@ const NewIssuePage = () => {
                                             // if the input is דחיפות  revers the array becuse the hebrew
                                             return <CustomSelect key={input?._id} options={input.label === "דחיפות" ? reversString(input?.options) : input?.options} setState={handleInputChange} labelText={input?.label} keyToUpdate={input?.label} required={input?.require} />
                                         case "short":
-                                            return <CustomInput key={input?._id} state={newReportData} setState={handleInputChange} label={input?.label} keyToUpdate={input?.label} required={input?.require} placeholder={input?.placeholder} />
+                                            return <CustomInput pattern={input.label === "מ.א של לקוח" && /^[smoc]/} maxLen={input.label === "מ.א של לקוח" && 8} key={input?._id} state={newReportData} setState={handleInputChange} label={input?.label} keyToUpdate={input?.label} required={input?.require} placeholder={input?.placeholder} />
                                         default:
                                             return
                                     }

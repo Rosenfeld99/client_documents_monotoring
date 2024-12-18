@@ -11,38 +11,84 @@ import { BiEdit } from 'react-icons/bi';
 import { IoCloseCircleOutline, IoDocumentTextOutline } from 'react-icons/io5';
 import { decodeFormatDate } from '../utils/funcs/decodeDate';
 import ReportModal from '../utils/reportModal/ReportModal';
+import searchIcon from "../../public/Search-amico.png"
+import loadingIcon from "../../public/Loading-pana.png"
 
 const IssueHistoryPage = () => {
-    const { getReportsByConditions, handleCloseReport, handleDeleteReport, historyReports, columns, setColumns, filteredData, setFilteredData, columnVisibility, setColumnVisibility, loading, setLoading } = useReports()
+    const { getReportsByConditions, handleSearchReport, handleCloseReport, handleDeleteReport, historyReports, columns, setColumns, filteredData, setFilteredData, columnVisibility, setColumnVisibility, loading, setLoading } = useReports()
     const [searchParams] = useSearchParams();
     const [openManageColumns, setOpenManageColumns] = useState(false)
     const [pagenations, setPagenations] = useState({ prev: 0, curr: 1, next: 2 })
     const { currentUser } = useUsers()
     const [openModal, setOpenModal] = useState(false);
+    const [searchLoading, setSearchLoading] = useState(false);
     const [reportModalData, setReportModalData] = useState({});
+    const [filters, setFilters] = useState({});
+
     console.log(columnVisibility);
 
 
     useEffect(() => {
-        if (currentUser?.userId) {
-            const getReportObj = {
-                limitResultsIndex: 14,// -1 is get all reports 
-                indexToSkip: pagenations.prev * 14,
-                // "dates": {
-                //     "fromDate": "2024-11-07T14:56:23.456+00:00",
-                //     "toDate": "2024-11-27T14:56:23.456+00:00"
-                // },
-                statusReport: "close",
-                userId: currentUser?.userId,
-                spaceWorkName: searchParams.get('sw'),
-                subSpaceWorkName: searchParams.get('subSW'),
-                roomName: searchParams.get('room'),
+        if (Object.keys(filters).length === 0) {
+            setSearchLoading(false)
+            // Correct check for empty object
+            if (currentUser?.userId) {
+                const getReportObj = {
+                    limitResultsIndex: 14, // -1 is get all reports
+                    indexToSkip: pagenations.prev * 14,
+                    statusReport: "close",
+                    userId: currentUser?.userId,
+                    spaceWorkName: searchParams.get('sw'),
+                    subSpaceWorkName: searchParams.get('subSW'),
+                    roomName: searchParams.get('room'),
+                };
+                getReportsByConditions(getReportObj);
             }
-            getReportsByConditions(getReportObj)
+        } else {
+            setSearchLoading(true)
+            // if filters is not empty so return the search 
+            const handler = setTimeout(() => {
+                const convertFilters = Object.entries(filters).map(([key, value]) => ({
+                    name: key,
+                    value,
+                }));
+
+                handleSearchReport({
+                    limitResultsIndex: 14, // -1 is get all reports
+                    indexToSkip: pagenations.prev * 14,
+                    statusReport: "close",
+                    arrayOfConditions: convertFilters,
+                    userId: currentUser?.userId,
+                    spaceWorkName: searchParams.get('sw'),
+                    subSpaceWorkName: searchParams.get('subSW'),
+                    roomName: searchParams.get('room'), setSearchLoading
+                });
+
+            }, 800);
+
+            return () => {
+                clearTimeout(handler);
+            };
         }
+    }, [currentUser, pagenations, filters]);
 
 
-    }, [currentUser, pagenations])
+    // useEffect(() => {
+    //     if (currentUser?.userId) {
+    //         const getReportObj = {
+    //             limitResultsIndex: 14,// -1 is get all reports 
+    //             indexToSkip: pagenations.prev * 14,
+    //             statusReport: "close",
+    //             userId: currentUser?.userId,
+    //             spaceWorkName: searchParams.get('sw'),
+    //             subSpaceWorkName: searchParams.get('subSW'),
+    //             roomName: searchParams.get('room'),
+    //         }
+    //         getReportsByConditions(getReportObj)
+    //     }
+
+
+    // }, [currentUser, pagenations])
 
 
 
@@ -51,20 +97,19 @@ const IssueHistoryPage = () => {
     const str = `${searchParams.get('sw')} / ${searchParams.get('subSW')} / ${searchParams.get('room')}`;
 
 
-    const [filters, setFilters] = useState();
 
-    useMemo(() => {
-        if (historyReports?.data?.length > 0 && filters) {
-            const temp = () => {
-                return historyReports?.data?.filter((row) =>
-                    Object?.entries(filters)?.every(([key, value]) =>
-                        row[key]?.toString()?.toLowerCase()?.includes(value?.toLowerCase())
-                    )
-                );
-            }
-            setFilteredData(temp())
-        }
-    }, [filters]);
+    // useMemo(() => {
+    //     if (historyReports?.data?.length > 0 && filters) {
+    //         const temp = () => {
+    //             return historyReports?.data?.filter((row) =>
+    //                 Object?.entries(filters)?.every(([key, value]) =>
+    //                     row[key]?.toString()?.toLowerCase()?.includes(value?.toLowerCase())
+    //                 )
+    //             );
+    //         }
+    //         setFilteredData(temp())
+    //     }
+    // }, [filters]);
 
     const toggleColumn = (key) => {
         setColumnVisibility((prev) => ({
@@ -72,15 +117,28 @@ const IssueHistoryPage = () => {
             [key]: !prev[key],
         }));
     };
-    console.log(filters);
 
     const handleFilterChange = (key, value) => {
-        setFilters((prev) => ({
-            ...prev,
-            [key]: value,
-        }));
-    };
+        console.log(key, value);
+        setFilters((prev) => {
+            const updatedFilters = { ...prev };
 
+            if (value) {
+                // Update the key if the value is not empty
+                updatedFilters[key] = value;
+            } else {
+                // Delete the key if the value is empty
+                delete updatedFilters[key];
+            }
+
+            return updatedFilters;
+        });
+
+        // setFilters((prev) => ({
+        //   ...prev,
+        //   [key]: value,
+        // }));
+    }
 
     const handleClickOnPage = (arrowType) => {
 
@@ -96,7 +154,6 @@ const IssueHistoryPage = () => {
                 break;
         }
     }
-    console.log(currentUser);
 
     const handleDeleteReportClick = (currReport) => {
         console.log(currReport);
@@ -148,6 +205,9 @@ const IssueHistoryPage = () => {
 
         </div>)
     }
+    const resetFilters = () => {
+        setFilters({})
+    }
 
     return (
         <>
@@ -163,10 +223,20 @@ const IssueHistoryPage = () => {
                 navLeft={str}
             >
                 <section className="w-[85vw] p-10 flex flex-col gap-3 flex-1">
-                    <TableFilters openManageColumns={openManageColumns} setOpenManageColumns={setOpenManageColumns} columnVisibility={columnVisibility} columns={columns} handleFilterChange={handleFilterChange} toggleColumn={toggleColumn} filters={filters} />
+                    <TableFilters resetFilters={resetFilters} openManageColumns={openManageColumns} setOpenManageColumns={setOpenManageColumns} columnVisibility={columnVisibility} columns={columns} handleFilterChange={handleFilterChange} toggleColumn={toggleColumn} filters={filters} />
                     <div className="w-full overflow-x-auto ml-[240px]">
 
-                        {loading ? <div>Loading...</div> :
+                        {(loading || searchLoading) ? <div className='flex h-full items-center justify-center'>
+
+                            {searchLoading && <div className='flex flex-col items-center gap-0 '>
+                                <span className='font-bold text-[25px]'>מחפש...</span>
+                                <span><img src={searchIcon} className='w-[600px] h-[600px]' alt="" /></span>
+                            </div>}
+                            {loading && <div className='flex flex-col items-center gap-0 '>
+                                <span className='font-bold text-[25px]'>טוען...</span>
+                                <span><img src={loadingIcon} className='w-[600px] h-[600px]' alt="" /></span>
+                            </div>}
+                        </div> :
                             <Table HoverComps={HoverComps} setOpenManageColumns={setOpenManageColumns} filters={filters} toggleColumn={toggleColumn} columnVisibility={columnVisibility} columns={columns} setColumns={setColumns} filteredData={filteredData} handleFilterChange={handleFilterChange} setFilteredData={setFilteredData} />
                         }
                     </div>

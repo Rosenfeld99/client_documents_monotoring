@@ -6,8 +6,7 @@ import { translateFieldsToEnglish } from '../../constant/translateObj';
 
 // Register necessary Chart.js components
 ChartJS.register(BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend);
-
-const ColumnChart = ({ dataToChart, optionsSelect, setColumnChartSelect }) => {
+const ColumnChart = ({ dataToChart, optionsSelect, setColumnChartSelect, isAllReportsVisible }) => {
 
   const funcSetToSelect = (value) => {
     const label = translateFieldsToEnglish[value] ?? value
@@ -30,19 +29,22 @@ const ColumnChart = ({ dataToChart, optionsSelect, setColumnChartSelect }) => {
         barPercentage: 1,         // Width of the bars rel
         barPercentage: dataToChart?.label?.length > 1 ? 0.6 : 0.2,
       },
-      {
-        label: 'תקלות סגורות',
-        data: dataToChart && dataToChart?.closeReportsData,
-        borderColor: 'rgba(90, 106, 207, 0.5)',
-        backgroundColor: 'rgba(90, 106, 207, 0.5)',
-        borderWidth: 2,
-        categoryPercentage: 0.8,  // Width of the category (group of bars) relative to available space
-        barPercentage: 1,         // Width of the bars rel
-        borderSkipped: false,
-        barPercentage: dataToChart?.label?.length > 1 ? 0.6 : 0.2,
-      },
     ],
   };
+
+  if (isAllReportsVisible) {
+    data.datasets.push({
+      label: 'תקלות סגורות',
+      data: dataToChart && dataToChart?.closeReportsData,
+      borderColor: 'rgba(90, 106, 207, 0.5)',
+      backgroundColor: 'rgba(90, 106, 207, 0.5)',
+      borderWidth: 2,
+      categoryPercentage: 0.8,  // Width of the category (group of bars) relative to available space
+      barPercentage: 1,         // Width of the bars rel
+      borderSkipped: false,
+      barPercentage: dataToChart?.label?.length > 1 ? 0.6 : 0.2,
+    },)
+  }
 
   // Chart options
   const options = {
@@ -75,7 +77,10 @@ const ColumnChart = ({ dataToChart, optionsSelect, setColumnChartSelect }) => {
       <div className="flex items-center justify-between">
         <div>
           <div className="text-text font-semibold">פילוח תקלות</div>
-          <div className="text-[#8c8c8c]">  תקלות פתוחות בחתך נושאים (לחצו על הכותרות לסינון)</div>
+          <div className="text-[#8c8c8c]">
+            {isAllReportsVisible ? " תקלות פתוחות וסגורות בחתך נושאים " : " תקלות פתוחות בחתך נושאים "}
+            (לחצו על הכותרות לסינון) </div>
+
         </div>
         {/* <div className="px-7 py-1 bg-accent border-2 text-primary text-md font-semibold border-border shadow-md rounded-lg flex justify-center items-center hover:scale-110 duration-150">
            <button>היום</button>

@@ -15,9 +15,10 @@ const Sidebar = () => {
     const navigateion = useNavigate()
     const location = useLocation() // useLocation to get the current path
     const [searchParams] = useSearchParams()
-    // console.log(searchParams.get('room'));
     const { options } = useContextStore()
     const { changeRoom } = useSocket()
+    const { currentUser } = useContextStore()
+
 
     const styleItem = "flex items-center gap-3 text-[#a4a5ac] hover:opacity-50 px-3 py-2 rounded-lg transition-all duration-150 cursor-pointer"
     const styleItemActive = "bg-primary text-background flex items-center gap-3 px-5 py-2 rounded-lg transition-all duration-150 " // active item style
@@ -31,6 +32,10 @@ const Sidebar = () => {
         changeRoom(localSW, localSubSP, localRoom, page)
     }
 
+    const hasSubSWPermission = "admin"
+    const hasRoomPermission = "editor"
+    // const hasSubSWPermission = currentUser?.subSpaceWorks[searchParams?.get('sw')][searchParams.get('subSW')]
+    // const hasRoomPermission = currentUser?.rooms[`${searchParams?.get('sw')}_${searchParams.get('subSW')}_${searchParams.get('room')}`]
 
     return (
         <div className="flex flex-col h-full justify-between fixed max-h-screen w-[250px] min-w-[210px] bg-secondary min-h-screen p-5">
@@ -63,10 +68,13 @@ const Sidebar = () => {
                         <CgLoadbarDoc className={styleIcon} />
                         <span>תקלה חדשה</span>
                     </div>}
-                    {(searchParams.get('sw') && searchParams.get('subSW') && searchParams.get('room')) && <div onClick={() => { SocketAction("user-management"); navigateion(`/user-management?sw=${searchParams.get('sw')}&subSW=${searchParams.get('subSW')}&room=${searchParams.get('room') || "ניהול משתמשים"}`) }} className={`${location.pathname === "/user-management" ? styleItemActive : styleItem}`}>
-                        <FaUsers className={styleIcon} />
-                        <span>ניהול משתמשים</span>
-                    </div>}
+                    {console.log(hasSubSWPermission)
+                    }
+                    {hasSubSWPermission === "admin" && (searchParams.get('sw') && searchParams.get('subSW') && searchParams.get('room')) &&
+                        <div onClick={() => { SocketAction("user-management"); navigateion(`/user-management?sw=${searchParams.get('sw')}&subSW=${searchParams.get('subSW')}&room=${searchParams.get('room') || "ניהול משתמשים"}`) }} className={`${location.pathname === "/user-management" ? styleItemActive : styleItem}`}>
+                            <FaUsers className={styleIcon} />
+                            <span>ניהול משתמשים</span>
+                        </div>}
 
                     {(searchParams.get('sw') && searchParams.get('subSW') && searchParams.get('room')) && <div onClick={() => { SocketAction("open-issue"); navigateion(`/open-issue?sw=${searchParams.get('sw')}&subSW=${searchParams.get('subSW')}&room=${searchParams.get('room') || "תקלות פתוחות"}`) }} className={`${location.pathname === "/open-issue" ? styleItemActive : styleItem}`}>
                         <BsClockHistory className={styleIcon + " text-xl"} />
@@ -76,7 +84,7 @@ const Sidebar = () => {
                         <MdHistory className={styleIcon} />
                         <span>היסטוריית תקלות</span>
                     </div>}
-                    {(searchParams.get('sw') && searchParams.get('subSW') && searchParams.get('room')) && <div onClick={() => { SocketAction("system-settings"); navigateion(`/system-settings?sw=${searchParams.get('sw')}&subSW=${searchParams.get('subSW')}&room=${searchParams.get('room') || "הגדרות מערכת"}`) }} className={`${location.pathname === "/system-settings" ? styleItemActive : styleItem}`}>
+                    {hasRoomPermission === "editor" && (searchParams.get('sw') && searchParams.get('subSW') && searchParams.get('room')) && <div onClick={() => { SocketAction("system-settings"); navigateion(`/system-settings?sw=${searchParams.get('sw')}&subSW=${searchParams.get('subSW')}&room=${searchParams.get('room') || "הגדרות מערכת"}`) }} className={`${location.pathname === "/system-settings" ? styleItemActive : styleItem}`}>
                         <IoMdSettings className={styleIcon} />
                         <span>הגדרות מערכת</span>
                     </div>}

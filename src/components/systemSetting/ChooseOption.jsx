@@ -207,7 +207,7 @@ function ChooseOption({ updateInput, setUpdateInput, chooseOption, setChooseOpti
                         {chooseOption && (
                             // this is the button of require field
                             <div className='absolute left-0 items-center   flex gap-2 -top-6'>
-                                <p className={`text-xs ${require ? "opacity-100" : "opacity-50"}`}>
+                                <p className={`text-sm ${require ? "opacity-100" : "opacity-50"}`}>
                                     ציין שדה חובה
                                 </p>
                                 <label className="switch">

@@ -20,7 +20,6 @@ import socketHook from '../hooks/useSocket'
 const AppRoutes = () => {
     const { getUser, currentUser } = useUsers()
     const { inputs, setInputs, setCountRoomReports, historyReports } = useContext(ContextStore)
-    const { allUserRooms, setAllUserRooms, socketIo } = useContextStore()
     const [searchParams] = useSearchParams()
     const { getRoomInputs, getRoomHistory } = useSpaceWork()
     const navigate = useNavigate()
@@ -28,6 +27,7 @@ const AppRoutes = () => {
 
     useEffect(() => {
         getUser("doe01")
+        // getUser("s8888888")
     }, [])
 
     useEffect(() => {
@@ -72,7 +72,6 @@ const AppRoutes = () => {
     //     }
 
     // }, [socketIo])
-
 
     return (
         <Routes>

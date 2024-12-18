@@ -105,9 +105,7 @@ function useReports() {
         subSpaceWorkName,
         roomName,
         limitResultsIndex,
-        indexToSkip, statusReport, arrayOfConditions
-
-
+        indexToSkip, statusReport, arrayOfConditions, setSearchLoading
     }) => {
         try {
 
@@ -123,7 +121,7 @@ function useReports() {
             console.log(search);
             // notify("SUCCESS", "תקלה נסגרה בהצלחה")
             setFilteredData(search?.data?.data)
-
+            setSearchLoading(false)
 
         } catch (error) {
             console.log(error);

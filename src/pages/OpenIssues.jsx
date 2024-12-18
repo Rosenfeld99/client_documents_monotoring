@@ -12,6 +12,10 @@ import useReports from '../hooks/useReport'
 import useUsers from '../hooks/useUsers'
 import { decodeFormatDate } from '../utils/funcs/decodeDate'
 import ReportModal from '../utils/reportModal/ReportModal'
+import searchIcon from "../../public/Search-amico.png"
+import loadingIcon from "../../public/Loading-pana.png"
+
+
 
 export default function OpenIssues() {
 
@@ -23,6 +27,7 @@ export default function OpenIssues() {
   const [filters, setFilters] = useState({});
   const [reportModalData, setReportModalData] = useState({});
   const [openModal, setOpenModal] = useState(false);
+  const [searchLoading, setSearchLoading] = useState(false);
 
   console.log(columnVisibility);
 
@@ -39,6 +44,10 @@ export default function OpenIssues() {
   const handleColseReportClick = (currReport) => {
     console.log(currReport);
 
+    const result = confirm("היי! פעולה זו תסגור את התקלה. להמשיך?")
+    if (!result) {
+      return
+    }
     const reqBody = {
       userId: currentUser?.userId,
       reportId: currReport?._id,
@@ -112,35 +121,38 @@ export default function OpenIssues() {
       </button>
     </div>
   }
-  useEffect(() => {
+  // useEffect(() => {
 
-    if (Object.keys(filters) == 0) {
-      return
-    }
-    const handler = setTimeout(() => {
-      let convertFilters = [];
-      for (const key in filters) {
-        convertFilters.push({ name: key, value: filters[key] })
-      }
-      handleSearchReport({
-        limitResultsIndex: 14,// -1 is get all reports 
-        indexToSkip: pagenations.prev * 14,
-        statusReport: "open",
-        arrayOfConditions: convertFilters,
-        userId: currentUser?.userId,
-        spaceWorkName: searchParams.get('sw'),
-        subSpaceWorkName: searchParams.get('subSW'),
-        roomName: searchParams.get('room'),
-      })
-    }, 1000);
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [filters]);
+  //   if (Object.keys(filters) == 0) {
+  //     return
+  //   }
+  //   const handler = setTimeout(() => {
+
+  //     let convertFilters = [];
+  //     for (const key in filters) {
+  //       convertFilters.push({ name: key, value: filters[key] })
+  //     }
+  //     handleSearchReport({
+  //       limitResultsIndex: 14,// -1 is get all reports 
+  //       indexToSkip: pagenations.prev * 14,
+  //       statusReport: "open",
+  //       arrayOfConditions: convertFilters,
+  //       userId: currentUser?.userId,
+  //       spaceWorkName: searchParams.get('sw'),
+  //       subSpaceWorkName: searchParams.get('subSW'),
+  //       roomName: searchParams.get('room'),
+  //     })
+  //   }, 1000);
+  //   return () => {
+  //     clearTimeout(handler);
+  //   };
+  // }, [filters]);
 
 
   useEffect(() => {
     if (Object.keys(filters).length === 0) { // Correct check for empty object
+      setSearchLoading(false)
+
       if (currentUser?.userId) {
         const getReportObj = {
           limitResultsIndex: 14, // -1 is get all reports
@@ -154,6 +166,8 @@ export default function OpenIssues() {
         getReportsByConditions(getReportObj);
       }
     } else {
+      // if filters is not empty so return the search 
+      setSearchLoading(true)
       const handler = setTimeout(() => {
         const convertFilters = Object.entries(filters).map(([key, value]) => ({
           name: key,
@@ -168,9 +182,10 @@ export default function OpenIssues() {
           userId: currentUser?.userId,
           spaceWorkName: searchParams.get('sw'),
           subSpaceWorkName: searchParams.get('subSW'),
-          roomName: searchParams.get('room'),
+          roomName: searchParams.get('room'), setSearchLoading
         });
-      }, 1000);
+
+      }, 800);
 
       return () => {
         clearTimeout(handler);
@@ -179,16 +194,16 @@ export default function OpenIssues() {
   }, [currentUser, pagenations, filters]);
 
 
-  useMemo(() => {
-    const temp = () => {
-      // return filteredData.filter((row) =>
-      //   Object.entries(filters).every(([key, value]) =>
-      //     row[key]?.toLowerCase().includes(value.toLowerCase())
-      //   )
-      // );
-    }
-    // setFilteredData(temp())
-  }, [filters]);
+  // useMemo(() => {
+  //   const temp = () => {
+  //     // return filteredData.filter((row) =>
+  //     //   Object.entries(filters).every(([key, value]) =>
+  //     //     row[key]?.toLowerCase().includes(value.toLowerCase())
+  //     //   )
+  //     // );
+  //   }
+  //   // setFilteredData(temp())
+  // }, [filters]);
 
   const toggleColumn = (key) => {
     setColumnVisibility((prev) => ({
@@ -236,6 +251,10 @@ export default function OpenIssues() {
     }
   }
 
+  const resetFilters = () => {
+    setFilters({})
+  }
+
   return (
     <>
 
@@ -250,9 +269,20 @@ export default function OpenIssues() {
       >
 
         <section className="w-[85vw] p-10 flex flex-col gap-3 flex-1">
-          <TableFilters openManageColumns={openManageColumns} setOpenManageColumns={setOpenManageColumns} columnVisibility={columnVisibility} columns={columns} handleFilterChange={handleFilterChange} toggleColumn={toggleColumn} filters={filters} />
+          <TableFilters resetFilters={resetFilters} openManageColumns={openManageColumns} setOpenManageColumns={setOpenManageColumns} columnVisibility={columnVisibility} columns={columns} handleFilterChange={handleFilterChange} toggleColumn={toggleColumn} filters={filters} />
           <div className="w-full overflow-x-auto ml-[240px]">
-            {loading ? <div>Loading...</div> :
+            {(loading || searchLoading) ? <div className='flex h-full items-center justify-center'>
+
+              {searchLoading && <div className='flex flex-col items-center gap-0 '>
+                <span className='font-bold text-[25px]'>מחפש...</span>
+                <span><img src={searchIcon} className='w-[600px] h-[600px]' alt="" /></span>
+              </div>}
+
+              {loading && <div className='flex flex-col items-center gap-0 '>
+                <span className='font-bold text-[25px]'>טוען...</span>
+                <span><img src={loadingIcon} className='w-[600px] h-[600px]' alt="" /></span>
+              </div>}
+            </div> :
               <Table handleColseReportClick={handleColseReportClick} HoverComps={HoverComps} setOpenManageColumns={setOpenManageColumns} filters={filters} toggleColumn={toggleColumn} columnVisibility={columnVisibility} columns={columns} setColumns={setColumns} filteredData={filteredData} handleFilterChange={handleFilterChange} setFilteredData={setFilteredData} />
             }
           </div>
