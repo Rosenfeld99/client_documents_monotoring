@@ -220,7 +220,7 @@ const ManageUserAccess = () => {
         if (value.length > 8) {
             return
         }
-        const regex = /^[smo]/;
+        const regex = /^[smoc]/;
         if (!regex.test(value) && value?.length > 0) {
             alert(" m,o,c,s התו הראשון חייב להיות   באנגלית")
             return
@@ -306,10 +306,10 @@ const ManageUserAccess = () => {
                             </div>
                         </div>}
                         {(steps?.prevData?.length > 0 && userAccessList?.currentStep?.role) && <button onClick={addAndUpdateUser} className={`px-6 -mt-3 text-[#66BB6A] border-[#66BB6A] hover:scale-105 duration-150 p-1 font-bold border-2 rounded-md `}>
-                            הוספת הרשאה
+                            {id ? "עדכון הרשאה" : " הוספת הרשאה"}
                         </button>}
                         <div className=" flex flex-col gap-2">
-                            <div className=" text-lg font-semibold underline">
+                            {/* <div className=" text-lg font-semibold underline">
                                 הרשאות פעילות
                             </div>
                             {accessList?.listAccExist?.map((item, index) => (<div key={index} className="px-3 cursor-default py-1 min-w-96 bg-accent border-2 text-primary text-md font-semibold border-border shadow-md rounded-lg flex justify-between items-center hover:scale-110 duration-150">
@@ -325,7 +325,7 @@ const ManageUserAccess = () => {
                                     </button>
                                 </div>
                             </div>))}
-                            {accessList?.listAccExist?.length == 0 && <div>אין הרשאות פעילות :(</div>}
+                            {accessList?.listAccExist?.length == 0 && <div>אין הרשאות פעילות :(</div>} */}
                         </div>
                     </div>
                 </div>

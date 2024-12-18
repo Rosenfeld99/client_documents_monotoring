@@ -4,10 +4,18 @@ const CustomInput = ({ placeholder, required, disabled, label, state, setState, 
     const inputRef = useRef(null);
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
+    const checkPattern = (value) => {
+        if (!pattern.test(value) && value?.length > 0) {
+            alert(" m,o,c,s התו הראשון חייב להיות   באנגלית")
+            return false
+        }
+        return true
+    }
 
     const handleInputChange = (e) => {
         const value = e.target.value;
-        if (pattern) {
+        if (pattern && value?.length > 0) {
+            checkPattern(value)
             if (pattern?.test(value)) {
                 setState(value, keyToUpdate);
             }

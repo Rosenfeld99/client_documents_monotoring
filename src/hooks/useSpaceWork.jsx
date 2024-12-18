@@ -4,9 +4,11 @@ import axios from 'axios'
 import { useSearchParams } from 'react-router-dom'
 import useContextStore from './useContextStore'
 import { notify } from '../utils/Tastify/notify'
+import useSocket from './useSocket'
 
 function useSpaceWork() {
   const { inputs, setInputs, setNewIdReport, historyReports, setHistoryReports, currentUser, setCurrentUser } = useContext(ContextStore)
+  const { createRoomSocket, deleteRoomSocket } = useSocket()
   const createSpaceWork = async ({ adminId, spaceWorkName, }) => {
 
     try {
@@ -59,6 +61,9 @@ function useSpaceWork() {
       const UpdateUser = { ...currentUser, rooms }
       // //saved it
       setCurrentUser(UpdateUser)
+
+      createRoomSocket({ name: roomName, value: "editor" })
+
       notify("SUCCESS", "החדר נוצר בהצלחה")
     } catch (error) {
 
@@ -128,6 +133,9 @@ function useSpaceWork() {
       // //saved it
       setCurrentUser(updateUser)
       // console.log(user?.data?.user);
+      deleteRoomSocket(spaceWorkName,
+        subSpaceWorkName,
+        roomName)
       console.log(newRoom);
       notify("SUCCESS", "החדר נמחק בהצלחה")
 

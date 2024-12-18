@@ -109,7 +109,7 @@ export const formatDataToChartForBar = (historyReports, label, formatDateToDashb
         // Format the label if needed
         const reportLabel = formatDateToDashboard
             ? formatDateToDashboard(historyReportsItem[label])
-            : historyReportsItem[label] || "Field Not Found";
+            : historyReportsItem[label].length > 15 ? historyReportsItem[label].slice(0, 8) : historyReportsItem[label] || "Field Not Found";
 
         const isReportOpen = historyReportsItem?.reportOpen
 

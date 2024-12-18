@@ -24,6 +24,23 @@ function useSocket() {
             spaceWork, subSpaceWork, room, newInputsArray
         });
     }
+    const createRoomSocket = (newRoomObj) => {
+        console.log(newRoomObj);
+
+        socketIo && socketIo?.emit("create_room", {
+            spaceWork, subSpaceWork, newRoomObj
+        });
+    }
+    const updateRoomSocket = (newInputsArray) => {
+        socketIo && socketIo?.emit("create_input", {
+            spaceWork, subSpaceWork, room, newInputsArray
+        });
+    }
+    const deleteRoomSocket = (spaceWork, subSpaceWork, room,) => {
+        socketIo && socketIo?.emit("delete_room", {
+            spaceWork, subSpaceWork, room
+        });
+    }
     const deleteInputSocket = (inputsArray) => {
         socketIo && socketIo?.emit("delete_input", {
             spaceWork, subSpaceWork, room, inputsArray
@@ -57,7 +74,7 @@ function useSocket() {
 
 
 
-    return { changeRoom, createInputSocket, updateReportSocket, deleteInputSocket, deleteReportSocket, finishReportSocket, updateInputSocket, createReportSocket }
+    return { changeRoom, deleteRoomSocket, createRoomSocket, createInputSocket, updateReportSocket, deleteInputSocket, deleteReportSocket, finishReportSocket, updateInputSocket, createReportSocket }
 }
 
 export default useSocket

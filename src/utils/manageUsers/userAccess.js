@@ -117,8 +117,8 @@ export const createAndUpdateUserObj = (newUser, adminUserId, userId) => {
                 role: roomAcces
             },
             userId: userId,
-            job: "ddd",
-            unit: "dssds",
+            job: "מתכנת",
+            unit: "תקשוב",
             lastName: "נהוראי",
             firstName: "עטיה"
         },

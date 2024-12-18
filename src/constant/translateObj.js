@@ -1,5 +1,10 @@
 
 
+export const dateFields = {
+    "זמן סגירת תקלה": 1,
+    "זמן פתיחת תקלה": 1,
+}
+
 export const urgancyColors = {
     "נמוכה-3": "#FFD700 ",
     "בינונית-2": " #FF5E00",
