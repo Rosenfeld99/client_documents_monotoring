@@ -7,7 +7,7 @@ import updateIcon from "../../../public/update-report.png"
 import { Button } from '../../components/systemSetting/InputsComponents'
 import useReports from '../../hooks/useReport'
 import { useParams, useSearchParams } from 'react-router-dom'
-import { translateFieldsToEnglish } from '../../constant/translateObj'
+import { translateFieldsToEnglish } from '../constant/translateObj'
 
 export default function ReportModal({ currReport, mode, setOpenModal }) {
     console.log(currReport);
@@ -52,20 +52,20 @@ export default function ReportModal({ currReport, mode, setOpenModal }) {
         for (const key in reportCopy) {
 
             // insert just the inputs to array of inputs
-            if (!translateFieldsToEnglish?.hasOwnProperty(key) && key != "_id" && key != 'מס"ד' && key != 'תאריך מחיקת תקלה' && key != 'undefined' && key != "סטאטוס תקלה") {
+            if (!translateFieldsToEnglish?.hasOwnProperty(key) && key != "_id" && key != 'מס"ד' && key != 'תאריך מחיקת פנייה' && key != 'undefined' && key != "סטאטוס פנייה") {
                 currReportInputs.push({ name: key, value: reportCopy[key] })
                 delete reportCopy[key]
             }
         }
         reportCopy.inputs = currReportInputs
         reportCopy.MongoReportId = reportData?._id
-        reportCopy.reportOpen = reportData['סטאטוס תקלה']
+        reportCopy.reportOpen = reportData['סטאטוס פנייה']
         return reportCopy
     }
 
     const EditReport = () => {
         const editedReport = getReportInputsToArray()
-        const date = editedReport["זמן פתיחת תקלה"].split(',')[0]
+        const date = editedReport["זמן פתיחת פנייה"].split(',')[0]
         const [day, month, year] = date.split('/').map(Number); // Split and convert to numbers
         const dateObject = new Date(year, month - 1, day);
         console.log(editedReport);
@@ -80,6 +80,7 @@ export default function ReportModal({ currReport, mode, setOpenModal }) {
         })
         setOpenModal(false)
     }
+    console.log(currReport);
 
     return (
         <>
@@ -87,7 +88,7 @@ export default function ReportModal({ currReport, mode, setOpenModal }) {
             <div className='h-[100vh] w-[100vw]  z-[9999] absolute flex  bg-[#1f384ca1]' >
 
                 <div ref={closeModalRef} className=' p-3 pr-6 h-[70%] w-2/3  bg-accent shadow-md  rounded-xl opacity-100   mx-auto my-auto'>
-                    <div >מספר תקלה</div>
+                    <div > מספר פנייה -{currReport[`מס"ד`]}</div>
                     <div className='flex w-full  h-[90%]'>
                         <div className=' h-full w-2/3 gap-5  flex-col pt-5 relative flex-wrap flex '>
                             {inputs?.map((input, i) => {
@@ -114,7 +115,7 @@ export default function ReportModal({ currReport, mode, setOpenModal }) {
                         {mode === "edit" ?
                             <>
                                 <Button onclickFunc={() => setOpenModal(false)} color={"#E57373"} text={"ביטול"} />
-                                <Button onclickFunc={EditReport} color={"#66BB6A"} text={"שמירה"} />
+                                <Button onclickFunc={EditReport} color={"#FF8A65"} text={"עריכה"} />
                             </>
                             :
                             <Button onclickFunc={() => setOpenModal(false)} color={"#66BB6A"} text={"סיום"} />

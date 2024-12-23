@@ -27,7 +27,7 @@ const CustomInput = ({ placeholder, required, disabled, label, state, setState, 
     console.log(disabled);
 
     return (
-        <div className={`relative ${label === "שם פותח תקלה" && "opacity-30"} w-full`}>
+        <div className={`relative  w-full`}>
             <label
                 className={`absolute right-2 px-2 transition-all duration-200 -top-2.5 pl-2 text-gray-400 bg-accent text-base text-gray-500`}
                 onClick={() => inputRef?.current?.focus()}
@@ -47,6 +47,7 @@ const CustomInput = ({ placeholder, required, disabled, label, state, setState, 
                 placeholder={placeholder}
                 required={required}
                 disabled={disabled ?? false}
+
             />
             {required &&
                 <div className='absolute -top-5 text-sm left-0 text-[#E57373]'>*שדה חובה </div>

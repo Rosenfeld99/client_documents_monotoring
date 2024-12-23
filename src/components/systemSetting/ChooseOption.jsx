@@ -18,7 +18,7 @@ function ChooseOption({ updateInput, setUpdateInput, chooseOption, setChooseOpti
     const [textAreaValue, setTextAreaValue] = useState({})
     const [selectValue, setSelectValue] = useState({})
     const [inputValue, setInputValue] = useState({})
-    const [require, setRequire] = useState()
+    const [require, setRequire] = useState(true)
     const [searchParams] = useSearchParams()
     const { createInput, deleteInput, updateInputFields } = useInput()
 
@@ -162,7 +162,7 @@ function ChooseOption({ updateInput, setUpdateInput, chooseOption, setChooseOpti
     useEffect(() => {
         if (chooseOption?.includes("textarea_input")) {
 
-            setTextAreaValue(updateInput ? updateInput : { placeholder: "לדוגמא:תיאור תקלה, דרך פתרון..." })
+            setTextAreaValue(updateInput ? updateInput : { placeholder: "לדוגמא:תיאור פנייה, דרך פתרון..." })
         }
         if (chooseOption?.includes("select_input")) {
             setSelectValue(() => updateInput ? updateInput : { placeholder: "לדוגמא:רשימת רשתות,יחידות...", options: [] })
@@ -171,7 +171,7 @@ function ChooseOption({ updateInput, setUpdateInput, chooseOption, setChooseOpti
         if (chooseOption?.includes("short_input")) {
             setInputValue(updateInput ? updateInput : { placeholder: "לדוגמא:שם פרטי, שם משפחה..." })
         }
-        setRequire(updateInput ? updateInput?.require : false)
+        setRequire(updateInput ? updateInput?.require : true)
     }, [chooseOption, updateInput])
 
     const borderChooseColor = "border-[#5A6ACF]"
@@ -186,7 +186,7 @@ function ChooseOption({ updateInput, setUpdateInput, chooseOption, setChooseOpti
                 <div className='col-span-1 w-[80%]  flex gap-10 flex-col'>
                     {/* <p className='font-semibold text-lg '>בחרו אפשרות</p> */}
                     {/* show the types of inputs in the right in screen */}
-                    <TextAreaInput setFunc={() => { setChooseOption("textarea_input_0"); setUpdateInput(null); }} defaultValue={"לדוגמא:תיאור תקלה, דרך פתרון..."} title={"טקסט חופשי"} chooseOption={chooseOption === "textarea_input_0"} />
+                    <TextAreaInput setFunc={() => { setChooseOption("textarea_input_0"); setUpdateInput(null); }} defaultValue={"לדוגמא:תיאור פנייה, דרך פתרון..."} title={"טקסט חופשי"} chooseOption={chooseOption === "textarea_input_0"} />
 
                     <SelectInput setFunc={() => { setChooseOption("select_input_1"); setUpdateInput(null); }} chooseOption={chooseOption === "select_input_1"} title={"בחירת אפשרות"} optionValue={"לדוגמא:רשימת רשתות,יחידות..."} />
 
@@ -197,7 +197,7 @@ function ChooseOption({ updateInput, setUpdateInput, chooseOption, setChooseOpti
 
                 {/* show the selected input */}
                 <div className='col-span-2 h-full gap-9  flex flex-col  pr-16'>
-                    <p className='font-semibold text-lg '> {chooseOption ? "הזינו תוכן לאפשרות שבחרתם" : "בחרו אפשרות"}</p>
+                    <p className='font-semibold text-lg '> {chooseOption ? "הזינו תוכן לתבנית שבחרתם" : "בחרו תבנית"}</p>
                     <div className='w-3/4 h-32 relative '>
                         {!chooseOption &&
                             <div>

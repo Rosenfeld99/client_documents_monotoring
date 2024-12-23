@@ -5,6 +5,7 @@ import { notify } from '../utils/Tastify/notify'
 import { useSearchParams } from 'react-router-dom'
 import useSocket from './useSocket'
 import useContextStore from './useContextStore'
+import { compareToToday } from '../utils/timeFunc/timeFunc'
 
 function useReports() {
     const { historyReports, currentUser, setHistoryReports, newIdReport, columns, setNewIdReport, setColumns, filteredData, setFilteredData, columnVisibility, setColumnVisibility, setCountRoomReports } = useContext(ContextStore)
@@ -25,14 +26,14 @@ function useReports() {
             })
 
 
-            notify("SUCCESS", "תקלה נוצרה בהצלחה")
+            notify("SUCCESS", "הפנייה נוצרה בהצלחה")
 
             createReportSocket(newReport?.data?.newReport)
 
 
         } catch (error) {
             console.log(error);
-            notify("ERROR", "בעיה ביצירת תקלה")
+            notify("ERROR", "בעיה ביצירת פנייה")
         }
 
     }
@@ -61,7 +62,7 @@ function useReports() {
             })
 
             deleteReportSocket(deletedReport?.data?.deletedReport)
-            notify("SUCCESS", "תקלה נמחקה בהצלחה")
+            notify("SUCCESS", "פנייה נמחקה בהצלחה")
 
 
         } catch (error) {
@@ -78,6 +79,13 @@ function useReports() {
         spaceWorkName,
         subSpaceWorkName,
         roomName, }) => {
+        console.log(userId,
+            reportId,
+            dateRequst,
+            spaceWorkName,
+            subSpaceWorkName,
+            roomName);
+
         try {
             const closeReport = await axios.put("http://localhost:3001/reports/finishReport", {
                 userId,
@@ -90,7 +98,7 @@ function useReports() {
 
             console.log(closeReport);
             finishReportSocket(closeReport?.data?.reportClose)
-            notify("SUCCESS", "תקלה נסגרה בהצלחה")
+            notify("SUCCESS", "פנייה נסגרה בהצלחה")
 
 
         } catch (error) {
@@ -119,7 +127,7 @@ function useReports() {
             })
 
             console.log(search);
-            // notify("SUCCESS", "תקלה נסגרה בהצלחה")
+            // notify("SUCCESS", "פנייה נסגרה בהצלחה")
             setFilteredData(search?.data?.data)
             setSearchLoading(false)
 
@@ -149,7 +157,7 @@ function useReports() {
             console.log(updatedReport?.data);
 
             updateReportSocket(updatedReport?.data?.updateReport, updatedReport?.data?.oldReport)
-            notify("SUCCESS", "תקלה עודכנה בהצלחה")
+            notify("SUCCESS", "פנייה עודכנה בהצלחה")
 
 
         } catch (error) {
@@ -180,18 +188,28 @@ function useReports() {
             const otherResponseOpen = []
             const roomResponseClose = []
             const otherResponseClose = []
+            const openTodayReports = []
 
 
             for (let index = 0; index < data?.data?.length; index++) {
+                // check if the report belong to current room response
                 if (data?.data[index]["יחידה מטפלת"] === searchParams.get("room")) {
+                    // check if the report open 
                     if (data?.data[index]?.reportOpen) {
                         roomResponseOpen.push(data?.data[index])
+
+                        // check if report is opened today.
+                        if (compareToToday(data.data[index].problemTimeStart)) {
+                            openTodayReports.push(data?.data[index])
+                        }
                     }
+                    // if report close count her in closed room response
                     else if (data?.data[index]?.reportOpen == false) {
                         roomResponseClose.push(data?.data[index])
                     }
                 }
                 else {
+                    // check if the report not belong to current room 
                     if (data?.data[index]?.reportOpen) {
                         otherResponseOpen.push(data?.data[index])
                     }
@@ -205,7 +223,8 @@ function useReports() {
                 roomResponseOpen,
                 roomResponseClose,
                 otherResponseOpen,
-                otherResponseClose
+                otherResponseClose,
+                openTodayReports
             })
             // const roomResponse = []
             // const otherResponse = []
@@ -276,8 +295,8 @@ function useReports() {
             setColumnVisibility(
                 data.columnsList?.reduce((acc, column) => ({
                     ...acc, [column.key]: true, _id: false,
-                    "סטאטוס תקלה": false,
-                    "תאריך מחיקת תקלה": false
+                    "סטאטוס פנייה": false,
+                    "תאריך מחיקת פנייה": false
                 }), {})
             )
         } catch (error) {

@@ -12,4 +12,18 @@ export const convertStringToTime = (stringTime) => {
     return formattedDate
 
 }
+export function compareToToday(dateString) {
+    const dateToCompare = new Date(dateString);
+    const today = new Date();
+
+    // Normalize both dates to midnight
+    const normalizedDateToCompare = new Date(dateToCompare.toDateString());
+    const normalizedToday = new Date(today.toDateString());
+
+    if (normalizedDateToCompare.getTime() === normalizedToday.getTime()) {
+        return true;
+    }
+    false
+}
+
 

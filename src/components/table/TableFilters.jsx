@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { FaFilter } from 'react-icons/fa'
 import CustomModal from '../../utils/CustomModal'
 import { TfiLayoutColumn3Alt } from 'react-icons/tfi'
-import { dateFields } from '../../constant/translateObj'
+import { dateFields } from '../../utils/constant/translateObj'
 import { FaArrowRotateLeft } from "react-icons/fa6";
 
 

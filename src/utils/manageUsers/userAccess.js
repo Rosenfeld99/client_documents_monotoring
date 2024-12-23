@@ -73,16 +73,17 @@ const swAc = [
 ]
 
 // this func get the curr step of chosen accsess, and return the access obj acording to it
-export const userAccess = (sw, subSw, room) => {
-    if (sw && !subSw && !room) {
+export const userAccess = (currentUser, sw, subSw, room) => {
+    if (sw && !subSw && !room && currentUser?.isOwner) {
         return swAc
     }
-    if (sw && subSw && !room) {
+    if (sw && subSw && !room && (currentUser?.isOwner || currentUser?.spaceWorks[sw] === "superAdmin")) {
         return subSWAc
     }
     if (sw && subSw && room) {
         return roomAc
     }
+    return []
 }
 
 export const createAndUpdateUserObj = (newUser, adminUserId, userId) => {

@@ -24,17 +24,25 @@ const RootSWPage = () => {
     // toggleEdit: toggle between open and closed creation
     //toggleInput:toggle between open and closed input creation
     //inputValue:the value of the Input create/edit
+
+    // check if user is owner or he have permission of superAdmin to manage the space
+    const subSPpermission = searchParams?.get('sw') && currentUser?.spaceWorks[searchParams?.get('sw')] === "superAdmin"
+    const havePermission = currentUser?.isOwner || subSPpermission
+
     const [toggleEdit, setToggleEdit] = useState(false)
     const [toggleInput, setToggleInput] = useState(false)
     const [inputValue, setInputValue] = useState("")
+
     useEffect(() => {
         if (!searchParams.get('sw')) {
             setSingleOption([])
         }
         else if (currentUser) {
             (searchParams.get('sw')) && handleGetSingleOption(searchParams.get('sw'))
+            // check if the subSW is empty and just to  who have permissins show him create func
+            console.log((singleOptoin?.length === 0, havePermission));
 
-
+            setToggleEdit(() => (singleOptoin?.length === 0 && havePermission))
         }
     }, [searchParams?.get('sw'), currentUser])
     console.log(singleOptoin);
@@ -118,9 +126,7 @@ const RootSWPage = () => {
         // close the input and reset the inputValue
         setInputValue("")
     }
-    // check if user is owner or he have permission of superAdmin to manage the space
-    const subSPpermission = searchParams?.get('sw') && currentUser?.spaceWorks[searchParams?.get('sw')] === "superAdmin"
-    const havePermission = currentUser?.isOwner || subSPpermission
+
     return (
         <TemplatePage
             showHeader={true}

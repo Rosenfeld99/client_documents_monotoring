@@ -21,10 +21,11 @@ const Navbar = ({ navLeft, showBall, showExcel, showSelectOption, options, setSt
     const parts = navLeft?.split(' / ') || [];
 
     const handleClickRoot = () => {
-        const swParams = searchParams.get('sw')
-        handleGetSingleOption(swParams)
-        swParams && changeRoom(swParams)
-        navigate(swParams ? `/?sw=${swParams}` : '/')
+        // const swParams = searchParams.get('sw')
+        // handleGetSingleOption(swParams)
+        // swParams && changeRoom(swParams)
+        // navigate(swParams ? `/?sw=${swParams}` : '/')
+        navigate('/')
 
     }
     const moveRoomSocket = () => {

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import DropDownOption from './DropDownOption';
 import useReports from '../../hooks/useReport';
-import { urgancyColors } from '../../constant/translateObj';
+import { urgancyColors } from '../../utils/constant/translateObj';
 
 const Table = ({ setOpenManageColumns, columns, columnVisibility, setColumns, filteredData, handleFilterChange, setFilteredData, toggleColumn, filters, HoverComps }) => {
     const { loading } = useReports()

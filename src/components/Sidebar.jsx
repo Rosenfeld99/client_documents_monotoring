@@ -56,17 +56,21 @@ const Sidebar = () => {
 
                 {/* Middle */}
                 <div className="flex-col flex gap-5 pt-10">
-                    <div onClick={() => navigateion(`/?sw=${searchParams.get('sw') || options[0]?.name}&?room=${searchParams.get('room') || "דשבורד"}`)} className={`${location.pathname === "/" || location.pathname === "/spaceWork" ? styleItemActive : styleItem}`}>
-                        <PiBuildingsBold className={styleIcon} />
-                        <span>לובי</span>
-                    </div>
+                    {searchParams.get('sw') && searchParams.get('subSW') && (
+
+                        <div onClick={() => navigateion(`/?sw=${searchParams.get('sw') || options[0]?.name}&?room=${searchParams.get('room') || "דשבורד"}`)} className={`${location.pathname === "/" || location.pathname === "/spaceWork" ? styleItemActive : styleItem}`}>
+                            <PiBuildingsBold className={styleIcon} />
+                            <span>לובי</span>
+                        </div>
+
+                    )}
                     {(searchParams.get('sw') && searchParams.get('subSW') && searchParams.get('room')) && <div onClick={() => { SocketAction("dashboard_open"); navigateion(`/dashboard?sw=${searchParams.get('sw')}&subSW=${searchParams.get('subSW')}&room=${searchParams.get('room') || "דשבורד"}`) }} className={`${location.pathname.includes("/dashboard") ? styleItemActive : styleItem}`}>
                         <FaChartBar className={styleIcon} />
                         <span>דשבורד</span>
                     </div>}
-                    {(searchParams.get('sw') && searchParams.get('subSW') && searchParams.get('room')) && <div onClick={() => { SocketAction("new-issue"); navigateion(`/new-issue?sw=${searchParams.get('sw')}&subSW=${searchParams.get('subSW')}&room=${searchParams.get('room') || "תקלה חדשה"}`) }} className={`${location.pathname === "/new-issue" ? styleItemActive : styleItem}`}>
+                    {(searchParams.get('sw') && searchParams.get('subSW') && searchParams.get('room')) && <div onClick={() => { SocketAction("new-issue"); navigateion(`/new-issue?sw=${searchParams.get('sw')}&subSW=${searchParams.get('subSW')}&room=${searchParams.get('room') || "פנייה חדשה"}`) }} className={`${location.pathname === "/new-issue" ? styleItemActive : styleItem}`}>
                         <CgLoadbarDoc className={styleIcon} />
-                        <span>תקלה חדשה</span>
+                        <span>פנייה חדשה</span>
                     </div>}
                     {console.log(hasSubSWPermission)
                     }
@@ -78,11 +82,11 @@ const Sidebar = () => {
 
                     {(searchParams.get('sw') && searchParams.get('subSW') && searchParams.get('room')) && <div onClick={() => { SocketAction("open-issue"); navigateion(`/open-issue?sw=${searchParams.get('sw')}&subSW=${searchParams.get('subSW')}&room=${searchParams.get('room') || "תקלות פתוחות"}`) }} className={`${location.pathname === "/open-issue" ? styleItemActive : styleItem}`}>
                         <BsClockHistory className={styleIcon + " text-xl"} />
-                        <span>תקלות פתוחות</span>
+                        <span>פניות פתוחות</span>
                     </div>}
                     {(searchParams.get('sw') && searchParams.get('subSW') && searchParams.get('room')) && <div onClick={() => { SocketAction("issue-history"); navigateion(`/issue-history?sw=${searchParams.get('sw')}&subSW=${searchParams.get('subSW')}&room=${searchParams.get('room') || "היסטוריית תקלות"}`) }} className={`${location.pathname === "/issue-history" ? styleItemActive : styleItem}`}>
                         <MdHistory className={styleIcon} />
-                        <span>היסטוריית תקלות</span>
+                        <span>היסטוריית פניות</span>
                     </div>}
                     {hasRoomPermission === "editor" && (searchParams.get('sw') && searchParams.get('subSW') && searchParams.get('room')) && <div onClick={() => { SocketAction("system-settings"); navigateion(`/system-settings?sw=${searchParams.get('sw')}&subSW=${searchParams.get('subSW')}&room=${searchParams.get('room') || "הגדרות מערכת"}`) }} className={`${location.pathname === "/system-settings" ? styleItemActive : styleItem}`}>
                         <IoMdSettings className={styleIcon} />

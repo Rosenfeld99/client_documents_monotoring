@@ -5,12 +5,13 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { MdKeyboardArrowRight, MdKeyboardArrowLeft } from 'react-icons/md'
 import TableFilters from '../components/table/TableFilters'
 import Table from '../components/table/Table'
-import { soldiersData } from '../constant/USERS.demo'
+import { soldiersData } from '../utils/constant/USERS.demo'
 import useUsers from '../hooks/useUsers'
 import { BiEdit } from 'react-icons/bi'
+import { IoCloseCircleOutline } from 'react-icons/io5'
 
 const UserManagementPage = () => {
-    const { getAllUsers, loading, searchUsers, handleSearchUsers, columns, setColumns, historyReports, filteredData, setFilteredData } = useUsers()
+    const { getAllUsers, loading, searchUsers, deleteUser, handleSearchUsers, columns, setColumns, historyReports, filteredData, setFilteredData } = useUsers()
     const [searchParams] = useSearchParams()
     // const [filteredData, setFilteredData] = useState(soldiersData);
     // const [columns, setColumns] = useState(columnsList);
@@ -22,6 +23,7 @@ const UserManagementPage = () => {
 
     const [columnVisibility, setColumnVisibility] = useState({});
     const [searchLoading, setSearchLoading] = useState(false);
+    console.log(currentUser);
 
     useEffect(() => {
         if (Object.keys(filters).length === 0) { // Correct check for empty object
@@ -126,7 +128,28 @@ const UserManagementPage = () => {
         }
     }
 
+    const handleDeleteUser = (e, userDelete) => {
+        const result = confirm("היי! זהירות, פעולה זו תמחק את המשתמש. להמשיך?")
+        if (!result) {
+            return
+        }
+        console.log(userDelete);
+
+        const userToDelete = {
+            userIdDelete: userDelete["מ.א"],
+            spaceWorkName: searchParams?.get('sw'),
+            adminId: currentUser?.userId,
+            subSpaceWorkName: searchParams?.get('subSW'),
+            roomName: searchParams?.get('room'),
+        }
+        // delete in server
+        deleteUser(userToDelete)
+    }
+
     const HoverComps = (currUser) => {
+        if (currUser["מ.א"] === currentUser.userId) {
+            return
+        }
         return (
             <div className=" hidden items-center gap-3 w-full h-full bg-border  text-text group-hover:flex duration-150 transition ease-in-out text-xl px-10 absolute top-0 right-0">
                 <Link state={currUser} to={`/user-management/:id?sw=${searchParams.get('sw')}&subSW=${searchParams.get('subSW')}&room=${searchParams.get('room')}`}>
@@ -134,7 +157,13 @@ const UserManagementPage = () => {
                         <BiEdit />
                         <span >ניהול הרשאות</span>
                     </button>
-                </Link>
+                </Link>|
+
+                {(currentUser.isOwner || currentUser?.spaceWorks[searchParams.get("sw")] === "superAdmin") &&
+                    <button onClick={(e) => handleDeleteUser(e, currUser)} className=' flex items-center text-lg h-7 gap-2 justify-end border-2 rounded-lg px-2 hover:scale-105 duration-150 hover:text-primary hover:border-pritext-primary'>
+                        <IoCloseCircleOutline className='text-2xl' />
+                        <span >מחיקת משתמש מהחדר</span>
+                    </button>}
             </div>
         )
     }

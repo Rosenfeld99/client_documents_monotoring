@@ -67,3 +67,8 @@
   .slider.round:before {
     border-radius: 50%;
   }
+
+  #myChartLegend {
+    max-height: 10px; /* Adjust height as needed */
+    overflow-y: auto;
+  }

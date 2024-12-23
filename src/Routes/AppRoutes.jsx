@@ -15,22 +15,25 @@ import useSpaceWork from '../hooks/useSpaceWork'
 import ManageUserAccess from '../pages/ManageUserAccess'
 import useContextStore from '../hooks/useContextStore'
 import socketHook from '../hooks/useSocket'
+import RegisterPage from '../pages/RegisterPage'
 
 
 const AppRoutes = () => {
     const { getUser, currentUser } = useUsers()
-    const { inputs, setInputs, setCountRoomReports, historyReports } = useContext(ContextStore)
+    const { inputs, socketIo, setInputs, setCountRoomReports, historyReports } = useContext(ContextStore)
     const [searchParams] = useSearchParams()
     const { getRoomInputs, getRoomHistory } = useSpaceWork()
     const navigate = useNavigate()
     const { changeRoom } = socketHook()
 
     useEffect(() => {
-        getUser("doe01")
-        // getUser("s8888888")
+        // getUser("dwdddoe01")
+        getUser("s2345678")
+        // getUser("doe01")
     }, [])
 
     useEffect(() => {
+        console.log(inputs);
 
         // check every time if user refreshe the page so call get room inputs just if have params
         if (!inputs[0] && searchParams?.get('sw') && searchParams?.get('subSW') && searchParams?.get('room') && currentUser) {
@@ -48,46 +51,53 @@ const AppRoutes = () => {
         }
     }, [currentUser, searchParams.get('room')])
 
-    // useEffect(() => {
-    //     if (socketIo) {
+    useEffect(() => {
+        console.log(socketIo);
 
-    //         const localSW = localStorage.getItem("sw");
-    //         const localSubSP = localStorage.getItem("subSW");
-    //         const localRoom = localStorage.getItem("room");
+        // if (socketIo) {
 
-    //         if (localSW && localSubSP && localRoom) {
-    //             changeRoom(localSW, localSubSP, localRoom, "dashboard_open")
-    //             navigate(`dashboard?sw=${localSW}&subSW=${localSubSP}&room=${localRoom}`)
-    //         }
-    //         else if (localSW && localSubSP) {
-    //             changeRoom(localSW, localSubSP)
+        const localSW = localStorage.getItem("sw");
+        const localSubSP = localStorage.getItem("subSW");
+        const localRoom = localStorage.getItem("room");
 
-    //             navigate(`/?sw=${localSW}&subSW=${localSubSP}`)
-    //         }
-    //         else if (localSW) {
-    //             changeRoom(localSW)
+        if (localSW && localSubSP && localRoom) {
+            changeRoom(localSW, localSubSP, localRoom, "dashboard_open")
+            navigate(`dashboard?sw=${localSW}&subSW=${localSubSP}&room=${localRoom}`)
+        }
+        else if (localSW && localSubSP) {
+            changeRoom(localSW, localSubSP)
 
-    //             navigate(`/?sw=${localSW}`)
-    //         }
-    //     }
+            navigate(`/?sw=${localSW}&subSW=${localSubSP}`)
+        }
+        else if (localSW) {
+            changeRoom(localSW)
 
-    // }, [socketIo])
+            navigate(`/?sw=${localSW}`)
+        }
+        // }
+
+    }, [])
 
     return (
-        <Routes>
-            <Route path='/' element={<RootSWPage />} />
-            <Route path='/spaceWork' element={<HomePage />} />
-            <Route path='/dashboard' element={<DashboardPage />} />
-            <Route path='/new-issue' element={<NewIssuePage />} />
-            <Route path='/user-management' element={<UserManagementPage />} />
-            <Route path='/user-management/:id' element={<ManageUserAccess />} />
-            <Route path='/register-user' element={<ManageUserAccess />} />
-            <Route path='/issue-history' element={<IssueHistoryPage />} />
-            <Route path='/open-issue' element={<OpenIssues />} />
-            <Route path='/system-settings' element={<SystemSettingsPage />} />
-            <Route path='/help' element={<HelpPage />} />
-            <Route path='/*' element={<div className=' flex items-center justify-center w-full h-screen text-2xl font-semibold gap-5'>Not found 404 <Link to={'/'} className=' px-3 py-1 bg-success text-white '>Back Home</Link></div>} />
-        </Routes>
+        <>
+            {currentUser ?
+                <Routes>
+
+                    <Route path='/' element={<RootSWPage />} />
+                    <Route path='/spaceWork' element={<HomePage />} />
+                    <Route path='/dashboard' element={<DashboardPage />} />
+                    <Route path='/new-issue' element={<NewIssuePage />} />
+                    <Route path='/user-management' element={<UserManagementPage />} />
+                    <Route path='/user-management/:id' element={<ManageUserAccess />} />
+                    <Route path='/register-user' element={<ManageUserAccess />} />
+                    <Route path='/issue-history' element={<IssueHistoryPage />} />
+                    <Route path='/open-issue' element={<OpenIssues />} />
+                    <Route path='/system-settings' element={<SystemSettingsPage />} />
+                    <Route path='/help' element={<HelpPage />} />
+                    <Route path='/*' element={<div className=' flex items-center justify-center w-full h-screen text-2xl font-semibold gap-5'>Not found 404 <Link to={'/'} className=' px-3 py-1 bg-success text-white '>Back Home</Link></div>} />
+                </Routes>
+                : <RegisterPage />}
+        </>
     )
 
 

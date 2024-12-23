@@ -2,12 +2,14 @@ import React, { useContext, useEffect, useState } from 'react'
 import axios from "axios"
 import { ContextStore } from '../context/contextStore'
 import { notify } from '../utils/Tastify/notify'
+import useSocket from './useSocket'
 
 function useUsers() {
 
 
     const { currentUser, setCurrentUser, columns, setColumns, filteredData, historyReports, setFilteredData, } = useContext(ContextStore)
     const [loading, setLoading] = useState(false)
+    const { createUserSocket, deleteUserSocket } = useSocket()
 
     const getUser = async (userId) => {
         try {
@@ -50,12 +52,36 @@ function useUsers() {
                 userToCreate: userObj.userToCreate, adminId: userObj.adminId
             })
             console.log(user);
+            createUserSocket(user?.data?.userFormat)
             notify("SUCCESS", "המשתמש נוצר / עודכן  בהצלחה")
 
 
         } catch (error) {
             console.log(error);
             notify("ERROR", "בעיה ביצירת המשתמש")
+
+        }
+    }
+    const deleteUser = async ({
+        userIdDelete, adminId, spaceWorkName, subSpaceWorkName, roomName
+    }) => {
+        console.log(userIdDelete, adminId, spaceWorkName, subSpaceWorkName, roomName
+        );
+
+        try {
+            const user = await axios.post(`http://localhost:3001/users/deleteUserFromRoom`, {
+                userIdDelete, adminId, spaceWorkName, subSpaceWorkName, roomName
+            })
+            console.log(user);
+            notify("SUCCESS", "המשתמש נמחק  בהצלחה")
+
+            deleteUserSocket(userIdDelete)
+            setFilteredData((prev) => prev.filter((user) => user["מ.א"] !== userIdDelete))
+
+
+        } catch (error) {
+            console.log(error);
+            notify("ERROR", "בעיה במחיקת המשתמש")
 
         }
     }
@@ -80,7 +106,7 @@ function useUsers() {
     }
 
     return (
-        { getUser, currentUser, createUser, handleSearchUsers, getAllUsers, loading, historyReports, columns, setColumns, filteredData, setFilteredData }
+        { getUser, currentUser, deleteUser, createUser, handleSearchUsers, getAllUsers, loading, historyReports, columns, setColumns, filteredData, setFilteredData }
     )
 }
 

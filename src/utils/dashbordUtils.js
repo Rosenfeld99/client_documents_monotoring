@@ -1,27 +1,41 @@
-import { translateFieldsToHebrow } from "../constant/translateObj";
+import { translateFieldsToHebrow } from "./constant/translateObj";
 
 const monthNames = [
     "ינואר", "פברואר", "מרץ", "אפריל", "מאי", "יוני",
     "יולי", "אוגוסט", "ספטמבר", "אוקטובר", "נובמבר", "דצמבר"
 ];
 
+// export const colors = [
+//     "#36A2EB", // Light Blue
+//     "#FF6384", // Soft Red
+//     "#FF9F40", // Orange
+//     "#FFCD56", // Yellow
+//     "#4BC0C0", // Teal
+//     // "#36B1A4", // Teal Green
+//     // "#FF7B94", // Pale Pink
+//     // "#FF914D", // Coral
+//     "#FFCC4D", // Golden Yellow
+//     "#33B5E5", // Bright Sky Blue
+//     "#FF5E57", // Deep Coral
+//     // "#FFBF69", // Peach
+//     // "#A0E3E5", // Light Mint
+//     // "#F0E68C"  // Khaki Yellow
+// ];
 export const colors = [
-    "#36A2EB", // Light Blue
-    "#FF6384", // Soft Red
-    "#FF9F40", // Orange
-    "#FFCD56", // Yellow
-    "#4BC0C0", // Teal
-    "#36B1A4", // Teal Green
-    "#FF7B94", // Pale Pink
-    "#FF914D", // Coral
-    "#FFCC4D", // Golden Yellow
-    "#33B5E5", // Bright Sky Blue
-    "#FF5E57", // Deep Coral
-    "#FFBF69", // Peach
-    "#FFA500", // Orange
-    "#A0E3E5", // Light Mint
-    "#F0E68C"  // Khaki Yellow
+    "#36A2EB", // Blue Violet
+    "#DC143C", // Crimson
+    "#FF4500", // Orange Red
+    "#FFD700", // Gold
+    // "#00FA9A", // Medium Spring Green
+    "#20B2AA", // Light Sea Green
+    "#7B68EE", // Medium Slate Blue
+    "#FF6347", // Tomato
+    "#40E0D0", // Turquoise
+    "#4682B4", // Steel Blue
+    "#FF1493", // Deep Pink
+    "#98FB98", // Pale Green
 ];
+
 
 export const closeColors = [
     "rgba(54, 162, 235, 0.5)", // Light Blue
@@ -120,12 +134,6 @@ export const formatDataToChartForBar = (historyReports, label, formatDateToDashb
                 openReportsData[index] = 1,
                     pieColors.push(colors[index % colors.length])
 
-                // if (!closeLabelsReports?.hasOwnProperty(`${reportLabel}${pieMode}`)) {
-                //     // closeLabelsReports[reportLabel] = index;
-                //     // closeReportsData[index] = 0
-                //     // pieColors.push(closeColors[index % closeColors.length])
-
-                // }
                 index++
 
             }
@@ -192,54 +200,13 @@ export const listOption = (historyReports, roomInputs) => {
             list.push(item?.label);
         }
     });
-    list.push("זמן פתיחת תקלה")
-    list.push("זמן סגירת תקלה")
-    list.push("שם פותח תקלה")
+    list.push("זמן פתיחת פנייה")
+    list.push("זמן סגירת פנייה")
+    list.push("שם פותח פנייה")
     list.push("מ.א")
 
     return list ? list : [];
 }
-// export const listOption = (historyReports, roomInputs) => {
-//     // if there is no historyReports return 
-
-//     if (!historyReports) {
-//         return
-//     }
-//     //copy first report 
-//     const list = { ...historyReports[0] }
-
-//     // remove unnecessary fields
-//     delete list.reportId
-//     delete list._id
-//     delete list.reportOpen
-//     delete list.inputs
-
-//     // iterate through all fields and translate them to hebrew
-//     for (const key in list) {
-//         // if the key is in the translateFieldsToHebrow object remove it and add the translated key to the object
-//         if (translateFieldsToHebrow[key]) {
-
-//             list[translateFieldsToHebrow[key]] = list[key]
-//             delete list[key]
-//         }
-//     }
-
-//     console.log(list);
-//     // iterate through all inputs and isert them to the object
-//     roomInputs?.forEach((item) => {
-
-//         if (item.type !== "textarea") {
-//             list[item?.label] = item?.label;
-//         }
-
-//     });
-//     console.log(list);
-//     delete list.SLA
-//     delete list["מ.א של לקוח"]
-//     delete list["תאריך מחיקה"]
-//     delete list["זמן סגירת תקלה"]
-//     return list ? Object.keys(list) : [];
-// }
 
 
 

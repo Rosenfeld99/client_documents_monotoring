@@ -8,7 +8,7 @@ import useSocket from './useSocket'
 
 function useSpaceWork() {
   const { inputs, setInputs, setNewIdReport, historyReports, setHistoryReports, currentUser, setCurrentUser } = useContext(ContextStore)
-  const { createRoomSocket, deleteRoomSocket } = useSocket()
+  const { createRoomSocket, deleteRoomSocket, updateRoomSocket } = useSocket()
   const createSpaceWork = async ({ adminId, spaceWorkName, }) => {
 
     try {
@@ -136,7 +136,6 @@ function useSpaceWork() {
       deleteRoomSocket(spaceWorkName,
         subSpaceWorkName,
         roomName)
-      console.log(newRoom);
       notify("SUCCESS", "החדר נמחק בהצלחה")
 
 
@@ -208,6 +207,7 @@ function useSpaceWork() {
       // //saved it
       // setSingleOption(Object.keys(updateUser?.subSpaceWorks[spaceWorkName]))
       setCurrentUser(updateUser)
+      updateRoomSocket(spaceWorkName, subSpaceWorkName, newRoomName, oldRoomName)
       // console.log(newRoom);
       notify("SUCCESS", "החדר עודכן בהצלחה")
 

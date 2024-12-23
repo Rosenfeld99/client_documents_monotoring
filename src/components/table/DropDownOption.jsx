@@ -3,7 +3,7 @@ import { FaEyeSlash, FaFilter } from 'react-icons/fa'
 import { LuArrowDownUp } from 'react-icons/lu'
 import { TfiLayoutColumn3Alt } from 'react-icons/tfi'
 import CustomModal from '../../utils/CustomModal'
-import { dateFields } from '../../constant/translateObj'
+import { dateFields } from '../../utils/constant/translateObj'
 import { convertStringToTime } from '../../utils/timeFunc/timeFunc'
 
 const DropDownOption = ({ setOpenManageColumns, index, column, setCurrentColumn, currentColumn, showIconDots, toggleColumn, handleFilterChange, filteredData, showOptionSelect, setShowOptionSelect, setFilteredData, filters }) => {

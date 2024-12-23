@@ -69,7 +69,8 @@ const CustomSelect = ({ options,state, placeholder,required, labelText,disabeld,
                 </span>
             </div>
             {isOpen && (
-                <ul className={`absolute mt-1 w-full border max-h-52 overflow-auto border-border bg-background rounded-md z-10 shadow-2xl ${isOpen && "border-primary"}`}>
+                // max-h-52
+                <ul className={`absolute mt-1 w-full border max-h-44 overflow-auto border-border bg-background rounded-md z-10 shadow-2xl ${isOpen && "border-primary"}`}>
                     {options?.map((option, index) => (
                         <li
                             key={option}

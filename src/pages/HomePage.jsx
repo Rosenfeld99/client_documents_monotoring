@@ -41,7 +41,9 @@ const HomePage = () => {
         return validRooms
     }
     useEffect(() => {
-        setAllUserRooms(getRooms())
+        const allRooms = getRooms()
+        setAllUserRooms(allRooms)
+        setToggleEdit(allRooms?.length > 0 ? false : true)
     }, [currentUser])
 
 

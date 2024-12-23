@@ -37,6 +37,7 @@ const App = () => {
       });
       // create input socket
       socketIo.on("recive_new_inputs", (data) => {
+
         setInputs(data?.newInputsArray)
       });
       // create input socket
@@ -51,32 +52,44 @@ const App = () => {
         }
       });
       // create input socket
-      socketIo.on("recive_delete_room", ({ spaceWork, subSpaceWork, newRoomObj }) => {
-        const key = `${spaceWork}_${subSpaceWork}_${roomName}`
+      socketIo.on("recive_delete_room", ({ spaceWork, subSpaceWork, room }) => {
+        const key = `${spaceWork}_${subSpaceWork}_${room}`
         // //saved it
         setCurrentUser((prev) => {
+
+
           delete prev?.rooms[key]
-          return prev
+          console.log(prev.rooms);
+
+          const UpdateUser = { ...prev, rooms: prev?.rooms }
+
+          return UpdateUser
         })
       });
       // create input socket
-      socketIo.on("recive_update_room", ({ spaceWork, subSpaceWork, newRoomName }) => {
-        const key = `${spaceWork}_${subSpaceWork}_${newRoomObj?.name}`
-        if (currentUser && currentUser.subSpaceWorks[spaceWork][subSpaceWork] === "admin") {
-          setCurrentUser((prev) => {
-            const rooms = { ...prev.rooms, [key]: "editor" }
-            const UpdateUser = { ...prev, rooms }
-            return UpdateUser
-          })
-        }
+      socketIo.on("recive_update_room", ({ spaceWork, subSpaceWork, newRoomName, oldRoomName }) => {
+        console.log("update room");
+
+        const newKey = `${spaceWork}_${subSpaceWork}_${newRoomName}`
+        const oldKey = `${spaceWork}_${subSpaceWork}_${oldRoomName}`
+        setCurrentUser((prev) => {
+          const permission = prev?.rooms[oldKey]
+          delete prev?.rooms[oldKey]
+          const rooms = { ...prev.rooms, [newKey]: permission }
+
+          const UpdateUser = { ...prev, rooms }
+          return UpdateUser
+        })
+
       });
 
       // delete input socket
       socketIo.on("recive_delete_input", (data) => {
+
         setInputs(data?.inputsArray)
       });
       socketIo.on("recive_update_inputs", (data) => {
-        setInputs(data?.inputsArray)
+        setInputs(data?.updateInputsArray)
       });
       socketIo.on("recive_close_report", ({ hebrewReport }) => {
         const currentPage = window?.location?.pathname?.split("/")[1]
@@ -109,7 +122,6 @@ const App = () => {
       });
       socketIo.on("recive_delete_report", ({ deletedReport }) => {
         const currentPage = window?.location?.pathname?.split("/")[1]
-        console.log(deletedReport);
 
         const unitResponse = deletedReport.inputs.find((input) => input.name === "יחידה מטפלת")
         if (currentPage === "dashboard") {
@@ -187,6 +199,103 @@ const App = () => {
       });
 
       socketIo.on("recive_new_report", ({ newReport, hebrewReport }) => {
+
+        // get the current page to know wich state need to update
+        const currentPage = window?.location?.pathname?.split("/")[1]
+        console.log(newReport.reportOpen);
+
+        if (currentPage === "dashboard") {
+          // check if the report open
+          if (newReport.reportOpen) {
+            if (newReport["יחידה מטפלת"] === searchParams.get('room')) {
+              // add the report to today open reports and to room response reports
+              setCountRoomReports((prev) => ({ ...prev, openTodayReports: [...prev.openTodayReports, newReport], roomResponseOpen: [...prev.roomResponseOpen, newReport] }))
+            }
+            else setCountRoomReports((prev) => ({ ...prev, otherResponseOpen: [...prev.otherResponseOpen, newReport] }))
+          }
+          // if report open and close immidatly
+          else {
+            if (newReport["יחידה מטפלת"] === searchParams.get('room')) {
+              // add the report to today open reports and to room response reports
+              setCountRoomReports((prev) => ({ ...prev, openTodayReports: [...prev.openTodayReports, newReport], roomResponseClose: [...prev.roomResponseClose, newReport] }))
+            }
+            else setCountRoomReports((prev) => ({ ...prev, otherResponseClose: [...prev.otherResponseClose, newReport] }))
+          }
+
+          setHistoryReports((prev) => ({
+            totalCount: [{ total: (prev?.totalCount?.[0]?.total || 0) + 1 }],
+            data: [...(prev?.data || []), newReport],
+          }));
+        }
+
+
+        else if (currentPage === "open-issue" || currentPage === "issue-history") {
+
+          // console.log(newReport);
+          setFilteredData((prev) => [...prev, hebrewReport])
+          setColumns((prev) => {
+            const tempColumns = [...prev]
+
+            for (let index = 0; index < tempColumns?.length; index++) {
+              const key = tempColumns[index].key
+              if (Object.hasOwn(hebrewReport, key)) {
+                tempColumns[index]?.selectOption?.push({ name: hebrewReport[key] })
+              }
+            }
+            return tempColumns
+          })
+          console.log(filteredData);
+
+        }
+        // else if (currentPage === "issue-history") {
+        //   setFilteredData((prev) => [...prev, hebrewReport])
+        //   setColumns((prev) => {
+        //     const tempColumns = [...prev]
+
+        //     for (let index = 0; index < tempColumns?.length; index++) {
+        //       const key = tempColumns[index].key
+        //       if (Object.hasOwn(hebrewReport, key)) {
+        //         tempColumns[index]?.selectOption?.push({ name: hebrewReport[key] })
+        //       }
+        //     }
+        //     return tempColumns
+        //   })
+        //   console.log(filteredData);
+
+        // }
+        // this is the report id not _id just numbers
+        setNewIdReport((prev) => prev + 1)
+      });
+      socketIo.on("recive_create_user", ({ spaceWork, subSpaceWork, room, newUser }) => {
+
+        // get the current page to know wich state need to update
+        const currentPage = window?.location?.pathname?.split("/")[1]
+        console.log(newUser);
+        let newArrayUser
+        setFilteredData((prev) => {
+          const isExsistIndex = prev?.findIndex((user) => user["מ.א"] === newUser["מ.א"])
+          if (isExsistIndex != -1) {
+
+            newArrayUser = [...prev];
+            newArrayUser[isExsistIndex] = newUser;
+
+          }
+          else {
+            newArrayUser = [...prev, newUser]
+
+          }
+          console.log(prev);
+          return newArrayUser
+        })
+      });
+      socketIo.on("recive_delete_user", ({ deletedUserId, }) => {
+        // this is the report id not _id just numbers
+        setFilteredData((prev) => {
+          const newArrayUser = prev.filter((user) => user["מ.א"] !== deletedUserId)
+          return newArrayUser
+        })
+      });
+      socketIo.on("recive_update_user", ({ newReport, hebrewReport }) => {
 
         // get the current page to know wich state need to update
         const currentPage = window?.location?.pathname?.split("/")[1]

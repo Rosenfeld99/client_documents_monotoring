@@ -6,47 +6,54 @@ const nextData = [
     { name: "רמת הרשאה / בחר חדר", id: 5, value: "בחר חדר" },
 ]
 
-export const getListToShow = (userAccessList, setUserAccessList, currentUser, mode, sw, subSw) => {
-    console.log(mode);
+export const getListToShow = (currentUser, mode, sw, subSw) => {
+    console.log(currentUser, mode, sw, subSw);
 
     if (currentUser) {
-        console.log(userAccessList);
 
-        const copyUserOption = { ...userAccessList }
+        // const copyUserOption = { ...userAccessList }
 
         if (mode === "sw") {
-            copyUserOption.currentStep.list = swList(currentUser)
+            return swList(currentUser)
+            // copyUserOption.currentStep.list = swList(currentUser)
         }
         else if (mode === "subSw") {
-            const subSpArray = subSwList(currentUser, sw)
-            copyUserOption.currentStep.list = [...subSpArray]
-            copyUserOption.listOption[1].list = [...subSpArray]
+            return subSwList(currentUser, sw)
+            // const subSpArray = subSwList(currentUser, sw)
+            // copyUserOption.currentStep.list = [...subSpArray]
+            // copyUserOption.listOption[1].list = [...subSpArray]
         }
         else if (mode === "room") {
-
-            copyUserOption.listOption[2].list = roomList(currentUser, sw, subSw)
+            return roomList(currentUser, sw, subSw)
+            // copyUserOption.listOption[2].list = roomList(currentUser, sw, subSw)
+            // copyUserOption.listOption[2].list = roomList(currentUser, sw, subSw)
         }
         // setUserAccessList((prev) => ({ ...prev, listOption: [...prev.listOption, copyUserOption] }))
-        setUserAccessList(copyUserOption)
+        // setUserAccessList(copyUserOption)
     }
 }
 
 export const swList = (currentUser) => {
-    const spaceWorkList = Object.keys(currentUser?.spaceWorks)
-    return spaceWorkList.map((spName, i) => ({ name: spName, id: spName + i, value: spName }))
+
+    const spaceWorkList = Object?.keys(currentUser?.spaceWorks)
+    return {
+        index: 0,
+        title: "בחר סביבה", list: spaceWorkList.map((spName, i) => ({ name: spName, id: spName + i, value: spName }))
+    }
 
 }
 export const subSwList = (currentUser, sw) => {
     const objOfSubSP = currentUser?.subSpaceWorks[sw]
-    console.log(sw);
+    console.log(currentUser?.subSpaceWorks[sw], sw);
 
     const subSpaceWorkList = Object.keys(objOfSubSP)
     const subSpArray = subSpaceWorkList.map((subSpName, i) => ({ name: subSpName, id: subSpName + i, value: subSpName }))
-    return subSpArray
+    return { index: 1, title: "תת סביבה / רמת הרשאה", list: subSpArray }
 
 }
 export const roomList = (currentUser, sw, subSw) => {
     const roomList = []
+    console.log(currentUser?.rooms, `${sw}_${subSw}`);
 
     for (const key in currentUser?.rooms) {
         if (key.includes(`${sw}_${subSw}`)) {
@@ -55,16 +62,21 @@ export const roomList = (currentUser, sw, subSw) => {
             roomList.push({ name: roomName, id: id, value: roomName })
         }
     }
-    return roomList
+    return {
+        index: 2, title: "רמת הרשאה / בחר חדר", list: roomList
+    }
 }
 
 
 
 
 
-export const implementGoBack = (index, setAccesList, setUserAccessList, setSteps, accessList, currentUser) => {
+export const implementGoBack = (index, setAccesList, setUserAccessList, setSteps, accessList, currentUser, spaceWork, subSpaceWork) => {
     switch (index) {
         case 0:
+            if (!currentUser?.isOwner) {
+                return;
+            }
             // reset the access list to defulte
             setAccesList((prev) => ({ ...prev, currAcc: { id: "" } }));
 
@@ -80,6 +92,9 @@ export const implementGoBack = (index, setAccesList, setUserAccessList, setSteps
             break;
 
         case 1:
+            if (!currentUser?.isOwner || currentUser.spaceWorks[spaceWork] !== "superAdmin") {
+                return;
+            }
             // reset the access list to empty id but chosen the spaceWork and delete other(subSw,room)
             setAccesList((prev) => ({ ...prev, currAcc: { id: "", sw: prev?.currAcc?.sw } }));
             // get subSw list to choose
@@ -105,6 +120,9 @@ export const implementGoBack = (index, setAccesList, setUserAccessList, setSteps
             break;
 
         case 2:
+            if (!currentUser?.isOwner || currentUser?.spaceWorks[spaceWork] !== "superAdmin" || currentUser?.subSpaceWorks[spaceWork][subSpaceWork] !== "admin") {
+                return;
+            }
             // reset the access list to empty id but chosen the spaceWork and delete other(subSw,room)
             setAccesList((prev) => ({ ...prev, currAcc: { id: "", sw: prev?.currAcc?.sw, subSw: prev?.currAcc?.subSw } }));
             // get subSw list to choose
