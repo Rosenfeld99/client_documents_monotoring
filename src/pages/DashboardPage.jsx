@@ -17,13 +17,13 @@ const ColumnChart = lazy(() => import('../components/columnChart/ColumnChart'));
 const DashboardPage = () => {
     const { countRoomReports } = useContext(ContextStore)
 
-    const { singleOptoin } = useContextStore()
+    const { singleOptoin, ColumnChart1Select, setColumnChart1Select } = useContextStore()
     const [searchParams] = useSearchParams()
     const { historyReports, getAllReports } = useReports()
     const { currentUser } = useUsers()
     const { inputs } = useSpaceWork()
     // this states are to chart and they get what user want to show and if it is date also func date is need
-    const [ColumnChart1Select, setColumnChart1Select] = useState({ label: "יחידה מטפלת", dateFunc: null })
+    // const [ColumnChart1Select, setColumnChart1Select] = useState({ label: "יחידה מטפלת", dateFunc: null })
     const [ColumnChart2Select, setColumnChart2Select] = useState({ label: "יחידה מטפלת", dateFunc: null })
     // get the number of response of reports 
     console.log(historyReports);
@@ -92,16 +92,17 @@ const DashboardPage = () => {
 
         // This logic only runs when the labels for the charts change (or the `fromDate`/`toDate` change)
         if (
-            (ColumnChart1Select?.label === "problemTimeStart" || ColumnChart1Select?.label === "problemTimeEnd" || ColumnChart1Select?.label === "deleteAt") ||
-            (ColumnChart2Select?.label === "problemTimeStart" || ColumnChart2Select?.label === "problemTimeEnd" || ColumnChart2Select?.label === "deleteAt")
+            (ColumnChart1Select?.label === "problemTimeStart" || ColumnChart1Select?.label === "problemTimeEnd" || ColumnChart1Select?.label === "deleteAt")
+            // (ColumnChart2Select?.label === "problemTimeStart" || ColumnChart2Select?.label === "problemTimeEnd" || ColumnChart2Select?.label === "deleteAt")
         ) {
             chartDatesConvert(ColumnChart1Select?.label, setColumnChart1Select, differenceInHours);
-            chartDatesConvert(ColumnChart2Select?.label, setColumnChart2Select, differenceInHours);
+            // chartDatesConvert(ColumnChart2Select?.label, setColumnChart2Select, differenceInHours);
         } else {
             setColumnChart1Select((prev) => ({ ...prev, dateFunc: null }));
-            setColumnChart2Select((prev) => ({ ...prev, dateFunc: null }));
+            // setColumnChart2Select((prev) => ({ ...prev, dateFunc: null }));
         }
-    }, [currentUser, fromDate, toDate, dateToggle, ColumnChart1Select?.label, ColumnChart2Select?.label]);
+    }, [currentUser, fromDate, toDate, dateToggle, ColumnChart1Select?.label,]);
+    // }, [currentUser, fromDate, toDate, dateToggle, ColumnChart1Select?.label, ColumnChart2Select?.label]);
 
 
 
@@ -165,8 +166,8 @@ const DashboardPage = () => {
                 </div>
 
             </div>
-            <section className='mx-10 overflow-hidden min-h-[70vh] grid grid-cols-3 gap-[1px] bg-border'>
-                <div className="bg-background pl-10">
+            <section className='mx-10 overflow-hidden min-h-[70vh] grid grid-cols-3 gap-[1px]  bg-border'>
+                <div className="bg-background dark:bg-text pl-10">
                     <Suspense fallback={<div>wait loading...</div>}>
                         <DonutChart optionsSelect={listOption(historyReports?.data, inputs)} isAllReportsVisible={dateToggle} setColumnChartSelect={setColumnChart1Select} dataToChart={formatDataToChartForBar(historyReports?.data, ColumnChart1Select?.label, ColumnChart1Select?.dateFunc, "pie")} />
                     </Suspense>

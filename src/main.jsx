@@ -6,6 +6,7 @@ import { BrowserRouter } from 'react-router-dom'
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
 import { ContextStoreProvider } from './context/contextStore'
+import { ThemeProvider } from './context/ThemeProvider.jsx'
 
 
 
@@ -26,8 +27,9 @@ createRoot(document.getElementById('root')).render(
         theme="light"
       />
       <ContextStoreProvider>
-        <App />
-
+        <ThemeProvider>
+          <App />
+        </ThemeProvider>
       </ContextStoreProvider>
     </BrowserRouter>
   </React.Fragment>,

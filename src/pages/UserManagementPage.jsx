@@ -9,6 +9,9 @@ import { soldiersData } from '../utils/constant/USERS.demo'
 import useUsers from '../hooks/useUsers'
 import { BiEdit } from 'react-icons/bi'
 import { IoCloseCircleOutline } from 'react-icons/io5'
+import searchIcon from "../../public/Search-amico.png"
+import { indexLimited } from '../utils/utils'
+
 
 const UserManagementPage = () => {
     const { getAllUsers, loading, totalUsers, searchUsers, deleteUser, handleSearchUsers, columns, setColumns, historyReports, filteredData, setFilteredData } = useUsers()
@@ -33,8 +36,8 @@ const UserManagementPage = () => {
 
                 getAllUsers(
                     {
-                        limitResultsIndex: 10, // -1 is get all reports
-                        indexToSkip: pagenations.prev * 10,
+                        limitResultsIndex: indexLimited, // -1 is get all reports
+                        indexToSkip: pagenations.prev * indexLimited,
                         spaceWorkName: searchParams.get('sw'),
                         subSpaceWorkName: searchParams.get('subSW'),
                         roomName: searchParams.get('room'),
@@ -54,8 +57,8 @@ const UserManagementPage = () => {
                 }));
 
                 handleSearchUsers({
-                    limitResultsIndex: 10, // -1 is get all reports
-                    indexToSkip: pagenations.prev * 10,
+                    limitResultsIndex: indexLimited, // -1 is get all reports
+                    indexToSkip: pagenations.prev * indexLimited,
                     arrayOfConditions: convertFilters,
                     adminId: currentUser?.userId,
                     spaceWorkName: searchParams.get('sw'),
@@ -147,9 +150,14 @@ const UserManagementPage = () => {
         // delete in server
         deleteUser(userToDelete)
     }
+    console.log(pagenations);
+
 
     const HoverComps = (currUser) => {
         if (currUser["מ.א"] === currentUser.userId) {
+            return
+        }
+        if ((!currentUser.isOwner && currentUser?.spaceWorks[searchParams.get("sw")] !== "superAdmin" && currentUser?.subSpaceWorks[searchParams.get("sw")][searchParams.get("subSW")] !== "admin")) {
             return
         }
         return (
@@ -161,7 +169,7 @@ const UserManagementPage = () => {
                     </button>
                 </Link>|
 
-                {(currentUser.isOwner || currentUser?.spaceWorks[searchParams.get("sw")] === "superAdmin") &&
+                {
                     <button onClick={(e) => handleDeleteUser(e, currUser)} className=' flex items-center text-lg h-7 gap-2 justify-end border-2 rounded-lg px-2 hover:scale-105 duration-150 hover:text-primary hover:border-pritext-primary'>
                         <IoCloseCircleOutline className='text-2xl' />
                         <span >מחיקת משתמש מהחדר</span>
@@ -173,6 +181,7 @@ const UserManagementPage = () => {
         setFilters({})
     }
 
+    console.log(totalUsers);
 
     return (
         <TemplatePage
@@ -186,12 +195,23 @@ const UserManagementPage = () => {
             navRight={<CustomSelect labelText={"בחר קבוצה"} options={accessOption} placeholder="קבוצה..." keyToUpdate={"accessOption"} />}
             navLeft={str}
         >
+
             <section className="p-10 w-[85vw] flex flex-col gap-3 flex-1">
 
                 <TableFilters resetFilters={resetFilters} openManageColumns={openManageColumns} setOpenManageColumns={setOpenManageColumns} columnVisibility={columnVisibility} columns={columns} handleFilterChange={handleFilterChange} toggleColumn={toggleColumn} filters={filters} />
                 <div className=" w-full overflow-x-auto ml-[240px]">
-                    {loading ? <div>Loading...</div> :
-                        columns[0] && <Table HoverComps={HoverComps} setOpenManageColumns={setOpenManageColumns} filters={filters} toggleColumn={toggleColumn} columnVisibility={columnVisibility} columns={columns} setColumns={setColumns} filteredData={filteredData} handleFilterChange={handleFilterChange} setFilteredData={setFilteredData} />
+                    {(searchLoading) ? <div className='flex h-full items-center justify-center'>
+
+                        {searchLoading && <div className='flex flex-col items-center gap-0 '>
+                            <span className='font-bold text-[25px]'>מחפש...</span>
+                            <span><img src={searchIcon} className='w-[600px] h-[600px]' alt="" /></span>
+                        </div>}
+                        {/* {loading && <div className='flex flex-col items-center gap-0 '>
+                                                        <span className='font-bold text-[25px]'>טוען...</span>
+                                                        <span><img src={loadingIcon} className='w-[600px] h-[600px]' alt="" /></span>
+                                                    </div>} */}
+                    </div>
+                        : columns[0] && <Table HoverComps={HoverComps} setOpenManageColumns={setOpenManageColumns} filters={filters} toggleColumn={toggleColumn} columnVisibility={columnVisibility} columns={columns} setColumns={setColumns} filteredData={filteredData} handleFilterChange={handleFilterChange} setFilteredData={setFilteredData} />
                     }
 
                     {/* <StepContainer steps={steps} handleNext={handleNext} /> */}
@@ -206,7 +226,8 @@ const UserManagementPage = () => {
                     <span className=' select-none px-2 underline text-text'>
                         {pagenations.curr}
                     </span>
-                    {pagenations.next <= (Math.ceil(totalUsers / 10)) && <button onClick={() => handleClickOnPage("RIGHT")} className="px-3 py-1 bg-accent border-2 text-primary text-md font-semibold border-border shadow-md rounded-lg flex justify-center gap-1 items-center hover:scale-110 duration-150">
+
+                    {pagenations.next <= (Math.ceil(totalUsers / indexLimited)) && (filteredData.length >= indexLimited) && <button onClick={() => handleClickOnPage("RIGHT")} className="px-3 py-1 bg-accent border-2 text-primary text-md font-semibold border-border shadow-md rounded-lg flex justify-center gap-1 items-center hover:scale-110 duration-150">
                         <MdKeyboardArrowRight className=' text-2xl' />
                         {pagenations.next}
                     </button>}

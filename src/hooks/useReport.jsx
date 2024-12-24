@@ -289,14 +289,16 @@ function useReports() {
             setHistoryReports(data);
             setColumns(data.columnsList)
             setFilteredData(data?.data)
+            console.log(statusReport);
 
             console.log(data.columnsList);
-
+            const isOpenReports = statusReport === "open" ? false : true
             setColumnVisibility(
                 data.columnsList?.reduce((acc, column) => ({
                     ...acc, [column.key]: true, _id: false,
                     "סטאטוס פנייה": false,
-                    "תאריך מחיקת פנייה": false
+                    "תאריך מחיקת פנייה": false,
+                    "זמן סגירת פנייה": isOpenReports
                 }), {})
             )
         } catch (error) {

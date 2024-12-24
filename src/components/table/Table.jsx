@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import DropDownOption from './DropDownOption';
 import useReports from '../../hooks/useReport';
 import { urgancyColors } from '../../utils/constant/translateObj';
+import searchIcon from "../../../public/Search-amico.png"
+
 
 const Table = ({ setOpenManageColumns, columns, columnVisibility, setColumns, filteredData, handleFilterChange, setFilteredData, toggleColumn, filters, HoverComps }) => {
     const { loading } = useReports()
@@ -9,9 +11,6 @@ const Table = ({ setOpenManageColumns, columns, columnVisibility, setColumns, fi
     const [showOptionSelect, setShowOptionSelect] = useState(false);
     const [showIconDots, setShowIconDots] = useState(false);
     const [draggedColumnIndex, setDraggedColumnIndex] = useState(null);
-
-
-
 
     const handleDragStart = (index) => (event) => {
         event.dataTransfer.setData("colIndex", index);
@@ -81,6 +80,12 @@ const Table = ({ setOpenManageColumns, columns, columnVisibility, setColumns, fi
                     ))}
 
                 </tbody>
+                {/* :
+                <div className='flex flex-col items-center gap-0 '>
+                    <span className='font-bold text-[25px]'>מחפש...</span>
+                    <span><img src={searchIcon} className='w-[600px] h-[600px]' alt="" /></span>
+                </div> */}
+
             </table>
             {!loading && (filteredData?.length == 0 || filteredData == []) && <div className=' text-xl py-20 flex items-center justify-center w-full mx-auto'>
                 <span>אין נותונים להצגה...</span>

@@ -79,6 +79,7 @@ export const ContextStoreProvider = ({ children }) => {
         columns?.reduce((acc, column) => ({ ...acc, [column.key]: true, _id: false }), {})
     );
     const [countRoomReports, setCountRoomReports] = useState({})
+    const [ColumnChart1Select, setColumnChart1Select] = useState({ label: "יחידה מטפלת", dateFunc: null })
 
     const contextValue = {
         options, setOptions,
@@ -90,7 +91,7 @@ export const ContextStoreProvider = ({ children }) => {
         columnVisibility, setColumnVisibility,
         countRoomReports, setCountRoomReports,
         allUserRooms, setAllUserRooms,
-        socketIo, setSocketIo, newIdReport, setNewIdReport
+        socketIo, setSocketIo, newIdReport, setNewIdReport, ColumnChart1Select, setColumnChart1Select
     }
 
 

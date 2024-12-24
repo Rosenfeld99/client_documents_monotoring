@@ -35,14 +35,14 @@ const DropDownOption = ({ setOpenManageColumns, index, column, setCurrentColumn,
                                 </button>
                                 {showOptionSelect && (<div >
                                     <div className=" bg-primary w-4 h-4 aspect-square absolute rotate-45 right-0 top-3" />
-                                    <div className="fixed flex bg-accent shadow-md p-1 shadow-[#00000034] border-[1px] border-border -mr-[385px] -mt-10">
-                                        {<select className='mx-2 py-1 focus:outline-none w-44 focus:border-b-2 focus:border-b-primary' name="" id="" onChange={(e) => { handleFilterChange(column.key, e.target.value), setCurrentColumn({}) }}>
+                                    <div className="fixed flex bg-accent shadow-md p-1 shadow-[#00000034] border-[1px] border-border -mr-[225px] -mt-10">
+                                        {<select className='mx-2 py-1 focus:outline-none w-52 focus:border-b-2 focus:border-b-primary' name="" id="" onChange={(e) => { handleFilterChange(column.key, e.target.value), setCurrentColumn({}) }}>
                                             <option value={''} selected disabled>סינון לפי {currentColumn.label}</option>
                                             {currentColumn.selectOption?.map((item) => (
                                                 <option key={item.name} value={dateFields[column.key] ? convertStringToTime(item?.name) : item?.name}>{dateFields[column.key] ? item.name?.split(", ")[0] : item?.name}</option>
                                             ))}
                                         </select>}
-                                        <div className="border-r-border border-r-2" />
+                                        {/* <div className="border-r-border border-r-2" />
                                         <input
                                             type={dateFields[column?.label] ? "date" : "text"}
                                             key={column.key}
@@ -50,7 +50,7 @@ const DropDownOption = ({ setOpenManageColumns, index, column, setCurrentColumn,
                                             value={filters[column.key] || ''}
                                             onChange={(e) => handleFilterChange(column.key, e.target.value)}
                                             className="mx-2 p-1 focus:outline-none w-44 focus:border-b-2 placeholder:text-text focus:border-b-primary"
-                                        />
+                                        /> */}
                                     </div>
                                 </div>
                                 )}

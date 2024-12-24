@@ -1,4 +1,4 @@
-export const indexLimited = 12;
+export const indexLimited = 11;
 
 export const hoverTitle = {
     "דחיפות": "רשימת רמות הדחיפות של פנייה (לא ניתן לשינוי)",

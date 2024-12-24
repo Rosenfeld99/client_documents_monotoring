@@ -14,6 +14,7 @@ import ReportModal from '../utils/reportModal/ReportModal';
 import searchIcon from "../../public/Search-amico.png"
 import loadingIcon from "../../public/Loading-pana.png"
 import EmptyIcon from "../../public/EmptyIcon.png"
+import { indexLimited } from '../utils/utils';
 
 
 const IssueHistoryPage = () => {
@@ -36,8 +37,8 @@ const IssueHistoryPage = () => {
             // Correct check for empty object
             if (currentUser?.userId) {
                 const getReportObj = {
-                    limitResultsIndex: 14, // -1 is get all reports
-                    indexToSkip: pagenations.prev * 14,
+                    limitResultsIndex: indexLimited, // -1 is get all reports
+                    indexToSkip: pagenations.prev * indexLimited,
                     statusReport: "close",
                     userId: currentUser?.userId,
                     spaceWorkName: searchParams.get('sw'),
@@ -56,8 +57,8 @@ const IssueHistoryPage = () => {
                 }));
 
                 handleSearchReport({
-                    limitResultsIndex: 14, // -1 is get all reports
-                    indexToSkip: pagenations.prev * 14,
+                    limitResultsIndex: indexLimited, // -1 is get all reports
+                    indexToSkip: pagenations.prev * indexLimited,
                     statusReport: "close",
                     arrayOfConditions: convertFilters,
                     userId: currentUser?.userId,
@@ -200,10 +201,16 @@ const IssueHistoryPage = () => {
                 <IoDocumentTextOutline />
                 <span >צפייה בפנייה</span>
             </button>|
-            <button onClick={() => handleDeleteReportClick(currReport)} className=' flex items-center  text-lg h-7 gap-2 justify-end border-2 rounded-lg px-2 hover:scale-105 duration-150 hover:text-error hover:border-errtext-error '>
-                <IoCloseCircleOutline className='text-2xl' />
-                <span >מחיקת פנייה</span>
-            </button>
+            {/* {currentUser.isOwner || currentUser.spaceWorks[searchParams.get('sw')] === "superAdmin" || currentUser.spaceWorks[searchParams.get('sw')][currentUser.spaceWorks[searchParams.get('subSW')] === "admin" && */}
+
+            {currentUser.isOwner || currentUser.spaceWorks[searchParams.get('sw')] === "superAdmin" || currentUser.subSpaceWorks[searchParams.get('sw')][searchParams.get('subSW')] === "admin" && (
+
+                <button onClick={() => handleDeleteReportClick(currReport)} className=' flex items-center  text-lg h-7 gap-2 justify-end border-2 rounded-lg px-2 hover:scale-105 duration-150 hover:text-error hover:border-errtext-error '>
+                    <IoCloseCircleOutline className='text-2xl' />
+                    <span >מחיקת פנייה</span>
+                </button>
+            )}
+
 
         </div>)
     }
@@ -235,10 +242,10 @@ const IssueHistoryPage = () => {
                                     <span className='font-bold text-[25px]'>מחפש...</span>
                                     <span><img src={searchIcon} className='w-[600px] h-[600px]' alt="" /></span>
                                 </div>}
-                                {loading && <div className='flex flex-col items-center gap-0 '>
+                                {/* {loading && <div className='flex flex-col items-center gap-0 '>
                                     <span className='font-bold text-[25px]'>טוען...</span>
                                     <span><img src={loadingIcon} className='w-[600px] h-[600px]' alt="" /></span>
-                                </div>}
+                                </div>} */}
                             </div> :
                                 <Table HoverComps={HoverComps} setOpenManageColumns={setOpenManageColumns} filters={filters} toggleColumn={toggleColumn} columnVisibility={columnVisibility} columns={columns} setColumns={setColumns} filteredData={filteredData} handleFilterChange={handleFilterChange} setFilteredData={setFilteredData} />
                             }
@@ -253,13 +260,12 @@ const IssueHistoryPage = () => {
                             <span className=' select-none px-2 underline text-text'>
                                 {pagenations.curr}
                             </span>
-                            {pagenations.next <= (Math.ceil(historyReports?.totalCount / 15)) && <button onClick={() => handleClickOnPage("RIGHT")} className="px-3 py-1 bg-accent border-2 text-primary text-md font-semibold border-border shadow-md rounded-lg flex justify-center gap-1 items-center hover:scale-110 duration-150">
+                            {pagenations.next <= (Math.ceil(historyReports?.totalCount / indexLimited)) && (filteredData.length >= indexLimited) && <button onClick={() => handleClickOnPage("RIGHT")} className="px-3 py-1 bg-accent border-2 text-primary text-md font-semibold border-border shadow-md rounded-lg flex justify-center gap-1 items-center hover:scale-110 duration-150">
                                 <MdKeyboardArrowRight className=' text-2xl' />
                                 {pagenations.next}
                             </button>}
                         </div>
                     </section> :
-
                     <div className='flex flex-col justify-center mt-10 items-center'>
                         <span className='font-bold text-[25px]'>                        אין פניות סגורות
                         </span>

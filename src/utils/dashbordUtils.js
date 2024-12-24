@@ -98,6 +98,8 @@ export const formatDataToChartForBar = (historyReports, label, formatDateToDashb
 
     // this is map by the filter that user want to show in dashbord
 
+
+
     let maxHeightOpen = 1
     let maxHeightClose = 1
     const openLabelsReports = {};

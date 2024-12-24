@@ -49,7 +49,7 @@ const RegisterPage = () => {
 
 
                 </div>
-                <button className="flex mx-auto px-32 text-lg font-bold py-5 rounded-full bg-[#F1F2F7] ">שליחת בקשה</button>
+                <button className="flex mx-auto px-32  text-lg font-bold py-4 rounded-full bg-[#F1F2F7] ">שליחת בקשה</button>
 
 
             </div>

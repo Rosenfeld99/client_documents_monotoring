@@ -15,6 +15,7 @@ import ReportModal from '../utils/reportModal/ReportModal'
 import searchIcon from "../../public/Search-amico.png"
 import loadingIcon from "../../public/Loading-pana.png"
 import EmptyIcon from "../../public/EmptyIcon.png"
+import { indexLimited } from '../utils/utils'
 
 
 
@@ -116,10 +117,13 @@ export default function OpenIssues() {
         <IoDocumentTextOutline />
         <span >צפייה בפנייה</span>
       </button>|
-      <button onClick={() => { handleDeleteReportClick(currReport) }} className=' flex items-center  text-lg h-7 gap-2 justify-end border-2 rounded-lg px-2 hover:scale-105 duration-150 hover:text-error hover:border-errtext-error '>
-        <IoCloseCircleOutline className='text-2xl' />
-        <span >מחיקת פנייה</span>
-      </button>
+      {currentUser.isOwner || currentUser.spaceWorks[searchParams.get('sw')] === "superAdmin" || currentUser.subSpaceWorks[searchParams.get('sw')][searchParams.get('subSW')] === "admin" && (
+
+        <button onClick={() => { handleDeleteReportClick(currReport) }} className=' flex items-center  text-lg h-7 gap-2 justify-end border-2 rounded-lg px-2 hover:scale-105 duration-150 hover:text-error hover:border-errtext-error '>
+          <IoCloseCircleOutline className='text-2xl' />
+          <span >מחיקת פנייה</span>
+        </button>
+      )}
     </div>
   }
   // useEffect(() => {
@@ -156,8 +160,8 @@ export default function OpenIssues() {
 
       if (currentUser?.userId) {
         const getReportObj = {
-          limitResultsIndex: 14, // -1 is get all reports
-          indexToSkip: pagenations.prev * 14,
+          limitResultsIndex: indexLimited, // -1 is get all reports
+          indexToSkip: pagenations.prev * indexLimited,
           statusReport: "open",
           userId: currentUser?.userId,
           spaceWorkName: searchParams.get('sw'),
@@ -176,8 +180,8 @@ export default function OpenIssues() {
         }));
 
         handleSearchReport({
-          limitResultsIndex: 14, // -1 is get all reports
-          indexToSkip: pagenations.prev * 14,
+          limitResultsIndex: indexLimited, // -1 is get all reports
+          indexToSkip: pagenations.prev * indexLimited,
           statusReport: "open",
           arrayOfConditions: convertFilters,
           userId: currentUser?.userId,
@@ -270,51 +274,44 @@ export default function OpenIssues() {
         navRight={<CustomSelect labelText={"בחר קבוצה"} options={accessOption} placeholder="קבוצה..." keyToUpdate={"accessOption"} />}
         navLeft={str}
       >
-        {filteredData && filteredData[0] ?
-          <section className="w-[85vw] p-10 flex flex-col gap-3 flex-1">
-            <TableFilters resetFilters={resetFilters} openManageColumns={openManageColumns} setOpenManageColumns={setOpenManageColumns} columnVisibility={columnVisibility} columns={columns} handleFilterChange={handleFilterChange} toggleColumn={toggleColumn} filters={filters} />
-            <div className="w-full overflow-x-auto ml-[240px]">
-              {(loading || searchLoading) ? <div className='flex h-full items-center justify-center'>
 
-                {searchLoading && <div className='flex flex-col items-center gap-0 '>
-                  <span className='font-bold text-[25px]'>מחפש...</span>
-                  <span><img src={searchIcon} className='w-[600px] h-[600px]' alt="" /></span>
-                </div>}
+        <section className="w-[85vw] p-10 flex flex-col gap-3 flex-1">
+          <TableFilters resetFilters={resetFilters} openManageColumns={openManageColumns} setOpenManageColumns={setOpenManageColumns} columnVisibility={columnVisibility} columns={columns} handleFilterChange={handleFilterChange} toggleColumn={toggleColumn} filters={filters} />
+          <div className="w-full overflow-x-auto ml-[240px]">
+            {(loading || searchLoading) ? <div className='flex h-full items-center justify-center'>
 
-                {loading && <div className='flex flex-col items-center gap-0 '>
-                  <span className='font-bold text-[25px]'>טוען...</span>
-                  <span><img src={loadingIcon} className='w-[600px] h-[600px]' alt="" /></span>
-                </div>}
-              </div> :
-                <Table handleColseReportClick={handleColseReportClick} HoverComps={HoverComps} setOpenManageColumns={setOpenManageColumns} filters={filters} toggleColumn={toggleColumn} columnVisibility={columnVisibility} columns={columns} setColumns={setColumns} filteredData={filteredData} handleFilterChange={handleFilterChange} setFilteredData={setFilteredData} />
-              }
-            </div>
-            {/* paggintions */}
-            <div className=" flex flex-row-reverse w-full justify-center items-center gap-3 fixed bottom-0 p-3 pl-[330px] backdrop-blur-sm">
-              {pagenations.prev > 0 &&
-                <button onClick={() => handleClickOnPage("LEFT")} className="px-3 py-1 bg-accent border-2 text-primary text-md font-semibold border-border shadow-md rounded-lg flex justify-center items-center gap-1 hover:scale-110 duration-150">
-                  {pagenations.prev}
-                  <MdKeyboardArrowLeft className=' text-2xl' />
-                </button>}
-              <span className=' select-none px-2 underline text-text'>
-                {pagenations.curr}
-              </span>
+              {searchLoading && <div className='flex flex-col items-center gap-0 '>
+                <span className='font-bold text-[25px]'>מחפש...</span>
+                <span><img src={searchIcon} className='w-[600px] h-[600px]' alt="" /></span>
+              </div>}
 
-              {pagenations.next <= (Math.ceil(historyReports?.totalCount / 15)) && <button onClick={() => handleClickOnPage("RIGHT")} className="px-3 py-1 bg-accent border-2 text-primary text-md font-semibold border-border shadow-md rounded-lg flex justify-center gap-1 items-center hover:scale-110 duration-150">
-                <MdKeyboardArrowRight className=' text-2xl' />
-                {pagenations.next}
-              </button>}
-            </div>
-          </section> :
-          // if the table is empty do this:
-          <div className='flex flex-col justify-center mt-10 items-center'>
-            <span className='font-bold text-[25px]'>
-              אין פניות פתוחות
-
-            </span>
-            <img className='w-[600px] h-[600px]' src={EmptyIcon} alt="" />
+              {/* {loading && <div className='flex flex-col items-center gap-0 '>
+                <span className='font-bold text-[25px]'>טוען...</span>
+                <span><img src={loadingIcon} className='w-[600px] h-[600px]' alt="" /></span>
+              </div>} */}
+            </div> :
+              <Table handleColseReportClick={handleColseReportClick} HoverComps={HoverComps} setOpenManageColumns={setOpenManageColumns} filters={filters} toggleColumn={toggleColumn} columnVisibility={columnVisibility} columns={columns} setColumns={setColumns} filteredData={filteredData} handleFilterChange={handleFilterChange} setFilteredData={setFilteredData} />
+            }
           </div>
-        }
+          {/* paggintions */}
+          <div className=" flex flex-row-reverse w-full justify-center items-center gap-3 fixed bottom-0 p-3 pl-[330px] backdrop-blur-sm">
+            {pagenations.prev > 0 &&
+              <button onClick={() => handleClickOnPage("LEFT")} className="px-3 py-1 bg-accent border-2 text-primary text-md font-semibold border-border shadow-md rounded-lg flex justify-center items-center gap-1 hover:scale-110 duration-150">
+                {pagenations.prev}
+                <MdKeyboardArrowLeft className=' text-2xl' />
+              </button>}
+            <span className=' select-none px-2 underline text-text'>
+              {pagenations.curr}
+            </span>
+
+            {pagenations.next <= (Math.ceil(historyReports?.totalCount / indexLimited)) && (filteredData.length >= indexLimited) && <button onClick={() => handleClickOnPage("RIGHT")} className="px-3 py-1 bg-accent border-2 text-primary text-md font-semibold border-border shadow-md rounded-lg flex justify-center gap-1 items-center hover:scale-110 duration-150">
+              <MdKeyboardArrowRight className=' text-2xl' />
+              {pagenations.next}
+            </button>}
+          </div>
+        </section>
+
+
       </TemplatePage>
     </>
   )
