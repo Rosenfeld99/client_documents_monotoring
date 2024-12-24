@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import TreeIcon from "../../public/treeRegisterPage.jpeg"
 import Logo from "../../public/logo.png"
-import { registerInputs, registerObjInputs } from "../utils/constant/registerFields";
+import { registerInputs, registerObjInputs } from "../utils/utils";
 
 
 const RegisterPage = () => {

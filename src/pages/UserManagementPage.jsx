@@ -11,7 +11,7 @@ import { BiEdit } from 'react-icons/bi'
 import { IoCloseCircleOutline } from 'react-icons/io5'
 
 const UserManagementPage = () => {
-    const { getAllUsers, loading, searchUsers, deleteUser, handleSearchUsers, columns, setColumns, historyReports, filteredData, setFilteredData } = useUsers()
+    const { getAllUsers, loading, totalUsers, searchUsers, deleteUser, handleSearchUsers, columns, setColumns, historyReports, filteredData, setFilteredData } = useUsers()
     const [searchParams] = useSearchParams()
     // const [filteredData, setFilteredData] = useState(soldiersData);
     // const [columns, setColumns] = useState(columnsList);
@@ -33,6 +33,8 @@ const UserManagementPage = () => {
 
                 getAllUsers(
                     {
+                        limitResultsIndex: 10, // -1 is get all reports
+                        indexToSkip: pagenations.prev * 10,
                         spaceWorkName: searchParams.get('sw'),
                         subSpaceWorkName: searchParams.get('subSW'),
                         roomName: searchParams.get('room'),
@@ -52,8 +54,8 @@ const UserManagementPage = () => {
                 }));
 
                 handleSearchUsers({
-                    limitResultsIndex: 14, // -1 is get all reports
-                    indexToSkip: pagenations.prev * 14,
+                    limitResultsIndex: 10, // -1 is get all reports
+                    indexToSkip: pagenations.prev * 10,
                     arrayOfConditions: convertFilters,
                     adminId: currentUser?.userId,
                     spaceWorkName: searchParams.get('sw'),
@@ -204,7 +206,7 @@ const UserManagementPage = () => {
                     <span className=' select-none px-2 underline text-text'>
                         {pagenations.curr}
                     </span>
-                    {pagenations.next <= (Math.ceil(historyReports?.totalCount / 15)) && <button onClick={() => handleClickOnPage("RIGHT")} className="px-3 py-1 bg-accent border-2 text-primary text-md font-semibold border-border shadow-md rounded-lg flex justify-center gap-1 items-center hover:scale-110 duration-150">
+                    {pagenations.next <= (Math.ceil(totalUsers / 10)) && <button onClick={() => handleClickOnPage("RIGHT")} className="px-3 py-1 bg-accent border-2 text-primary text-md font-semibold border-border shadow-md rounded-lg flex justify-center gap-1 items-center hover:scale-110 duration-150">
                         <MdKeyboardArrowRight className=' text-2xl' />
                         {pagenations.next}
                     </button>}

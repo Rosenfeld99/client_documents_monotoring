@@ -9,6 +9,7 @@ function useUsers() {
 
     const { currentUser, setCurrentUser, columns, setColumns, filteredData, historyReports, setFilteredData, } = useContext(ContextStore)
     const [loading, setLoading] = useState(false)
+    const [totalUsers, setTotalUsers] = useState(0)
     const { createUserSocket, deleteUserSocket } = useSocket()
 
     const getUser = async (userId) => {
@@ -22,18 +23,22 @@ function useUsers() {
         }
     }
 
-    const getAllUsers = async ({ adminId, spaceWorkName, subSpaceWorkName, roomName }, setColumnVisibility) => {
+    const getAllUsers = async ({ adminId, spaceWorkName, subSpaceWorkName, roomName, limitResultsIndex, indexToSkip }, setColumnVisibility) => {
         setLoading(true)
         try {
-            const users = await axios.get(`http://localhost:3001/users/getAllUsersInSpaceWork/${adminId}/${spaceWorkName}/${subSpaceWorkName}/${roomName}`)
+            const users = await axios.post(`http://localhost:3001/users/getAllUsersInSpaceWork`, {
+                adminId, spaceWorkName, subSpaceWorkName, roomName, limitResultsIndex, indexToSkip
+            })
 
             console.log(users?.data);
+            setTotalUsers(users?.data?.totalUsers)
+
             setColumns(() => users?.data?.columnsList)
             setFilteredData((prev) => {
-
                 const a = users?.data?.formattedUsers
                 return a
             })
+
             setColumnVisibility(users?.data?.columnsList?.reduce((acc, column) => ({ ...acc, [column?.key]: true }), {}))
 
             console.log(filteredData, columns);
@@ -74,7 +79,6 @@ function useUsers() {
             })
             console.log(user);
             notify("SUCCESS", "המשתמש נמחק  בהצלחה")
-
             deleteUserSocket(userIdDelete)
             setFilteredData((prev) => prev.filter((user) => user["מ.א"] !== userIdDelete))
 
@@ -106,7 +110,7 @@ function useUsers() {
     }
 
     return (
-        { getUser, currentUser, deleteUser, createUser, handleSearchUsers, getAllUsers, loading, historyReports, columns, setColumns, filteredData, setFilteredData }
+        { getUser, currentUser, totalUsers, deleteUser, createUser, handleSearchUsers, getAllUsers, loading, historyReports, columns, setColumns, filteredData, setFilteredData }
     )
 }
 

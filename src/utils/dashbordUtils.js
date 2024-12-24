@@ -98,7 +98,8 @@ export const formatDataToChartForBar = (historyReports, label, formatDateToDashb
 
     // this is map by the filter that user want to show in dashbord
 
-    let maxHeight = 1
+    let maxHeightOpen = 1
+    let maxHeightClose = 1
     const openLabelsReports = {};
     const closeLabelsReports = {};
     const openReportsData = [];
@@ -139,7 +140,7 @@ export const formatDataToChartForBar = (historyReports, label, formatDateToDashb
             }
             else openReportsData[openLabelsReports[reportLabel]]++;
             totalPieReports++
-            maxHeight = openReportsData[openLabelsReports[reportLabel]] && maxHeight < openReportsData[openLabelsReports[reportLabel]] ? openReportsData[openLabelsReports[reportLabel]] : maxHeight
+            maxHeightOpen = openReportsData[openLabelsReports[reportLabel]] && maxHeightOpen < openReportsData[openLabelsReports[reportLabel]] ? openReportsData[openLabelsReports[reportLabel]] : maxHeightOpen
         }
         else {
             if (!closeLabelsReports?.hasOwnProperty(`${reportLabel}${pieMode}`)) {
@@ -155,10 +156,11 @@ export const formatDataToChartForBar = (historyReports, label, formatDateToDashb
                 index++
             }
             else closeReportsData[closeLabelsReports[`${reportLabel}${pieMode}`]]++
-            maxHeight = closeReportsData[closeLabelsReports[reportLabel]] && maxHeight < closeReportsData[closeLabelsReports[reportLabel]] ? closeReportsData[closeLabelsReports[reportLabel]] : maxHeight
+            maxHeightClose = closeReportsData[closeLabelsReports[reportLabel]] && maxHeightClose < closeReportsData[closeLabelsReports[reportLabel]] ? closeReportsData[closeLabelsReports[reportLabel]] : maxHeightClose
             totalPieReports++
         }
     }
+
     if (mode === "pie") {
         // the colors index go with label index so: color[1] will be on chartLabels[1]
         // so here i insert the close label at the end so color array will be end
@@ -168,7 +170,7 @@ export const formatDataToChartForBar = (historyReports, label, formatDateToDashb
     }
     const chartLabels = mode === "pie" ? [...Object.keys(openLabelsReports), ...Object.keys(closeLabelsReports)] : Object.keys(openLabelsReports)
 
-    return { label: chartLabels, openReportsData, closeReportsData, maxHeight, pieColors, totalPieReports };
+    return { label: chartLabels, openReportsData, closeReportsData, maxHeight: maxHeightOpen + maxHeightClose, pieColors, totalPieReports };
 };
 
 

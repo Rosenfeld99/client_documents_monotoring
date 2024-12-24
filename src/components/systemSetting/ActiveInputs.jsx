@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import { SelectInput, ShortInput, TextAreaInput } from './InputsComponents'
 import { inputsDB, MAX_LENGTH } from '../../utils/fakeDB'
 // import { ContextStore } from '../../context/ContextStore'
-import { hoverTitle } from '../../utils/hoverInputTitle'
+import { hoverTitle } from '../../utils/utils'
 import { ContextStore } from '../../context/contextStore'
 
 function ActiveInputs({ chooseOption, setChooseOption, setInputDeatils }) {

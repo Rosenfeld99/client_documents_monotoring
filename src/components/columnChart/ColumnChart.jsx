@@ -94,7 +94,6 @@ const ColumnChart = ({ dataToChart, optionsSelect, setColumnChartSelect, isAllRe
         labels: {
           // usePointStyle: true, // Optional for modern legend points
           boxWidth: 5,        // Box size for legend items
-          padding: 10,         // Adjust padding within legend items
         },
 
       },
@@ -127,6 +126,7 @@ const ColumnChart = ({ dataToChart, optionsSelect, setColumnChartSelect, isAllRe
       },
     },
   };
+  console.log(dataToChart?.maxHeight);
 
 
   const drawNumbersPlugin = {
@@ -140,7 +140,7 @@ const ColumnChart = ({ dataToChart, optionsSelect, setColumnChartSelect, isAllRe
         const meta = chart.getDatasetMeta(datasetIndex);
         meta.data.forEach((bar, index) => {
           const value = dataset.data[index];
-          if (value !== undefined) {
+          if (value !== undefined && value !== 0) {
             const { x, y } = bar.tooltipPosition();
             ctx.save();
             ctx.fillStyle = '#000';
