@@ -31,10 +31,11 @@ export default function OpenIssues() {
   const [openModal, setOpenModal] = useState(false);
   const [searchLoading, setSearchLoading] = useState(false);
 
-  console.log(columnVisibility);
+  const currSpaceWork = searchParams?.get('sw');
+  const currSubSW = searchParams?.get('subSW');
+  const currRoom = searchParams?.get('room');
 
-
-  const str = `${searchParams.get('sw')} / ${searchParams.get('subSW')} / ${searchParams.get('room')}`
+  const str = `${currSpaceWork} / ${currSubSW} / ${currRoom}`
 
   const accessOption = [
     { name: "מדגם", value: "מדגם" },
@@ -44,7 +45,6 @@ export default function OpenIssues() {
   // console.log(filteredData);
 
   const handleColseReportClick = (currReport) => {
-    console.log(currReport);
 
     const result = confirm("היי! פעולה זו תסגור את הפנייה. להמשיך?")
     if (!result) {
@@ -54,25 +54,22 @@ export default function OpenIssues() {
       userId: currentUser?.userId,
       reportId: currReport?._id,
       dateRequst: decodeFormatDate(currReport?.["זמן פתיחת פנייה"]),
-      spaceWorkName: searchParams.get('sw'),
-      subSpaceWorkName: searchParams.get('subSW'),
-      roomName: searchParams.get('room'),
+      spaceWorkName: currSpaceWork,
+      subSpaceWorkName: currSubSW,
+      roomName: currRoom,
     }
 
-    console.log(currReport);
 
     handleCloseReport(reqBody)
   }
 
   const handleViewReportClick = (currReport) => {
-    console.log(currReport);
     setReportModalData({ currReport, mode: "watch" })
     setOpenModal(true)
   }
 
 
   const handleEditReportClick = (currReport) => {
-    console.log(currReport);
 
     setReportModalData({ currReport, mode: "edit" })
     setOpenModal(true)
@@ -88,9 +85,9 @@ export default function OpenIssues() {
       userId: currentUser?.userId,
       MongoReportId: currReport?._id,
       dateRequst: decodeFormatDate(currReport?.["זמן פתיחת פנייה"]),
-      spaceWorkName: searchParams.get('sw'),
-      subSpaceWorkName: searchParams.get('subSW'),
-      roomName: searchParams.get('room'),
+      spaceWorkName: currSpaceWork,
+      subSpaceWorkName: currSubSW,
+      roomName: currRoom,
       reportStatus: currReport["סטאטוס פנייה"]
     }
 
@@ -103,21 +100,29 @@ export default function OpenIssues() {
   const HoverComps = (currReport) => {
 
     return <div className=" hidden items-center gap-3 w-full h-full bg-border  text-text group-hover:flex duration-150 transition ease-in-out text-xl px-10 absolute top-0 right-0">
-      <button onClick={() => { handleEditReportClick(currReport) }} className=' flex items-center text-lg h-7 gap-2 justify-end border-2 rounded-lg px-2 hover:scale-105 duration-150 hover:text-primary hover:border-pritext-primary'>
-        <BiEdit />
-        <span >עריכת פנייה</span>
+      {(currentUser.isOwner || currentUser.spaceWorks[currSpaceWork] === "superAdmin" || currentUser.subSpaceWorks[currSpaceWork][currSubSW] === "admin" || currentUser.rooms[`${currSpaceWork}_${currSubSW}_${currRoom}`] === "editor" || currentUser.userId === currReport[`מ.א`]) &&
+        <>
+          <button onClick={() => { handleEditReportClick(currReport) }} className=' flex items-center text-lg h-7 gap-2 justify-end border-2 rounded-lg px-2 hover:scale-105 duration-150 hover:text-primary hover:border-pritext-primary'>
+            <BiEdit />
+            <span >עריכת פנייה</span>
 
-      </button>|
-      <button onClick={() => { handleColseReportClick(currReport) }} className=' flex items-center  text-lg h-7 gap-2 justify-end border-2 rounded-lg px-2 hover:scale-105 duration-150 hover:text-success hover:border-success '>
-        <GoIssueClosed />
-        <span >סגירת פנייה</span>
+          </button>|
+        </>
+      }
+      {(currentUser.isOwner || currentUser.spaceWorks[currSpaceWork] === "superAdmin" || currentUser.subSpaceWorks[currSpaceWork][currSubSW] === "admin" || currentUser.rooms[`${currSpaceWork}_${currSubSW}_${currRoom}`] === "editor" || currentUser.userId === currReport[`מ.א`]) &&
+        <>
+          <button onClick={() => { handleColseReportClick(currReport) }} className=' flex items-center  text-lg h-7 gap-2 justify-end border-2 rounded-lg px-2 hover:scale-105 duration-150 hover:text-success hover:border-success '>
+            <GoIssueClosed />
+            <span >סגירת פנייה</span>
 
-      </button>|
+          </button>|
+        </>
+      }
       <button onClick={() => { handleViewReportClick(currReport) }} className=' flex items-center  text-lg h-7 gap-2 justify-end border-2 rounded-lg px-2 hover:scale-105 duration-150 hover:text-info hover:border-info '>
         <IoDocumentTextOutline />
         <span >צפייה בפנייה</span>
       </button>|
-      {currentUser.isOwner || currentUser.spaceWorks[searchParams.get('sw')] === "superAdmin" || currentUser.subSpaceWorks[searchParams.get('sw')][searchParams.get('subSW')] === "admin" && (
+      {currentUser.isOwner || currentUser.spaceWorks[currSpaceWork] === "superAdmin" || currentUser.subSpaceWorks[currSpaceWork][currSubSW] === "admin" && (
 
         <button onClick={() => { handleDeleteReportClick(currReport) }} className=' flex items-center  text-lg h-7 gap-2 justify-end border-2 rounded-lg px-2 hover:scale-105 duration-150 hover:text-error hover:border-errtext-error '>
           <IoCloseCircleOutline className='text-2xl' />
@@ -145,7 +150,7 @@ export default function OpenIssues() {
   //       userId: currentUser?.userId,
   //       spaceWorkName: searchParams.get('sw'),
   //       subSpaceWorkName: searchParams.get('subSW'),
-  //       roomName: searchParams.get('room'),
+  //       roomName: currRoom,
   //     })
   //   }, 1000);
   //   return () => {
@@ -164,9 +169,9 @@ export default function OpenIssues() {
           indexToSkip: pagenations.prev * indexLimited,
           statusReport: "open",
           userId: currentUser?.userId,
-          spaceWorkName: searchParams.get('sw'),
-          subSpaceWorkName: searchParams.get('subSW'),
-          roomName: searchParams.get('room'),
+          spaceWorkName: currSpaceWork,
+          subSpaceWorkName: currSubSW,
+          roomName: currRoom,
         };
         getReportsByConditions(getReportObj);
       }
@@ -185,9 +190,9 @@ export default function OpenIssues() {
           statusReport: "open",
           arrayOfConditions: convertFilters,
           userId: currentUser?.userId,
-          spaceWorkName: searchParams.get('sw'),
-          subSpaceWorkName: searchParams.get('subSW'),
-          roomName: searchParams.get('room'), setSearchLoading
+          spaceWorkName: currSpaceWork,
+          subSpaceWorkName: currSubSW,
+          roomName: currRoom, setSearchLoading
         });
 
       }, 800);
@@ -216,10 +221,8 @@ export default function OpenIssues() {
       [key]: !prev[key],
     }));
   };
-  console.log(filters);
 
   const handleFilterChange = (key, value) => {
-    console.log(key, value);
     setFilters((prev) => {
       const updatedFilters = { ...prev };
 
@@ -259,7 +262,6 @@ export default function OpenIssues() {
   const resetFilters = () => {
     setFilters({})
   }
-  console.log(filteredData);
 
 
   return (

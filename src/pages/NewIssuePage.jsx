@@ -17,6 +17,7 @@ const NewIssuePage = () => {
     const [newReportData, setNewReportData] = useState({
         דחיפות: "נמוכה-3", "יחידה מטפלת": searchParams?.get('room'), "מ.א": currentUser?.userId
     })
+    console.log(newIdReport);
 
     const handleInputChange = useCallback((value, key) => {
         setNewReportData((prev) => ({ ...prev, [key]: value }))
@@ -48,7 +49,6 @@ const NewIssuePage = () => {
                 reportStatus: reportStatus ?? true
             }
         }
-        console.log(newReportData);
 
         addReport(newReportObj)
         //reset the inputs
@@ -61,7 +61,6 @@ const NewIssuePage = () => {
         return arrayInputs
     }
 
-    console.log(currentUser);
 
     return (
         <TemplatePage

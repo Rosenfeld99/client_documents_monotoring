@@ -40,7 +40,6 @@ const RootSWPage = () => {
         else if (currentUser) {
             (searchParams.get('sw')) && handleGetSingleOption(searchParams.get('sw'))
             // check if the subSW is empty and just to  who have permissins show him create func
-            console.log((singleOptoin?.length === 0, havePermission));
 
             setToggleEdit(() => (singleOptoin?.length === 0 && havePermission))
         }
@@ -151,8 +150,7 @@ const RootSWPage = () => {
                 {singleOptoin?.map((item, i) => (
                     <div key={item} className={`flex relative items-center justify-center h-80  ${i !== lobbyOption?.length && "border-l-[1px]"} border-b-[1px] border-border`}>
                         {/* if mode is edit, show delete icon */}
-                        {console.log(item)
-                        }
+
                         {toggleEdit && <span onClick={(e) => handleActions(e, "delete", item)} className='absolute left-2 top-0 cursor-pointer' ><GoTrash color='red' /></span>}
                         {/* if mode is edit, the option will be input to edit name else it will be btn */}
                         <div className='relative w-40 xl:w-56 bg-accent border-2 text-2xl font-semibold border-border shadow-md rounded-lg flex justify-center items-center hover:scale-110 duration-150'>

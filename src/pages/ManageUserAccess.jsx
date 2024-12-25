@@ -149,7 +149,6 @@ const ManageUserAccess = () => {
         }
         else listToShow = key === "sw" ? getListToShow(currentUser, "subSw", option?.value) : getListToShow(currentUser, "room", accessList.currAcc.sw || spaceWorkName, option?.value)
         // Update userAccessList
-        console.log(listToShow);
 
         setUserAccessList((prev) => ({
             ...prev,
@@ -218,13 +217,11 @@ const ManageUserAccess = () => {
         const resetUserAcList = defulteUserAcList()
         resetUserAcList.listOption[1] = list;
         resetUserAcList.currentStep = list;
-        console.log(accessList);
 
         setAccesList({ currAcc: { id: "", sw: spaceWorkName }, listAccExist: [...accessList.listAccExist] })
         setUserAccessList(resetUserAcList)
     }
     const accessOptions = userAccess(currentUser, accessList.currAcc.sw, accessList.currAcc.subSw, accessList.currAcc.room)
-    console.log(userAccessList);
 
     return (
         <TemplatePage

@@ -126,7 +126,6 @@ const ColumnChart = ({ dataToChart, optionsSelect, setColumnChartSelect, isAllRe
       },
     },
   };
-  console.log(dataToChart?.maxHeight);
 
 
   const drawNumbersPlugin = {

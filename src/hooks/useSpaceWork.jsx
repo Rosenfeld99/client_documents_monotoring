@@ -225,6 +225,8 @@ function useSpaceWork() {
       const result = await axios.get(`http://localhost:3001/spaceWork/getRoom`, {
         params: { userId, spaceWork, subSpaceWork, room }
       })
+      console.log(result.data);
+
       // lastReportId is the new reportId for new mission so i did -1 to understand the state name and function
       setNewIdReport(result?.data?.newIdReport)
 

@@ -26,7 +26,6 @@ const DashboardPage = () => {
     // const [ColumnChart1Select, setColumnChart1Select] = useState({ label: "יחידה מטפלת", dateFunc: null })
     const [ColumnChart2Select, setColumnChart2Select] = useState({ label: "יחידה מטפלת", dateFunc: null })
     // get the number of response of reports 
-    console.log(historyReports);
 
 
     const [fromDate, setFromDate] = useState(new Date())
@@ -119,8 +118,6 @@ const DashboardPage = () => {
         setToDate(new Date())
     }
     const str = `${searchParams.get('sw')} / ${searchParams.get('subSW')} / ${searchParams.get('room')}`
-    console.log(
-    );
     const options = singleOptoin?.subSpaceWork?.find((subSW) => subSW.name == searchParams.get("subSW"))?.lobbyOption
     return (
         <TemplatePage

@@ -153,7 +153,6 @@ const DonutChart = ({ dataToChart, isAllReportsVisible }) => {
           }
 
           const position = meta.data[index].tooltipPosition();
-          console.log(visibleSlices * 0.5);
 
           // Dynamically calculate font size based on the number of visible slices
           const baseFontSize = 16; // Maximum font size for fewer slices
@@ -214,7 +213,6 @@ const DonutChart = ({ dataToChart, isAllReportsVisible }) => {
       },
       datalbels: {
         formatter: (value, ctx) => {
-          console.log(value, ctx);
 
         }
       },

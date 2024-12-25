@@ -28,7 +28,10 @@ const IssueHistoryPage = () => {
     const [reportModalData, setReportModalData] = useState({});
     const [filters, setFilters] = useState({});
 
-    console.log(columnVisibility);
+
+    const currSpaceWork = searchParams?.get('sw');
+    const currSubSW = searchParams?.get('subSW');
+    const currRoom = searchParams?.get('room');
 
 
     useEffect(() => {
@@ -41,9 +44,9 @@ const IssueHistoryPage = () => {
                     indexToSkip: pagenations.prev * indexLimited,
                     statusReport: "close",
                     userId: currentUser?.userId,
-                    spaceWorkName: searchParams.get('sw'),
-                    subSpaceWorkName: searchParams.get('subSW'),
-                    roomName: searchParams.get('room'),
+                    spaceWorkName: currSpaceWork,
+                    subSpaceWorkName: currSubSW,
+                    roomName: currRoom,
                 };
                 getReportsByConditions(getReportObj);
             }
@@ -62,9 +65,10 @@ const IssueHistoryPage = () => {
                     statusReport: "close",
                     arrayOfConditions: convertFilters,
                     userId: currentUser?.userId,
-                    spaceWorkName: searchParams.get('sw'),
-                    subSpaceWorkName: searchParams.get('subSW'),
-                    roomName: searchParams.get('room'), setSearchLoading
+                    spaceWorkName: currSpaceWork,
+                    subSpaceWorkName: currSubSW,
+                    roomName: currRoom,
+                    setSearchLoading
                 });
 
             }, 800);
@@ -97,7 +101,7 @@ const IssueHistoryPage = () => {
 
     const accessOption = [{ name: "מדגם", value: "מדגם" }, { name: "מחלקה", value: "מחלקה" },];
 
-    const str = `${searchParams.get('sw')} / ${searchParams.get('subSW')} / ${searchParams.get('room')}`;
+    const str = `${currSpaceWork} / ${currSubSW} / ${currRoom}`;
 
 
 
@@ -122,7 +126,6 @@ const IssueHistoryPage = () => {
     };
 
     const handleFilterChange = (key, value) => {
-        console.log(key, value);
         setFilters((prev) => {
             const updatedFilters = { ...prev };
 
@@ -159,7 +162,6 @@ const IssueHistoryPage = () => {
     }
 
     const handleDeleteReportClick = (currReport) => {
-        console.log(currReport);
         const result = confirm("היי! זהירות, פעולה זו תמחק את הפנייה. להמשיך?")
         if (!result) {
             return
@@ -168,9 +170,9 @@ const IssueHistoryPage = () => {
             userId: currentUser?.userId,
             MongoReportId: currReport?._id,
             dateRequst: decodeFormatDate(currReport?.["זמן פתיחת פנייה"]),
-            spaceWorkName: searchParams.get('sw'),
-            subSpaceWorkName: searchParams.get('subSW'),
-            roomName: searchParams.get('room'),
+            spaceWorkName: currSpaceWork,
+            subSpaceWorkName: currSubSW,
+            roomName: currRoom,
             reportStatus: currReport["סטאטוס פנייה"]
         }
 
@@ -179,7 +181,6 @@ const IssueHistoryPage = () => {
     }
 
     const handleViewReportClick = (currReport) => {
-        console.log(currReport);
         setReportModalData({ currReport, mode: "watch" })
         setOpenModal(true)
     }
@@ -193,10 +194,15 @@ const IssueHistoryPage = () => {
     const HoverComps = (currReport) => {
 
         return (<div className=" hidden items-center gap-3 w-full h-full bg-border  text-text group-hover:flex duration-150 transition ease-in-out text-xl px-10 absolute top-0 right-0">
-            <button onClick={() => handleEditReportClick(currReport)} className=' flex items-center text-lg h-7 gap-2 justify-end border-2 rounded-lg px-2 hover:scale-105 duration-150 hover:text-primary hover:border-pritext-primary'>
-                <BiEdit />
-                <span >עריכת פנייה</span>
-            </button>|
+            {(currentUser.isOwner || currentUser.spaceWorks[currSpaceWork] === "superAdmin" || currentUser.subSpaceWorks[currSpaceWork][currSubSW] === "admin" || currentUser.rooms[`${currSpaceWork}_${currSubSW}_${currRoom}`] === "editor" || currentUser.userId === currReport[`מ.א`]) &&
+                <>
+                    <button onClick={() => { handleEditReportClick(currReport) }} className=' flex items-center text-lg h-7 gap-2 justify-end border-2 rounded-lg px-2 hover:scale-105 duration-150 hover:text-primary hover:border-pritext-primary'>
+                        <BiEdit />
+                        <span >עריכת פנייה</span>
+
+                    </button>|
+                </>
+            }
             <button onClick={() => handleViewReportClick(currReport)} className=' flex items-center  text-lg h-7 gap-2 justify-end border-2 rounded-lg px-2 hover:scale-105 duration-150 hover:text-info hover:border-info '>
                 <IoDocumentTextOutline />
                 <span >צפייה בפנייה</span>

@@ -28,8 +28,8 @@ const AppRoutes = () => {
 
     useEffect(() => {
         // getUser("dwdddoe01")
-        getUser("m7543456")
-        // getUser("doe01")
+        // getUser("m7543456")
+        getUser("doe01")
     }, [])
 
     useEffect(() => {
@@ -51,32 +51,36 @@ const AppRoutes = () => {
         }
     }, [currentUser, searchParams.get('room')])
 
-    useEffect(() => {
-        console.log(socketIo);
+    // useEffect(() => {
 
-        // if (socketIo) {
+    //     if (currentUser) {
+    //         console.log(currentUser);
 
-        const localSW = localStorage.getItem("sw");
-        const localSubSP = localStorage.getItem("subSW");
-        const localRoom = localStorage.getItem("room");
+    //         const localSW = localStorage.getItem("sw");
+    //         const localSubSP = localStorage.getItem("subSW");
+    //         const localRoom = localStorage.getItem("room");
 
-        if (localSW && localSubSP && localRoom) {
-            changeRoom(localSW, localSubSP, localRoom, "dashboard_open")
-            navigate(`dashboard?sw=${localSW}&subSW=${localSubSP}&room=${localRoom}`)
-        }
-        else if (localSW && localSubSP) {
-            changeRoom(localSW, localSubSP)
+    //         const permissionRoom = currentUser.rooms[`${localSW}_${localSubSP}_${localRoom}`]
+    //         const permissionSubSw = currentUser.subSpaceWorks[localSW] && currentUser.subSpaceWorks[localSW][localSubSP]
+    //         const permissionSW = currentUser.spaceWorks[localSW]
+    //         // before i sent the user to his last point in his website check if he has permision to do that
+    //         if (localSW && localSubSP && localRoom && permissionRoom) {
+    //             changeRoom(localSW, localSubSP, localRoom, "dashboard_open")
+    //             navigate(`dashboard?sw=${localSW}&subSW=${localSubSP}&room=${localRoom}`)
+    //         }
+    //         else if (localSW && localSubSP && permissionSubSw) {
+    //             changeRoom(localSW, localSubSP)
 
-            navigate(`/?sw=${localSW}&subSW=${localSubSP}`)
-        }
-        else if (localSW) {
-            changeRoom(localSW)
+    //             navigate(`/?sw=${localSW}&subSW=${localSubSP}`)
+    //         }
+    //         else if (localSW && permissionSW) {
+    //             changeRoom(localSW)
 
-            navigate(`/?sw=${localSW}`)
-        }
-        // }
+    //             navigate(`/?sw=${localSW}`)
+    //         }
+    //     }
 
-    }, [])
+    // }, [currentUser])
 
     return (
         <>
