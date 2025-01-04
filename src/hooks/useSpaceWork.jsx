@@ -8,7 +8,7 @@ import useSocket from './useSocket'
 
 function useSpaceWork() {
   const { inputs, setInputs, setNewIdReport, historyReports, setHistoryReports, currentUser, setCurrentUser } = useContext(ContextStore)
-  const { createRoomSocket, deleteRoomSocket, updateRoomSocket } = useSocket()
+  const { createRoomSocket, updateSubSwSocket, deleteRoomSocket, updateRoomSocket } = useSocket()
   const createSpaceWork = async ({ adminId, spaceWorkName, }) => {
 
     try {
@@ -173,11 +173,29 @@ function useSpaceWork() {
       })
       console.log(newSubSp);
       // // update the sub spaceWork in current User localy to show it 
-      const updateUser = { ...currentUser }
-      updateUser.subSpaceWorks[spaceWorkName][newSubSpaceWorkName] = updateUser?.subSpaceWorks[spaceWorkName][oldSubSpaceWorkName];
-      delete updateUser?.subSpaceWorks[spaceWorkName][oldSubSpaceWorkName];
+      setCurrentUser((prev) => {
+        const updateUser = { ...prev }
+        updateUser.subSpaceWorks[spaceWorkName][newSubSpaceWorkName] = updateUser?.subSpaceWorks[spaceWorkName][oldSubSpaceWorkName];
+        delete updateUser?.subSpaceWorks[spaceWorkName][oldSubSpaceWorkName];
+
+        const newRooms = {}
+
+        Object.keys(prev.rooms).map((roomName) => {
+          if (roomName.includes(`${spaceWorkName}_${oldSubSpaceWorkName}`)) {
+            const newRoom = roomName.split("_")
+            newRooms[`${spaceWorkName}_${newSubSpaceWorkName}_${newRoom[2]}`] = currentUser.rooms[roomName]
+
+          }
+          else newRooms[roomName] = currentUser.rooms[roomName]
+        })
+        updateUser.rooms = newRooms;
+        console.log("112");
+
+        return updateUser
+      })
       //saved it
-      setCurrentUser(updateUser)
+      // setCurrentUser(updateUser)
+      updateSubSwSocket(spaceWorkName, newSubSpaceWorkName, oldSubSpaceWorkName)
       notify("SUCCESS", "התת-סביבה עודכנה בהצלחה")
 
     } catch (error) {

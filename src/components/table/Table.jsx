@@ -60,18 +60,15 @@ const Table = ({ setOpenManageColumns, columns, columnVisibility, setColumns, fi
                 </thead>
                 <tbody>
                     {filteredData?.map((row, index) => (
-                        <tr key={index} className={`border-b border-b-border relative group text-nowrap last:border-none hover:bg-blue-50`}>
+                        <tr key={index + row._id} className={`border-b border-b-border relative group text-nowrap last:border-none hover:bg-blue-50`}>
                             {columns?.map(
                                 (column) =>
                                     columnVisibility[column?.key] && (
-                                        <td key={column.key} className="py-2 px-4 text-center border-r border-r-border">
+                                        <td key={column.key + row._id} className="py-2 px-4 text-center border-r border-r-border">
                                             {column.key === "דחיפות" ? <span style={{ backgroundColor: urgancyColors[row[column.key]] }} className="text-[white] px-3 rounded-full py-1"  >
                                                 {row[column.key] && typeof String ? String(row[column.key])?.substring(0, 30) : typeof Date ? row[column.key] : (row[column.key])}
                                             </span> :
                                                 row[column.key] && typeof String ? String(row[column.key])?.substring(0, 30) : typeof Date ? row[column.key] : (row[column.key])}
-
-
-
                                             {HoverComps && HoverComps(row)}
                                         </td>
                                     )

@@ -111,7 +111,7 @@ export default function OpenIssues() {
       }
       {(currentUser.isOwner || currentUser.spaceWorks[currSpaceWork] === "superAdmin" || currentUser.subSpaceWorks[currSpaceWork][currSubSW] === "admin" || currentUser.rooms[`${currSpaceWork}_${currSubSW}_${currRoom}`] === "editor" || currentUser.userId === currReport[`מ.א`]) &&
         <>
-          <button onClick={() => { handleColseReportClick(currReport) }} className=' flex items-center  text-lg h-7 gap-2 justify-end border-2 rounded-lg px-2 hover:scale-105 duration-150 hover:text-success hover:border-success '>
+          <button onClick={() => { handleColseReportClick(currReport) }} className=' flex items-center bg-  text-lg h-7 gap-2 justify-end border-2 rounded-lg px-2 hover:scale-105 duration-150 hover:text-success hover:border-success '>
             <GoIssueClosed />
             <span >סגירת פנייה</span>
 
@@ -122,7 +122,7 @@ export default function OpenIssues() {
         <IoDocumentTextOutline />
         <span >צפייה בפנייה</span>
       </button>|
-      {currentUser.isOwner || currentUser.spaceWorks[currSpaceWork] === "superAdmin" || currentUser.subSpaceWorks[currSpaceWork][currSubSW] === "admin" && (
+      {(currentUser.isOwner || currentUser.spaceWorks[currSpaceWork] === "superAdmin" || currentUser.subSpaceWorks[currSpaceWork][currSubSW] === "admin") && (
 
         <button onClick={() => { handleDeleteReportClick(currReport) }} className=' flex items-center  text-lg h-7 gap-2 justify-end border-2 rounded-lg px-2 hover:scale-105 duration-150 hover:text-error hover:border-errtext-error '>
           <IoCloseCircleOutline className='text-2xl' />

@@ -9,6 +9,7 @@ import useSocket from './useSocket'
 function useInput() {
     const [searchParams] = useSearchParams()
     const { createInputSocket, deleteInputSocket, updateInputSocket } = useSocket()
+    const { setInputs } = useContextStore()
 
     const { inputs } = useContext(ContextStore)
 
@@ -25,7 +26,10 @@ function useInput() {
                 roomName,
                 input
             })
-            createInputSocket([...inputs, input])
+            console.log(newInput.data.newInput);
+
+            setInputs([...inputs, newInput?.data?.newInput])
+            createInputSocket([...inputs, newInput?.data?.newInput])
             notify("SUCCESS", "שדה נוצר  בהצלחה")
 
         } catch (error) {
@@ -40,6 +44,8 @@ function useInput() {
         adminId,
         subSpaceWorkName,
         roomName, inputId, updateInputsArray }) => {
+        console.log(inputId);
+
         try {
 
 

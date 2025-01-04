@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Link, Route, Routes, useNavigate, useSearchParams } from 'react-router-dom'
 import HomePage from '../pages/HomePage'
 import DashboardPage from '../pages/DashboardPage'
@@ -22,6 +22,7 @@ const AppRoutes = () => {
     const { getUser, currentUser } = useUsers()
     const { inputs, socketIo, setInputs, setCountRoomReports, historyReports } = useContext(ContextStore)
     const [searchParams] = useSearchParams()
+    const [hasRun, setHasRun] = useState(false);
     const { getRoomInputs, getRoomHistory } = useSpaceWork()
     const navigate = useNavigate()
     const { changeRoom } = socketHook()
@@ -51,36 +52,35 @@ const AppRoutes = () => {
         }
     }, [currentUser, searchParams.get('room')])
 
-    // useEffect(() => {
 
-    //     if (currentUser) {
-    //         console.log(currentUser);
 
-    //         const localSW = localStorage.getItem("sw");
-    //         const localSubSP = localStorage.getItem("subSW");
-    //         const localRoom = localStorage.getItem("room");
+    useEffect(() => {
+        if (currentUser && !hasRun) {
+            console.log(currentUser);
 
-    //         const permissionRoom = currentUser.rooms[`${localSW}_${localSubSP}_${localRoom}`]
-    //         const permissionSubSw = currentUser.subSpaceWorks[localSW] && currentUser.subSpaceWorks[localSW][localSubSP]
-    //         const permissionSW = currentUser.spaceWorks[localSW]
-    //         // before i sent the user to his last point in his website check if he has permision to do that
-    //         if (localSW && localSubSP && localRoom && permissionRoom) {
-    //             changeRoom(localSW, localSubSP, localRoom, "dashboard_open")
-    //             navigate(`dashboard?sw=${localSW}&subSW=${localSubSP}&room=${localRoom}`)
-    //         }
-    //         else if (localSW && localSubSP && permissionSubSw) {
-    //             changeRoom(localSW, localSubSP)
+            const localSW = localStorage.getItem("sw");
+            const localSubSP = localStorage.getItem("subSW");
+            const localRoom = localStorage.getItem("room");
 
-    //             navigate(`/?sw=${localSW}&subSW=${localSubSP}`)
-    //         }
-    //         else if (localSW && permissionSW) {
-    //             changeRoom(localSW)
+            const permissionRoom = currentUser.rooms?.[`${localSW}_${localSubSP}_${localRoom}`];
+            const permissionSubSw = currentUser.subSpaceWorks?.[localSW]?.[localSubSP];
+            const permissionSW = currentUser.spaceWorks?.[localSW];
 
-    //             navigate(`/?sw=${localSW}`)
-    //         }
-    //     }
+            // Before navigating, check user permissions
+            if (localSW && localSubSP && localRoom && permissionRoom) {
+                changeRoom(localSW, localSubSP, localRoom, "dashboard_open");
+                navigate(`dashboard?sw=${localSW}&subSW=${localSubSP}&room=${localRoom}`);
+            } else if (localSW && localSubSP && permissionSubSw) {
+                changeRoom(localSW, localSubSP);
+                navigate(`/?sw=${localSW}&subSW=${localSubSP}`);
+            } else if (localSW && permissionSW) {
+                changeRoom(localSW);
+                navigate(`/?sw=${localSW}`);
+            }
 
-    // }, [currentUser])
+            setHasRun(true); // Ensure the effect doesn't run again
+        }
+    }, [currentUser]); // Dependency only on currentUser
 
     return (
         <>

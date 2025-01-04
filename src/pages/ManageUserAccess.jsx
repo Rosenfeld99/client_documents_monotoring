@@ -88,7 +88,12 @@ const ManageUserAccess = () => {
             if (currentUser?.spaceWorks[spaceWorkName] !== "superAdmin") {
                 // handleStepsChange("", { name: subSpaceWorkName, id: subSpaceWorkName + 7, value: subSpaceWorkName }, 1, "subSw")
             }
+        } else {
+            const swList = getListToShow(currentUser, "sw")
+            setUserAccessList((prev) => ({ ...prev, currentStep: swList }))
+
         }
+
 
     }, [currentUser])
 

@@ -59,12 +59,14 @@ function ChooseOption({ updateInput, setUpdateInput, chooseOption, setChooseOpti
             type,        // Default value for 'input1.type'
             options,   // Default value for 'options' array
             require: requireInput, // Default value for 'require'
-            _id: _id ? _id : crypto.randomUUID()
+            _id: _id ? _id : Math.random()?.toString(6) // Default value for 'input1._id'
         }
         return newInput
     }
     // create and update inputs
     const handeleCreateInput = async (e, inputIdUpdate) => {
+        console.log(inputIdUpdate);
+
         if (inputs.length == MAX_LENGTH) {
             alert("הגעתם למקסימום שדות מחקו שדה כדי להכניס שדה חדש")
         }
@@ -238,7 +240,8 @@ function ChooseOption({ updateInput, setUpdateInput, chooseOption, setChooseOpti
                             </div>}
                     </div>
                     {/* end show selected input */}
-
+                    {console.log(updateInput)
+                    }
                     {/* just if user select input show the save and delete buttons */}
                     {/* and if it is create input show just 1 button in middle */}
                     <div className={`flex w-3/4  ${updateInput ? "justify-between" : "justify-center"}  px-5 h-10`}   >

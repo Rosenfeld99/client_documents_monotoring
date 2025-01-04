@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import TemplatePage from '../utils/TemplatePage'
 import CustomSelect from '../utils/CustomSelect'
 import { Link, useSearchParams } from 'react-router-dom'
@@ -8,6 +8,7 @@ import { ContextStore } from '../context/contextStore'
 import { Button } from '../components/systemSetting/InputsComponents'
 import { IoMdSettings } from 'react-icons/io'
 import useReport from '../hooks/useReport'
+import { newReportId } from '../utils/funcs/generateId'
 
 const NewIssuePage = () => {
     const [searchParams] = useSearchParams()
@@ -17,7 +18,12 @@ const NewIssuePage = () => {
     const [newReportData, setNewReportData] = useState({
         דחיפות: "נמוכה-3", "יחידה מטפלת": searchParams?.get('room'), "מ.א": currentUser?.userId
     })
-    console.log(newIdReport);
+    const [reportId, setReportId] = useState()
+    useEffect(() => {
+        setReportId(newReportId(searchParams.get('room'), newIdReport))
+    }, [newIdReport])
+
+
 
     const handleInputChange = useCallback((value, key) => {
         setNewReportData((prev) => ({ ...prev, [key]: value }))
@@ -44,7 +50,7 @@ const NewIssuePage = () => {
                 inputs: arrayInputs,
                 problemTimeStart: new Date(),
                 problemTimeEnd: reportStatus == false ? new Date() : null,
-
+                reportId: reportId,
                 // reportStatus=isOpen report or not
                 reportStatus: reportStatus ?? true
             }
@@ -75,7 +81,7 @@ const NewIssuePage = () => {
                 <div className="flex justify-start flex-col px-10  h-full gap-6 w-2/3">
                     {/* just if inputs length more than 1 (urgancey) show new report */}
 
-                    {inputs.length > 3 && <div className="mt-3">מספר פנייה {newIdReport}</div>}
+                    {inputs.length > 3 && <div className="mt-3">מספר פנייה {reportId}</div>}
                     <div className=" flex h-[29rem] gap-20 w-full">
                         {inputs.length > 3 ?
                             <div className=" flex flex-col flex-wrap h-full j w-full max-w-64 items-center gap-8">

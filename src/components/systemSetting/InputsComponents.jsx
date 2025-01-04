@@ -58,6 +58,7 @@ export const ShortInput = ({ title, setFunc, defaultValue, chooseOption, require
 
 
 export function Button({ color, text, onclickFunc, updateId: id }) {
+    console.log(id);
     return (
         <button style={{ color: color, borderColor: color }} onClick={(e) => onclickFunc(e, id)} className={`px-6 p-1 hover:scale-105 duration-200 font-bold border-2 rounded-md `}>
             {text}

@@ -209,7 +209,7 @@ const IssueHistoryPage = () => {
             </button>|
             {/* {currentUser.isOwner || currentUser.spaceWorks[searchParams.get('sw')] === "superAdmin" || currentUser.spaceWorks[searchParams.get('sw')][currentUser.spaceWorks[searchParams.get('subSW')] === "admin" && */}
 
-            {currentUser.isOwner || currentUser.spaceWorks[searchParams.get('sw')] === "superAdmin" || currentUser.subSpaceWorks[searchParams.get('sw')][searchParams.get('subSW')] === "admin" && (
+            {(currentUser?.isOwner || currentUser?.spaceWorks[searchParams.get('sw')] === "superAdmin" || currentUser?.subSpaceWorks[searchParams.get('sw')][searchParams.get('subSW')] === "admin") && (
 
                 <button onClick={() => handleDeleteReportClick(currReport)} className=' flex items-center  text-lg h-7 gap-2 justify-end border-2 rounded-lg px-2 hover:scale-105 duration-150 hover:text-error hover:border-errtext-error '>
                     <IoCloseCircleOutline className='text-2xl' />

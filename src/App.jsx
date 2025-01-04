@@ -3,7 +3,7 @@ import AppRoutes from './Routes/AppRoutes'
 import "./App.css"
 import { ContextStore, ContextStoreProvider } from './context/contextStore'
 import { useEffect } from 'react'
-import { useLocation, useSearchParams } from 'react-router-dom'
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import useUsers from './hooks/useUsers'
 import { io } from 'socket.io-client'
 import useContextStore from './hooks/useContextStore'
@@ -13,6 +13,7 @@ const App = () => {
   const [searchParams] = useSearchParams()
   const { currentUser } = useUsers()
   const { pathname } = useLocation()
+  const navigate = useNavigate()
 
   // const { setSocketIo, socketIo, setInputs, historyReports, setHistoryReports, setNewIdReport, columns, setColumns, setFilteredData } = useContextStore()
   const { setSocketIo, socketIo, setCurrentUser, setInputs, inputs, setCountRoomReports, historyReports, setHistoryReports, setNewIdReport, columns, setColumns, filteredData, setFilteredData } = useContext(ContextStore)
@@ -37,6 +38,7 @@ const App = () => {
       });
       // create input socket
       socketIo.on("recive_new_inputs", (data) => {
+        console.log(data);
 
         setInputs(data?.newInputsArray)
       });
@@ -65,6 +67,13 @@ const App = () => {
 
           return UpdateUser
         })
+        console.log();
+
+        if (searchParams.get("sw") === spaceWork && searchParams.get("subSW") === subSpaceWork && searchParams.get("room") === room) {
+
+          localStorage.removeItem("room")
+          navigate("/")
+        }
       });
       // create input socket
       socketIo.on("recive_update_room", ({ spaceWork, subSpaceWork, newRoomName, oldRoomName }) => {
@@ -79,6 +88,30 @@ const App = () => {
 
           const UpdateUser = { ...prev, rooms }
           return UpdateUser
+        })
+
+      });
+      socketIo.on("recive_update_subSw", ({ spaceWorkName, newSubSpaceWorkName, oldSubSpaceWorkName }) => {
+        console.log("update subSw");
+        setCurrentUser((prev) => {
+          const updateUser = { ...prev }
+          updateUser.subSpaceWorks[spaceWorkName][newSubSpaceWorkName] = updateUser?.subSpaceWorks[spaceWorkName][oldSubSpaceWorkName];
+          delete updateUser?.subSpaceWorks[spaceWorkName][oldSubSpaceWorkName];
+
+          const newRooms = {}
+
+          Object.keys(prev.rooms).map((roomName) => {
+            if (roomName.includes(`${spaceWorkName}_${oldSubSpaceWorkName}`)) {
+              const newRoom = roomName.split("_")
+              newRooms[`${spaceWorkName}_${newSubSpaceWorkName}_${newRoom[2]}`] = currentUser.rooms[roomName]
+
+            }
+            else newRooms[roomName] = currentUser.rooms[roomName]
+          })
+          updateUser.rooms = newRooms;
+          console.log("112");
+
+          return updateUser
         })
 
       });
@@ -149,35 +182,46 @@ const App = () => {
         setFilteredData((prev) => prev?.filter((report) => report._id != deletedReport?._id))
         setHistoryReports((prev) => prev?.data?.filter((report) => report._id != deletedReport?._id))
       });
-      socketIo.on("recive_update_report", ({ hebrewReport, oldReport }) => {
+      socketIo.on("recive_update_report", ({ hebrewReport, updateReport, oldReport }) => {
         console.log(hebrewReport, oldReport);
         const currentPage = window?.location?.pathname?.split("/")[1]
+        console.log(oldReport, hebrewReport, updateReport);
 
         if (currentPage === "dashboard") {
 
           const oldResponse = oldReport.inputs.find((input) => input.name === "יחידה מטפלת")
           const newResponse = hebrewReport["יחידה מטפלת"]
-          const reportStatus = hebrewReport["סטאטוס תקלה"]
+          const reportStatus = hebrewReport["סטאטוס פנייה"]
+
 
           // check if update room response and update the count
-          if (oldResponse !== newResponse) {
+          if (oldResponse.value !== newResponse) {
+
             // if the response removed from this room response
 
             // delete the report from old array and push it to new array
-            if (oldResponse === searchParams.get("room")) {
+            if (newResponse === searchParams.get("room")) {
+
               if (reportStatus) {
-                setCountRoomReports((prev) => ({ ...prev, roomResponseOpen: prev?.roomResponseOpen?.filter((report) => report._id !== deletedReport._id), otherResponseOpen: [...prev.otherResponseOpen, hebrewReport] }))
+
+                setCountRoomReports((prev) => {
+                  const t = { ...prev, roomResponseOpen: [...prev.roomResponseOpen, updateReport], otherResponseOpen: prev?.otherResponseOpen?.filter((report) => report._id !== updateReport._id) }
+                  console.log(t);
+                  return t
+                })
               }
               else if (reportStatus == false) {
-                setCountRoomReports((prev) => ({ ...prev, roomResponseClose: prev.roomResponseClose.filter((report) => report._id !== deletedReport._id), otherResponseClose: [...prev.otherResponseClose, hebrewReport] }))
+                setCountRoomReports((prev) => ({ ...prev, roomResponseClose: [...prev.roomResponseClose, updateReport], otherResponseClose: prev?.otherResponseClose?.filter((report) => report._id !== updateReport._id) }))
               }
             }
             else {
+              console.log("180");
+
               if (reportStatus) {
-                setCountRoomReports((prev) => ({ ...prev, otherResponseOpen: prev.otherResponseOpen.filter((report) => report._id !== deletedReport._id), roomResponseOpen: [...prev.roomResponseOpen, hebrewReport] }))
+                setCountRoomReports((prev) => ({ ...prev, otherResponseOpen: [...prev.otherResponseOpen, updateReport], roomResponseOpen: prev?.roomResponseOpen?.filter((report) => report._id !== updateReport._id) }))
               }
-              else if (deletedReport?.reportOpen == false) {
-                setCountRoomReports((prev) => ({ ...prev, otherResponseClose: prev?.otherResponseClose?.filter((report) => report._id !== deletedReport._id), roomResponseClose: [...prev.roomResponseClose, hebrewReport] }))
+              else if (reportStatus == false) {
+                setCountRoomReports((prev) => ({ ...prev, otherResponseClose: [...prev.otherResponseClose, updateReport], roomResponseClose: prev?.roomResponseClose?.filter((report) => report._id !== updateReport._id) }))
 
               }
 
@@ -185,17 +229,25 @@ const App = () => {
           }
 
         }
-        setFilteredData((prev) => {
-          for (let index = 0; index < prev?.length; index++) {
-            if (prev[index]?._id == hebrewReport?._id) {
-              prev[index] = hebrewReport
-            }
-          }
-          console.log(prev);
+        else {
+          setFilteredData((prev) => {
+            const newArray = prev?.map((report) => report._id == hebrewReport?._id ? hebrewReport : report)
+            // for (let index = 0; index < prev?.length; index++) {
+            //   console.log(prev[index]?._id, hebrewReport?._id);
 
-          return prev
+            //   if (prev[index]?._id == hebrewReport?._id) {
+            //     prev[index] = hebrewReport
+            //   }
+            // }
+            // console.log(prev);
+            console.log(newArray);
+
+
+            return newArray
+          }
+          )
+
         }
-        )
       });
 
       socketIo.on("recive_new_report", ({ newReport, hebrewReport }) => {

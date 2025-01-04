@@ -36,6 +36,11 @@ function useSocket() {
             spaceWork, subSpaceWork, newRoomName, oldRoomName
         });
     }
+    const updateSubSwSocket = (spaceWorkName, newSubSpaceWorkName, oldSubSpaceWorkName) => {
+        socketIo && socketIo?.emit("update_subSw", {
+            spaceWorkName, newSubSpaceWorkName, oldSubSpaceWorkName
+        });
+    }
     const deleteRoomSocket = (spaceWork, subSpaceWork, room,) => {
         console.log(spaceWork, subSpaceWork, room);
 
@@ -86,7 +91,7 @@ function useSocket() {
 
 
 
-    return { changeRoom, createUserSocket, deleteUserSocket, deleteRoomSocket, updateRoomSocket, createRoomSocket, createInputSocket, updateReportSocket, deleteInputSocket, deleteReportSocket, finishReportSocket, updateInputSocket, createReportSocket }
+    return { updateSubSwSocket, changeRoom, createUserSocket, deleteUserSocket, deleteRoomSocket, updateRoomSocket, createRoomSocket, createInputSocket, updateReportSocket, deleteInputSocket, deleteReportSocket, finishReportSocket, updateInputSocket, createReportSocket }
 }
 
 export default useSocket

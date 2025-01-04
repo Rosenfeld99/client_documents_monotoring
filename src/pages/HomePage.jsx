@@ -29,6 +29,9 @@ const HomePage = () => {
 
     const getRooms = () => {
         const validRooms = []
+        console.log(currentUser?.rooms);
+        console.log(currentUser);
+
         if (currentUser?.rooms) {
             //currentUser.rooms:is object of map, with all rooms
             for (const key in currentUser?.rooms) {

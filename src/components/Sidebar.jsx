@@ -38,7 +38,7 @@ const Sidebar = () => {
     const hasRoomPermission = currentUser && currentUser?.rooms[`${searchParams?.get('sw')}_${searchParams?.get('subSW')}_${searchParams?.get('room')}`]
 
     return (
-        <div className="flex flex-col h-full justify-between fixed max-h-screen w-[250px] min-w-[210px] bg-secondary min-h-screen p-5">
+        <div className="flex flex-col h-full  justify-between fixed max-h-screen w-[250px] min-w-[210px] bg-secondary min-h-screen p-5">
             <div className="flex flex-col">
                 {/* TOP */}
                 <div onClick={() => navigateion(searchParams.get('sw') ? `/?sw=${searchParams.get('sw')}` : "/")} className="flex items-center gap-3">
@@ -96,7 +96,7 @@ const Sidebar = () => {
 
             {/* bottom */}
             <div className="flex flex-col gap-3 pt-3 border-t-[1px] border-t-border">
-                <div onClick={() => navigateion(`/help?room=${searchParams.get('room') || "עזרה"}`)} className={`${location.pathname === "/help" ? styleItemActive : styleItem}`}>
+                <div onClick={() => navigateion(`/help?sw=${searchParams.get('sw')}&subSW=${searchParams.get('subSW')}&room=${searchParams.get('room') || "עזרה"}`)} className={`${location.pathname === "/help" ? styleItemActive : styleItem}`}>
                     <TbHelpSquareFilled className='text-2xl mt-auto' />
                     <span>עזרה</span>
                 </div>
